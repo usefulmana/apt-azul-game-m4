@@ -9,16 +9,16 @@
 - Ruby Rio (s3786695)
 
 #### Running the application
-- If you have a bash-compatible (Linux/Mac/WSL) terminal
+- If you have a bash-compatible (Linux/Mac/WSL/MinGW/GitBash etc.) terminal
 ```
 chmod +x run.sh (only need to do this once)
 ./run.sh
 ```
-- Else if you have a Windows-based cmd
+- Else if you are using the standard Windows terminal
 ```
-g++ -Wall -Werror -std=c++14 -O -o out/program *.cpp &&
+g++ -Wall -Werror -std=c++14 -O -o out/program.exe *.cpp &&
 cd out &&
-./program <parameters> &&
-del /f program &&
+program.exe <parameters> &&
+del /f program.exe &&
 cd ..
 ```
