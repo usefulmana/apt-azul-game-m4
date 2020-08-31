@@ -18,7 +18,7 @@ chmod +x run.sh (only need to do this once)
 ```
 g++ -Wall -Werror -std=c++14 -O -o out/program *.cpp &&
 cd out &&
-./program &&
+./program <parameters> &&
 del /f program &&
 cd ..
 ```
