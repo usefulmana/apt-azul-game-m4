@@ -3,16 +3,13 @@
 # Simple bash script to run and test
 
 # Compile
-g++ -Wall -Werror -std=c++14 -O -o out/program *.cpp
+make
 
 # Move to tests folder
-cd out
+cd bin
 
 # Run
-./program
-
-# Remove program
-rm program
+./azul
 
 # Go back to previous directory
 cd ..

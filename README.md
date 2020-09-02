@@ -7,18 +7,15 @@
 - Anh Nguyen (s3616128)
 - Mitchell Gust (s3782095)
 - Ruby Rio (s3786695)
-
+#### Folder Structure
+- *bin*: store the program and all tests
+- *obj*: temporary folder to store objects
+- *src*: store all source files
 #### Running the application
-- If you have a bash-compatible (Linux/Mac/WSL/MinGW/GitBash etc.) terminal
+- **Require GNU Make**
+- **Bash-compatible terminals only**
+- Run
 ```
 chmod +x run.sh (only need to do this once)
 ./run.sh
-```
-- Else if you are using the standard Windows terminal
-```
-g++ -Wall -Werror -std=c++14 -O -o out/program.exe *.cpp &&
-cd out &&
-program.exe <parameters> &&
-del /f program.exe &&
-cd ..
 ```
