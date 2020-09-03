@@ -2,6 +2,8 @@
 
 # Simple bash script to run and test
 
+cd src
+
 # Compile
 make
 
@@ -12,6 +14,8 @@ cd bin
 ./azul
 
 # Go back to previous directory
+cd ..
+
 cd ..
 
 exit 0;

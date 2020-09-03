@@ -8,14 +8,15 @@
 - Mitchell Gust (s3782095)
 - Ruby Rio (s3786695)
 #### Folder Structure
-- *bin*: store the program and all tests
-- *obj*: temporary folder to store objects
 - *src*: store all source files
+    - *bin*: store the program and all tests
+    - *obj*: temporary folder to store object files
+
 #### Running the application
 - **Require GNU Make**
 - **Bash-compatible terminals only**
 - Run
 ```
 chmod +x run.sh (only need to do this once)
-./run.sh
+sudo ./run.sh
 ```
