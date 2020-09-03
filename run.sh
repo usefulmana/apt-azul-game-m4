@@ -5,7 +5,7 @@
 cd src
 
 # Compile
-make
+sudo make
 
 # Move to tests folder
 cd bin
