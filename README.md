@@ -15,8 +15,12 @@
 #### Running the application
 - **Require GNU Make**
 - **Bash-compatible terminals only**
-- Run
-```
-chmod +x run.sh (only need to do this once)
-sudo ./run.sh
-```
+- ##### Method 1: Automation
+    ```
+    chmod +x run.sh (only need to do this once)
+    sudo ./run.sh
+    ```
+- ##### Method 2: Manual
+    ```
+    cd src && sudo make && cd bin && ./azul && cd .. && cd ..
+    ``` 
