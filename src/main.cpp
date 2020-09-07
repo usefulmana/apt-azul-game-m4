@@ -4,11 +4,11 @@
 #include <string>
 #include "Types.h"
 
-void showMenu();
+[[noreturn]] void showMenu();
 void showCredits();
 void playGame();
 void loadGame();
-void quitGame(bool & quit);
+void quitGame();
 bool isNameValid(const std::string & name);
 
 int main() {
@@ -16,15 +16,15 @@ int main() {
     return EXIT_SUCCESS;
 }
 
-void showMenu(){
+[[noreturn]] void showMenu(){
+    // Display welcome message
     std::cout << "Welcome to Azul!" << std::endl;
     std::cout << "-----------------------" << std::endl;
     std::cout << std::endl;
 
-    bool quit = false;
 
-    while (!quit){
-
+    while (true){
+        // Display menu
         std::cout << "Menu" << std::endl;
         std::cout << "-----" << std::endl;
         std::cout << "1. New Game" << std::endl;
@@ -34,12 +34,16 @@ void showMenu(){
 
         std::cout << std::endl;
         std::cout << "> " ;
+
+        // Getting user input
         int choice;
         std::cin >> choice;
 
+        // Check end of file
         if (std::cin.eof()){
-            quitGame(quit);
+            quitGame();
         }
+        // Check fail conditions
         else if (std::cin.fail() || choice < 0 || choice > 4){
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -57,7 +61,7 @@ void showMenu(){
                 showCredits();
             }
             else if (choice == 4){
-                quitGame(quit);
+                quitGame();
             }
         }
     }
@@ -94,10 +98,13 @@ void playGame(){
     std::cout << "Starting a new Azul game" << std::endl;
     std::cout << std::endl;
 
+    // A vector to store players' names
     std::vector<std::string> playerNames;
 
+    // Player counter
     int playerCount = 1;
 
+    // End loop when num of players exceeds the ceiling
     while (playerCount < NUM_OF_PLAYERS + 1){
         std::string name;
         std::cout << "Enter a name for player " << playerCount << std::endl;
@@ -105,12 +112,15 @@ void playGame(){
         std::cin >> name;
         std::cout << std::endl;
 
+        // Check end of file
         if (std::cin.eof()){
-            std::cout << "Quitting the game. See you again" << std::endl;
-            exit(0);
+            quitGame();
         }
+        // Validate input
         else if (isNameValid(name)){
+            // Increase count by one
             playerCount++;
+            // Add name to the name vector
             playerNames.push_back(name);
         }
         else {
@@ -138,11 +148,17 @@ void loadGame(){
  * Quit the game by modifying the "quit" value
  * @param quit : state of the menu
  */
-void quitGame(bool & quit){
+void quitGame(){
+    std::cout << std::endl;
     std::cout << "Quitting the game. See you again!" << std::endl;
-    quit = true;
+    exit(0);
 }
 
+/**
+ * Check if a player's name is valid
+ * @param name
+ * @return valid: true if valid, false if invalid
+ */
 bool isNameValid(const std::string & name){
     bool valid = true;
     if (name.empty()){
