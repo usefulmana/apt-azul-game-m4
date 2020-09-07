@@ -1,5 +1,8 @@
+
 #ifndef COSC_ASSIGN_TWO_TYPES
 #define COSC_ASSIGN_TWO_TYPES
+
+#define NUM_OF_PLAYERS 2
 
 // A game lasts exactly 5 rounds
 #define MAX_GAME_ROUNDS 5
