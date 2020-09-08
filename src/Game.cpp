@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "utils.h"
 
 Game::Game() {}
 
@@ -18,3 +19,6 @@ std::vector<Player *> Game::getPlayers() {
     return players;
 }
 
+void Game::save(const string &fileName, std::vector<std::string> vector) {
+    writeMultipleStrToFile(fileName, vector);
+}

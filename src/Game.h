@@ -12,7 +12,7 @@ public:
     ~Game();
 
     // Save the Game
-    void save();
+    void save(const std::string & fileName, std::vector<std::string> vector);
 
     // Save the Game
     void load(Game game);

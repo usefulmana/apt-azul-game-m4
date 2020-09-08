@@ -119,10 +119,13 @@ void playGame() {
     // Create a save file
     const std::string datetime = getDateTime();
 
-    // TODO Write Tile Bag to saved file
-    // Write players' names to file
+    // A string vector to save all savedInputs
+    std::vector<std::string> savedInputs;
+
+    // TODO Add tile Bag to input vector
+    // Add players' names to file
     for (auto & player: game->getPlayers()){
-        writeToFile(datetime, player->getName());
+        savedInputs.push_back(player->getName());
     }
 
 
@@ -162,15 +165,22 @@ void playGame() {
 
                     if (input.substr(0, 4) == "turn"){
                         // TODO execute the command
-                        // Save command
-                        writeToFile(datetime, input);
+                        // Add input to input vector
+                        savedInputs.push_back(input);
                         std::cout << "Turn successful." << std::endl;
                     }
                     else if (input.substr(0, 4) == "save"){
                         int pos = input.find(' ');
-                        const std::string newName = input.substr(pos + 1) + '-' + datetime  ;
-                        renameAFile(datetime, newName);
-                        std::cout << "Saved to " << newName << std::endl;
+
+                        // Add datetime to the end of the file name to avoid collision
+                        std::string fileName = input.substr(pos + 1);
+
+                        // Save game
+                        game->save(fileName, savedInputs);
+
+                        std::cout << "Saved to " << fileName << std::endl;
+
+                        // Quit game after saving
                         quitGame();
                     }
                     validInput = true;

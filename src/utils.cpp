@@ -96,6 +96,20 @@ void writeToFile(const std::string & fileName, const std::string & str){
 }
 
 /**
+ * Write a vector of strings to a file
+ * @param fileName : target file's name
+ * @param str : string vector to be written
+ */
+void writeMultipleStrToFile(const std::string & fileName, std::vector<std::string> vector){
+    std::ofstream file;
+    file.open(fileName);
+    for (auto & str: vector){
+        file << str + '\n';
+    }
+    file.close();
+}
+
+/**
  * Delete a file
  * @param fileName: target file's name
  */
