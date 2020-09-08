@@ -116,10 +116,7 @@ void playGame() {
     std::cout << "Let's Play!" << std::endl;
     std::cout << std::endl;
 
-    // Create a save file
-    const std::string datetime = getDateTime();
-
-    // A string vector to save all savedInputs
+    // A string vector to save all inputs
     std::vector<std::string> savedInputs;
 
     // TODO Add tile Bag to input vector
@@ -158,6 +155,12 @@ void playGame() {
 
                 std::getline(std::cin >> std::ws, input);
 
+                // Check EOF
+                if (std::cin.eof()){
+                    quitGame();
+                }
+
+                // Check for errors
                 std::vector<std::string> errors = checkInput(input);
 
                 // Check if there is any error
@@ -168,6 +171,9 @@ void playGame() {
                         // Add input to input vector
                         savedInputs.push_back(input);
                         std::cout << "Turn successful." << std::endl;
+
+                        // End input loop
+                        validInput = true;
                     }
                     else if (input.substr(0, 4) == "save"){
                         int pos = input.find(' ');
@@ -180,10 +186,8 @@ void playGame() {
 
                         std::cout << "Saved to " << fileName << std::endl;
 
-                        // Quit game after saving
-                        quitGame();
                     }
-                    validInput = true;
+
                 } else {
                     std::cout << "Invalid Input!" << std::endl;
                     std::cout << "Error(s): " << std::endl;
@@ -206,9 +210,6 @@ void playGame() {
     std::cout << "=== Game Over ===" << std::endl;
     std::cout << "=== Scoreboard ===" << std::endl;
     // TODO RESULT
-
-    // delete temp saved game
-    deleteAFile(datetime);
 
     // delete objects
     delete game;
@@ -257,7 +258,7 @@ std::vector<Player *> getPlayers() {
     int playerCount = 1;
 
     // End loop when num of players exceeds the ceiling
-    while (playerCount < NUM_OF_PLAYERS + 1) {
+    while (playerCount <= NUM_OF_PLAYERS) {
         std::string name;
         std::cout << "Enter a name for player " << playerCount << std::endl;
         std::cout << "> ";
