@@ -2,6 +2,7 @@
 #define COSC_ASSIGN_TWO_GAME
 
 #include "Player.h"
+#include <vector>
 
 class Game
 {
@@ -26,12 +27,13 @@ public:
     void endGame(Player player, Player player2);
 
     // Add Player
-    void addPlayer(Player player);
+    void addPlayers(std::vector<Player*> p);
 
     // Get Player
-    void getPlayer(string id);
+    std::vector<Player*> getPlayers();
 
 private:
+    std::vector<Player*> players;
 };
 
 #endif // COSC_ASSIGN_TWO_GAME
