@@ -23,13 +23,10 @@ bool isNameValid(const std::string &name);
 
 int main() {
     showMenu();
-
-    // Test script. Delete before submission
-//    std::string test = "turn 0 R 3";
-//    std::vector<std::string> errors = checkInput(test);
-//    for (auto & str: errors){
-//        std::cout << str << std::endl;
-//    }
+    // Test Script. Delete bf submission
+//    const std::string datetime = getDateTime();
+//    writeToFile(datetime, "World");
+//    deleteAFile(datetime);
     return EXIT_SUCCESS;
 }
 
@@ -119,6 +116,14 @@ void playGame() {
     std::cout << "Let's Play!" << std::endl;
     std::cout << std::endl;
 
+    // Create a save file
+    const std::string datetime = getDateTime();
+
+    // TODO Write Tile Bag to saved file
+    // Write players' names to file
+    for (auto & player: game->getPlayers()){
+        writeToFile(datetime, player->getName());
+    }
 
 
     // Variable to store turn
@@ -137,32 +142,45 @@ void playGame() {
 
             bool validInput = false;
 
+            std::cout << "To Play: turn <factory> <color> <row>" << std::endl;
+            std::cout << "To Save: save <filename>" << std::endl;
 
             while (!validInput) {
 
                 // Get user input
                 std::string input;
 
-                std::cout << "Your input (turn <factory> <color> <row>):" << std::endl;
+                std::cout << "Your input:" << std::endl;
                 std::cout << "> ";
 
                 std::getline(std::cin >> std::ws, input);
 
                 std::vector<std::string> errors = checkInput(input);
 
-                // Check end of file
+                // Check if there is any error
                 if (errors.capacity() == 0) {
-                    // TODO execute the command
-                    std::cout << "Turn successful." << std::endl;
+
+                    if (input.substr(0, 4) == "turn"){
+                        // TODO execute the command
+                        // Save command
+                        writeToFile(datetime, input);
+                        std::cout << "Turn successful." << std::endl;
+                    }
+                    else if (input.substr(0, 4) == "save"){
+                        int pos = input.find(' ');
+                        const std::string newName = input.substr(pos + 1) + '-' + datetime  ;
+                        renameAFile(datetime, newName);
+                        std::cout << "Saved to " << newName << std::endl;
+                        quitGame();
+                    }
                     validInput = true;
                 } else {
                     std::cout << "Invalid Input!" << std::endl;
                     std::cout << "Error(s): " << std::endl;
 
-                    for (auto & str : errors){
-                        std::cout << "- " << str << std::endl;
+                    for (auto & error : errors){
+                        std::cout << "- " << error << std::endl;
                     }
-
                     std::cout << "Please try again " << std::endl;
                     std::cout << std::endl;
                 }
@@ -176,10 +194,13 @@ void playGame() {
     }
 
     std::cout << "=== Game Over ===" << std::endl;
-    std::cout << "=== Score Boards ===" << std::endl;
+    std::cout << "=== Scoreboard ===" << std::endl;
     // TODO RESULT
 
-    // delete
+    // delete temp saved game
+    deleteAFile(datetime);
+
+    // delete objects
     delete game;
 }
 
@@ -191,12 +212,13 @@ void loadGame() {
 }
 
 /**
- * Quit the game by modifying the "quit" value
- * @param quit : state of the menu
+ * Quit the game
  */
 void quitGame() {
     std::cout << std::endl;
     std::cout << "Quitting the game. See you again!" << std::endl;
+
+    // Quit
     exit(0);
 }
 

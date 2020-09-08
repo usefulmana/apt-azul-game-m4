@@ -17,3 +17,4 @@ void Game::addPlayers(std::vector<Player *> p) {
 std::vector<Player *> Game::getPlayers() {
     return players;
 }
+
