@@ -21,8 +21,36 @@ std::vector<Player *> getPlayers();
 
 bool isNameValid(const std::string &name);
 
-int main() {
-    showMenu();
+void engageTestMode(char* fileName);
+
+int main(int argc, char ** argv) {
+    // Check num of argument
+    if (argc == 1){
+        // No additional arg => show menu
+        showMenu();
+    }
+    else if (argc == 3){
+        // 2 additional args => test mode
+        const std::string flag = "-t";
+        if (argv[1] == flag){
+            if (checkIfFileExists(argv[2])){
+                engageTestMode(argv[2]);
+            }
+            else {
+                std::cout << "No such file exists!" << std::endl;
+            }
+
+        }
+        else {
+            std::cout << "Wrong flag" << std::endl;
+        }
+    }
+    else {
+        std::cout << "Invalid number of arguments" << std::endl;
+        std::cout << "./azul to run" << std::endl;
+        std::cout << "./azul -t <testfile> to engage test mode" << std::endl;
+    }
+
     // Test Script. Delete bf submission
 //    const std::string datetime = getDateTime();
 //    writeToFile(datetime, "World");
@@ -283,3 +311,6 @@ std::vector<Player *> getPlayers() {
     return players;
 }
 
+void engageTestMode(char* fileName){
+    std::cout << "Engaged Test Mode" << std::endl;
+}

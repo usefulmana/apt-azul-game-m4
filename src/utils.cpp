@@ -130,3 +130,8 @@ void deleteAFile(const std::string & fileName){
 void renameAFile(const std::string & oldName, const std::string & newName){
     std::rename(oldName.c_str(), newName.c_str());
 }
+
+bool checkIfFileExists(const char* file){
+    std::ifstream f(file);
+    return f.good();
+}
