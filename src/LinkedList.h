@@ -1,167 +1,134 @@
 #ifndef LINKED_LIST_H
 #define LINKED_LIST_H
-#include "Node.h"
 
-template <typename T>
-class LinkedList
-{
-    public:
-        LinkedList(){
-            
-            tail = nullptr;
-            length = 0;
+template<class T>
+struct Node {
+    T data;
+    Node<T> *next;
+};
+
+template<class T>
+class LinkedList {
+
+private:
+    Node<T> *head;
+    int length;
+
+public:
+    LinkedList() {
+        head = nullptr;
+        length = 0;
+    }
+
+    ~LinkedList() {
+        Node<T> *temp = head;
+        while (temp->next != nullptr) {
+            Node<T> *current = temp->next;
+            delete temp;
+            temp = current;
         }
+    }
 
-        ~LinkedList(){
-            Node<T>* temp = head;
-            
+    void addBack(T data){
+        auto * node = new Node<T>;
+        node->data = data;
+        node->next = nullptr;
+        if (!head){
+            head = node;
+        }else {
+            auto * tail = head;
+            while (tail->next) tail = tail-> next;
+            tail->next = node;
+        }
+        length++;
+    }
 
-            while(temp->getNext() != nullptr){
-                Node<T>* current = temp->getNext();
+    bool isEmpty(){
+        return length == 0;
+    }
+
+    void addFront(T data){
+        auto * newNode = new Node<T>();
+        newNode->data = data;
+        newNode->next = head;
+        head = newNode;
+        length++;
+    }
+
+    //Retrieve a node at the required position
+    T get(int index){
+        T result;
+        if (index == 0){
+            result = head->data;
+        }
+        else {
+            auto * curr = head;
+            for (int i = 0; i < index; ++i) {
+                curr = curr->next;
+            }
+            result = curr->data;
+        }
+        return result;
+    }
+
+    void popFront(){
+        if (head){
+            if (head->next){
+                Node<T> * temp = head;
+                head = head->next;
                 delete temp;
-                temp = current;
             }
-        }
-
-        //Retrieve a node at the required position
-        Node<T>* getNode(int index){
-            if(length == 0 || index > length || index < 0){
-                 return(nullptr);
-            }
-
-            Node<T>* current = head;
-            for(int i = 1; i < index; i++){
-                current = current->getNext();
-            }
-
-            return current;
-        }
-
-
-        //Retrieve the length of the list at point required
-        int getLength(){
-            return(length);
-        }
-
-        //Add to Head
-        void addHead(T value){
-
-            Node<T>* newNode = new Node<T>(value);
-            newNode->currNode = value;
-            newNode->nextNode = head;
-            head = newNode;
-            //return value;
-            
-            //Node<T>* temp = new Node<T>(value);
-            
-            
-           /*if (head == NULL){
-                head = new Node<T>(value);
-            }
-             
-            else
-            {
-                Node<T>* temp = new Node<T>(value);
-                temp->setNode(value); 
-                head->setNext(temp);
-                head = temp;
-            }*/
-
-
-                /*if(isEmpty())
-                {
-                    head = temp;
-                }
-                
-                else {
-                    temp->setNext(head);
-                    head = temp;
-                }
-
-            length++;*/
-        }
-
-        //Add to Tail
-      
-        void addTail(T value){
-
-                Node<T>* newNode = new Node<T>(value);
-                newNode->setNode(value);
-                newNode->setNext(NULL);
-
-                Node<T>* cur = head;
-                while(cur) {
-                    if(cur->getNext() == NULL) {
-                        cur->setNext(newNode);
-                        return;
-                    }
-                    cur = cur->getNext();
-	}
-
-
-            /*if (head == NULL){
-                head = new Node<T>(value);
-            }
-             
-            else
-            {
-                Node<T>* temp = new Node<T>(value);
-                temp->setNode(value); 
-                head->setNext(temp);
-                head = temp;
-            }
-           if(isEmpty()){
-                return;
-            }
-            
             else {
-                Node<T>* temp = new Node<T>(value);
-                Node<T>* nHead = head;
-
-                while(nHead->getNext() != nullptr){
-                    nHead = nHead->getNext();
+                std::cout << "HERE" << std::endl;
+                delete head;
+                head = nullptr;
             }
-                
-                nHead->setNext(temp);
-            }
-
-            length++;*/
-        }
-
-        //Remove from front of queue
-        
-        bool removeFront()
-        {
-        if(isEmpty()){
-            return(false);
-        }
-        
-        else if(length == 1){
-            delete head;
-            head = nullptr;
-            length = 0;
-        }
-        
-        else{
-            Node<T>* temp = head;
-            temp = temp->getNext();
-            delete head;
-            head = temp;
             length--;
         }
-
-        return(true);
+        else {
+            throw std::runtime_error("Called popFront() when the list is empty");
         }
 
-        //Check if there are any nodes in the list
-     
-        bool isEmpty(){
-        return(length == 0);
-}
+    }
 
-    private:
-        Node<T>* head;
-        Node<T>* tail;
-        int length;
+    void deleteNode(Node<T> * node){
+        if (head == node){
+            if (head->next == nullptr){
+                head == nullptr;
+            }
+            else {
+                head->data = head->next->data;
+                node = head->next;
+
+                head->next = head->next->next;
+
+                delete node;
+            }
+            length--;
+        }
+        else {
+            Node<T> * prev = head;
+            while(prev->next != nullptr && prev->next != node){
+                prev = prev->next;
+            }
+            if (prev->next == nullptr){
+                std::cout << "This value does not exist in the list" << std::endl;
+            }
+
+            prev->next = prev->next->next;
+
+            delete node;
+            length--;
+        }
+    }
+
+
+    //Retrieve the length of the list at point required
+    int getLength() {
+        return length;
+    }
+
+
 };
+
 #endif

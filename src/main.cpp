@@ -4,7 +4,6 @@
 #include <string>
 #include "Types.h"
 #include "LinkedList.h"
-#include "Node.h"
 
 [[noreturn]] void showMenu();
 void showCredits();
@@ -15,17 +14,16 @@ bool isNameValid(const std::string & name);
 
 int main() {
     //showMenu();
-    LinkedList<int>* linkedlist =  new LinkedList<int>();
-    
-    linkedlist->addHead(3);
-    //linkedlist->addTail('A');
-    
+    auto* linkedList =  new LinkedList<int>();
+    linkedList->addBack(3);
+    linkedList->addBack(5);
+    linkedList->addBack(7);
+    linkedList->addFront(2);
+    for (int i = 0; i < linkedList->getLength(); ++i) {
+        std::cout << linkedList->get(i) << std::endl;
+    }
 
-    std::cout << linkedlist->getNode(0)->getValue() << std::endl;
-
-    delete linkedlist;
-    linkedlist->~LinkedList();
-
+    delete linkedList;
     
     return EXIT_SUCCESS;
 }
