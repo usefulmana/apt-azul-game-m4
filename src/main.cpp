@@ -3,6 +3,8 @@
 #include <vector>
 #include <string>
 #include "Types.h"
+#include "LinkedList.h"
+#include "Node.h"
 
 [[noreturn]] void showMenu();
 void showCredits();
@@ -12,7 +14,19 @@ void quitGame();
 bool isNameValid(const std::string & name);
 
 int main() {
-    showMenu();
+    //showMenu();
+    LinkedList<int>* linkedlist =  new LinkedList<int>();
+    
+    linkedlist->addHead(3);
+    //linkedlist->addTail('A');
+    
+
+    std::cout << linkedlist->getNode(0)->getValue() << std::endl;
+
+    delete linkedlist;
+    linkedlist->~LinkedList();
+
+    
     return EXIT_SUCCESS;
 }
 

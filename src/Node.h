@@ -5,14 +5,36 @@ template <class T>
 class Node{
 
     public:
-        Node(T value);
-        T getValue();
-        void setNext(Node* next);
-        Node<T>* getNext();
-
-    private:
+        
         T currNode;
         Node* nextNode;
+
+        Node(T value){
+        currNode = value;
+        nextNode = nullptr;
+        }
+
+        
+        T getValue(){
+         return(currNode);
+        }
+
+        void setNode(T next){
+            currNode = next;
+        }
+
+        
+        void setNext(Node* next){
+            nextNode = next;
+        }
+
+        
+        Node<T>* getNext(){
+            return(nextNode);
+        }
+
+    
+       
 
 };
 
