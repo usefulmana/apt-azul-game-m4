@@ -21,15 +21,40 @@ std::vector<Player *> getPlayers();
 
 bool isNameValid(const std::string &name);
 
-int main() {
-    showMenu();
+void engageTestMode(char* fileName);
 
-    // Test script. Delete before submission
-//    std::string test = "turn 0 R 3";
-//    std::vector<std::string> errors = checkInput(test);
-//    for (auto & str: errors){
-//        std::cout << str << std::endl;
-//    }
+int main(int argc, char ** argv) {
+    // Check num of argument
+    if (argc == 1){
+        // No additional arg => show menu
+        showMenu();
+    }
+    else if (argc == 3){
+        // 2 additional args => test mode
+        const std::string flag = "-t";
+        if (argv[1] == flag){
+            if (checkIfFileExists(argv[2])){
+                engageTestMode(argv[2]);
+            }
+            else {
+                std::cout << "No such file exists!" << std::endl;
+            }
+
+        }
+        else {
+            std::cout << "Wrong flag" << std::endl;
+        }
+    }
+    else {
+        std::cout << "Invalid number of arguments" << std::endl;
+        std::cout << "./azul to run" << std::endl;
+        std::cout << "./azul -t <testfile> to engage test mode" << std::endl;
+    }
+
+    // Test Script. Delete bf submission
+//    const std::string datetime = getDateTime();
+//    writeToFile(datetime, "World");
+//    deleteAFile(datetime);
     return EXIT_SUCCESS;
 }
 
@@ -119,6 +144,14 @@ void playGame() {
     std::cout << "Let's Play!" << std::endl;
     std::cout << std::endl;
 
+    // A string vector to save all inputs
+    std::vector<std::string> savedInputs;
+
+    // TODO Add tile Bag to input vector
+    // Add players' names to file
+    for (auto & player: game->getPlayers()){
+        savedInputs.push_back(player->getName());
+    }
 
 
     // Variable to store turn
@@ -137,32 +170,59 @@ void playGame() {
 
             bool validInput = false;
 
+            std::cout << "To Play: turn <factory> <color> <row>" << std::endl;
+            std::cout << "To Save: save <filename>" << std::endl;
 
             while (!validInput) {
 
                 // Get user input
                 std::string input;
 
-                std::cout << "Your input (turn <factory> <color> <row>):" << std::endl;
+                std::cout << "Your input:" << std::endl;
                 std::cout << "> ";
 
                 std::getline(std::cin >> std::ws, input);
 
+                // Check EOF
+                if (std::cin.eof()){
+                    quitGame();
+                }
+
+                // Check for errors
                 std::vector<std::string> errors = checkInput(input);
 
-                // Check end of file
+                // Check if there is any error
                 if (errors.capacity() == 0) {
-                    // TODO execute the command
-                    std::cout << "Turn successful." << std::endl;
-                    validInput = true;
+
+                    if (input.substr(0, 4) == "turn"){
+                        // TODO execute the command
+                        // Add input to input vector
+                        savedInputs.push_back(input);
+                        std::cout << "Turn successful." << std::endl;
+
+                        // End input loop
+                        validInput = true;
+                    }
+                    else if (input.substr(0, 4) == "save"){
+                        int pos = input.find(' ');
+
+                        // Add datetime to the end of the file name to avoid collision
+                        std::string fileName = input.substr(pos + 1);
+
+                        // Save game
+                        game->save(fileName, savedInputs);
+
+                        std::cout << "Saved to " << fileName << std::endl;
+
+                    }
+
                 } else {
                     std::cout << "Invalid Input!" << std::endl;
                     std::cout << "Error(s): " << std::endl;
 
-                    for (auto & str : errors){
-                        std::cout << "- " << str << std::endl;
+                    for (auto & error : errors){
+                        std::cout << "- " << error << std::endl;
                     }
-
                     std::cout << "Please try again " << std::endl;
                     std::cout << std::endl;
                 }
@@ -176,10 +236,10 @@ void playGame() {
     }
 
     std::cout << "=== Game Over ===" << std::endl;
-    std::cout << "=== Score Boards ===" << std::endl;
+    std::cout << "=== Scoreboard ===" << std::endl;
     // TODO RESULT
 
-    // delete
+    // delete objects
     delete game;
 }
 
@@ -191,12 +251,13 @@ void loadGame() {
 }
 
 /**
- * Quit the game by modifying the "quit" value
- * @param quit : state of the menu
+ * Quit the game
  */
 void quitGame() {
     std::cout << std::endl;
     std::cout << "Quitting the game. See you again!" << std::endl;
+
+    // Quit
     exit(0);
 }
 
@@ -225,7 +286,7 @@ std::vector<Player *> getPlayers() {
     int playerCount = 1;
 
     // End loop when num of players exceeds the ceiling
-    while (playerCount < NUM_OF_PLAYERS + 1) {
+    while (playerCount <= NUM_OF_PLAYERS) {
         std::string name;
         std::cout << "Enter a name for player " << playerCount << std::endl;
         std::cout << "> ";
@@ -250,3 +311,6 @@ std::vector<Player *> getPlayers() {
     return players;
 }
 
+void engageTestMode(char* fileName){
+    std::cout << "Engaged Test Mode" << std::endl;
+}
