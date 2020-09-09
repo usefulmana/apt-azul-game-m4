@@ -1,107 +1,110 @@
-#include<iostream>
+#include "LinkedList.h"
 
-class LinkedList {
+//Constructor
+template <typename T>
+LinkedList<T>::LinkedList(){
+  head = nullptr;
+  length = 0;
+}
 
-	//the Node for the list
-    struct Node {
-		char currNode;
-		Node *nextNode;
-	};
+//Deconstructor
+template <typename T>
+LinkedList<T>::~LinkedList(){
+  Node<T>* temp = head;
 
-	// Constructor
-	LinkedList() {
-		head = NULL;
-		tail = NULL;
-	}
+  while(temp->getNext() != nullptr){
+    Node<T>* current = temp->getNext();
+    delete temp;
+    temp = current;
+  }
 
-	// Deconstructor
-	~LinkedList() {
-		Node *nextNode = head;
+}
 
-		while (nextNode) {
-			Node *deleteMe = nextNode;
-			nextNode = nextNode->nextNode;
-			delete deleteMe; //please
+//Get a Node
+template <typename T>
+Node<T>* LinkedList<T>::getNode(int index){
+  if(length == 0 || index > length || index < 1){
+    return(nullptr);
+  }
+
+  Node<T>* current = head;
+
+    for(int i = 1; i < index; i++){
+      current = current->getNext();
+    }
+
+  return(current);
+}
+
+//Retrieve length of Node
+template <typename T>
+int LinkedList<T>::getLength(){
+  return(length);
+}
+
+//Add to Head
+template <typename T>
+void LinkedList<T>::addHead(T value){
+	Node<T>* temp = new Node<T>(value);
+		
+		if(isEmpty()){
+			head = temp;
 		}
-	}
-
-	// Adds the element to the front of the list
-	bool addHeadNode(char currNode) {
-		Node *newNode = new Node();
-		newNode->currNode = currNode;
-		newNode->nextNode = NULL;
-
-		if (tail == NULL) {
-			tail = newNode;
+		
+		else {
+			temp->setNext(head);
+			head = temp;
 		}
+	length++;
+}
 
-		newNode->nextNode = head;
-		head = newNode;
+//Add to Tail
+template <typename T>
+void LinkedList<T>::addTail(T value){
+  if(isEmpty()){
+    return;
+  }
 
-		return true;
-	}
+  else {
+    Node<T>* temp = new Node<T>(value);
+    Node<T>* nHead = head;
 
-    //Adds the element to the end of the list
-	bool addNode(char currNode) {
-		if (tail == NULL) {
-			addHeadNode(currNode);
-		}
+    while(nHead->getNext() != nullptr){
+      nHead = nHead->getNext();
+    }
+      nHead->setNext(temp);
+  }
 
-		Node * newNode = new Node();
-		newNode->currNode = currNode;
-		newNode->nextNode = NULL;
+  length++;
+}
 
-		tail->nextNode = newNode;
-		tail = tail->nextNode;
+//Remove from front of queue
+template <typename T>
+bool LinkedList<T>::removeFront()
+{
+  if(isEmpty()){
+    return(false);
+  }
+  
+  else if(length == 1){
+    delete head;
+    head = nullptr;
+    length = 0;
+  }
+  
+  else{
+    Node<T>* temp = head;
+    temp = temp->getNext();
+    delete head;
+    head = temp;
+    length--;
+  }
+  
+  return(true);
+}
 
-		return true;
-	}
-
-    //Removes element
-    void remove(char key) {
-		char item = NULL;
-		Node * temp = head;
-
-		while (temp) {
-			if (temp->currNode == key) {
-				item = temp->currNode;
-				temp = temp->nextNode;
-			}
-			temp = temp->nextNode;
-		}
-	}
-
-	//Returns the value of the first item and deletes it
-	int removeHead() {
-        
-        // If the list is empty
-		if (head == NULL){
-			return 0;
-        }
-
-		Node *newNode = head;
-		int item = newNode->currNode;
-
-		head = head->nextNode;
-		delete newNode;
-		return item;
-	}
-
-    //Checks whether value is in the list
-	bool contains(char key) {
-		Node * temp = head;
-
-		while (temp->nextNode) {
-			if (temp->nextNode->currNode == key) {
-				return true;
-			}
-			temp = temp->nextNode;
-		}
-		return tail->currNode == key;
-	}
-
-    private:
-        Node * head;
-        Node * tail;
-
-};
+//Check if there are any nodes in the list
+template <typename T>
+bool LinkedList<T>::isEmpty(){
+  return(length == 0);
+}
