@@ -8,7 +8,7 @@
 #include "utils.h"
 #include "LinkedList.h"
 
-void showMenu();
+[[noreturn]] void showMenu();
 
 void showCredits();
 
