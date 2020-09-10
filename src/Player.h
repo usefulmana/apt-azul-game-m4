@@ -9,7 +9,7 @@ class Player
 {
 public:
     // Constructor/Desctructor
-    Player(string name, string id, string email);
+    Player(string name);
     ~Player();
 
     //Copy constructor to copy Player for saving
@@ -34,15 +34,15 @@ public:
     string getName();
 
     // id of player
-    string getId();
+    // string getId();
 
     // email of player
-    string getEmail();
+    // string getEmail();
 
 private:
     string name;
-    string id;
-    string email;
+//    string id;
+//    string email;
 
     // Score of player
     //vector<int> scores;

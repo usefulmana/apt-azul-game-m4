@@ -1,11 +1,12 @@
 #include "Player.h"
 
-Player::Player(string name, string id, string email) : name(name), id(id), email(email)
+Player::Player(string name)
 {
+    this->name = name;
     // Create score vector for player
 }
 
-Player::Player(Player &other) : name(other.name), id(other.id), email(other.email)
+Player::Player(Player &other) : name(other.name)
 {
 }
 
@@ -18,12 +19,12 @@ string Player::getName()
     return name;
 }
 
-string Player::getId()
-{
-    return id;
-}
-
-string Player::getEmail()
-{
-    return email;
-}
+//string Player::getId()
+//{
+//    return id;
+//}
+//
+//string Player::getEmail()
+//{
+//    return email;
+//}
