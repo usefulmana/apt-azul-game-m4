@@ -155,39 +155,44 @@ void playGame() {
  * This functional will load an Azul game from a file
  */
 void loadGame() {
-    // STEPS TO LOADING A GAME:
+   // STEPS TO LOADING A GAME:
+    
+    bool gameLoaded = false;
 
-    //     1. Ask for the file name
-            std::string fileName;
-            std::cout << "Enter Filename" << std::endl;
-            std::cin >> fileName;
-            std::ifstream file;
+    // Continue to request user for correct file name
+    while (gameLoaded == false) {
 
-            file.open(fileName);
+    //  1. Ask for the file name
+        std::string fileName;
+        std::cout << "Enter Filename" << std::endl;
+        std::cin >> fileName;
+        std::ifstream file;
 
+        file.open(fileName);
 
-    //     2. Check if file exists
-            bool validFile = false;
-            // Returns true if file exists
-            validFile = file.is_open();
+    //  2. Check if file exists
+        bool validFile = false;
+        // Returns true if file exists
+        validFile = file.is_open();
 
-            if (validFile == true){
+        if (validFile == true){
 
-    //         2a. If it does exist, read in the file contents
-                std::string line;
-                while (getline(file, line)) {
-                    std::cout << line << std::endl;
-                }
+    //  2a. If it does exist, read in the file contents
+            std::string line;
+            while (getline(file, line)) {
+                std::cout << line << std::endl;
+            }
+            gameLoaded = true;
 
     //         2b. Apply file contents to a Game object
     //         2c. Set up game with these parameters
-            }
-    //     3. If it doesnt exist, ask for new file name
-            else {
-                std::cout << "Invalid file name. Please try again" << std::endl;
-            }
+        }
 
-    //
+    //     3. If it doesnt exist, ask for new file name
+        else {
+            std::cout << "Invalid file name. Please try again" << std::endl;
+        }
+    }
 }
 
 
