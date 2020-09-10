@@ -4,6 +4,8 @@
 
 cd src
 
+sudo rm -rf obj
+
 # Compile
 sudo make
 

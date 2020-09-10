@@ -33,7 +33,16 @@ public:
     // Get Player
     std::vector<Player*> getPlayers();
 
-    void printTileBag();
+    void setTileBagAutomatically();
+
+    LinkedList<Tile *> * getTileBag();
+
+    void addFirstTileToCenter();
+
+    void setTileBagFromString(const std::string & line);
+
+    void fillFactories();
+
     void printFactories();
 
 private:

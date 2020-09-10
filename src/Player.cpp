@@ -4,6 +4,7 @@ Player::Player(std::string name)
 {
     this->name = name;
     this->score = 0;
+    this->brokenRowCount = 0;
 
     // Declare grid
     grid = new Tile*[MOSAIC_DIM];
@@ -79,17 +80,37 @@ void Player::printMosaic() {
 
     for (int i = 0; i < MOSAIC_DIM; ++i) {
         std::cout << i + 1 << ":";
+
+        // Print whitespaces
         for (int k = 0; k < MOSAIC_DIM - rowCount + 1; ++k) {
             std::cout << "  ";
         }
+        // Print unlaid row
         for (int j = 0; j < rowCount; ++j) {
             std::cout << unlaidRow[i][j].getName() << " ";
         }
         std::cout << "|| ";
+        // Print grid
         for (int m = 0; m < MOSAIC_DIM; ++m) {
             std::cout << grid[i][m].getName() << " ";
         }
         rowCount++;
         std::cout << std::endl;
+    }
+}
+
+void Player::printBrokenRow() {
+    std::cout << "broken: ";
+    for (int i = 0; i < BROKEN_ROW_SIZE; ++i) {
+        if (brokenRow[i].getName() != '1') std::cout << brokenRow[i].getName() << " ";
+    }
+    std::cout << std::endl;
+}
+
+void Player::addToBrokenRow(Tile tile) {
+    if (brokenRowCount < 7){
+        brokenRow[brokenRowCount] = tile;
+        std::cout << tile.getName() << std::endl;
+        brokenRowCount++;
     }
 }
