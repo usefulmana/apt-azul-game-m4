@@ -6,6 +6,7 @@
 #include "Game.h"
 #include "Player.h"
 #include "utils.h"
+#include "LinkedList.h"
 
 [[noreturn]] void showMenu();
 
@@ -48,7 +49,6 @@ int main(int argc, char ** argv) {
         std::cout << "./azul to run" << std::endl;
         std::cout << "./azul -t <testfile> to engage test mode" << std::endl;
     }
-
     return EXIT_SUCCESS;
 }
 
