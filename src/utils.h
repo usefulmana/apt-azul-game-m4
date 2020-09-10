@@ -21,5 +21,5 @@ void writeMultipleStrToFile(const std::string & fileName, std::vector<std::strin
 void deleteAFile(const std::string & fileName);
 void renameAFile(const std::string & oldName, const std::string & newName);
 bool checkIfFileExists(const char* file);
-
+void quitGame();
 #endif //A2_UTILS_H

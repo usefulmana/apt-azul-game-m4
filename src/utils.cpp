@@ -124,14 +124,30 @@ void deleteAFile(const std::string & fileName){
 
 /**
  * Rename a file
- * @param oldName
- * @param newName
+ * @param oldName: old name of the file
+ * @param newName: new name of the file
  */
 void renameAFile(const std::string & oldName, const std::string & newName){
     std::rename(oldName.c_str(), newName.c_str());
 }
 
+/**
+ * Check if a file exists
+ * @param file : file to check
+ * @return : true if the file exists, false if not
+ */
 bool checkIfFileExists(const char* file){
     std::ifstream f(file);
     return f.good();
+}
+
+/**
+ * Quit the game
+ */
+void quitGame() {
+    std::cout << std::endl;
+    std::cout << "Quitting the game. See you again!" << std::endl;
+
+    // Quit
+    exit(0);
 }
