@@ -3,6 +3,9 @@
 #define COSC_ASSIGN_TWO_PLAYER
 
 #include <string>
+#include "Tile.h"
+#include "Types.h"
+#include <iostream>
 
 class Player
 {
@@ -27,10 +30,15 @@ public:
 
     std::string getName();
 
+    void printMosaic();
 
 private:
     std::string name;
     int score;
+    int rowCount;
+    Tile ** grid;
+    Tile ** unlaidRow;
+//    Tile brokenRow[BROKEN_ROW_SIZE];
     // TODO BROKEN
 };
 

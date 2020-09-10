@@ -63,6 +63,7 @@ void Game::play() {
             std::cout << std::endl;
             std::cout << "Mosaic for " << player->getName() << ":" << std::endl;
             // TODO print mosaic
+            player->printMosaic();
             // TODO print broken
 
             bool validInput = false;

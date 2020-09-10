@@ -30,7 +30,6 @@ public:
     std::vector<Player*> getPlayers();
 
     void printTileBag();
-    void printMosaic();
     void printFactories();
 
 private:

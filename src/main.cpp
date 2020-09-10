@@ -15,9 +15,7 @@ void playGame();
 
 void loadGame();
 
-void quitGame();
-
-std::vector<Player *> getPlayers();
+std::vector<Player *> createPlayersFromUserInput();
 
 bool isNameValid(const std::string &name);
 
@@ -135,7 +133,8 @@ void playGame() {
 
     // Object Initialization
     Game *game = new Game();
-    game->addPlayers(getPlayers());
+    std::vector<Player *> players = createPlayersFromUserInput();
+    game->addPlayers(players);
 
     std::cout << "Let's Play!" << std::endl;
     std::cout << std::endl;
@@ -149,6 +148,7 @@ void playGame() {
 
     // delete objects
     delete game;
+
 }
 
 /**
@@ -176,7 +176,7 @@ bool isNameValid(const std::string &name) {
  * Create a player vector based on stdin
  * @return a vector of player objects
  */
-std::vector<Player *> getPlayers() {
+std::vector<Player *> createPlayersFromUserInput() {
     // A vector to store player objects
     std::vector<Player *> players;
 
@@ -193,6 +193,7 @@ std::vector<Player *> getPlayers() {
 
         // Check end of file
         if (std::cin.eof()) {
+
             quitGame();
         }
             // Validate input

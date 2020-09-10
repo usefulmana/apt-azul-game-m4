@@ -12,6 +12,7 @@ public:
     Tile();
     ~Tile();
     char getName();
+    void setName(const char& n);
 };
 
 
