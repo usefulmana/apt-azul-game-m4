@@ -3,49 +3,43 @@
 #define COSC_ASSIGN_TWO_PLAYER
 
 #include <string>
-typedef std::string string;
+#include "Tile.h"
+#include "Types.h"
+#include <iostream>
 
 class Player
 {
 public:
     // Constructor/Desctructor
-    Player(string name);
+    Player(std::string name);
     ~Player();
 
     //Copy constructor to copy Player for saving
     Player(Player &other);
 
     // Save score of round
-    void setScore(int score);
+    void addScore(int s);
 
-    // Get Final Score - get last element of vector
-    void getFinalScore();
+
+    int getScore();
 
     // Reset Score at end of game
     void resetScore();
 
-    //Print Player Information
-    string toString();
-
-
     //Getters/Setters
 
-    // name of player
-    string getName();
+    std::string getName();
 
-    // id of player
-    // string getId();
-
-    // email of player
-    // string getEmail();
+    void printMosaic();
 
 private:
-    string name;
-//    string id;
-//    string email;
-
-    // Score of player
-    //vector<int> scores;
+    std::string name;
+    int score;
+    int rowCount;
+    Tile ** grid;
+    Tile ** unlaidRow;
+//    Tile brokenRow[BROKEN_ROW_SIZE];
+    // TODO BROKEN
 };
 
 #endif // COSC_ASSIGN_TWO_PLAYER
