@@ -13,18 +13,21 @@ void quitGame();
 bool isNameValid(const std::string & name);
 
 int main() {
-    //showMenu();
-    auto* linkedList =  new LinkedList<int>();
+    
+    showMenu();
+    /*auto* linkedList =  new LinkedList<int>();
+    
     linkedList->addBack(3);
     linkedList->addBack(5);
     linkedList->addBack(7);
     linkedList->addFront(2);
+    linkedList -> popFront();
     for (int i = 0; i < linkedList->getLength(); ++i) {
         std::cout << linkedList->get(i) << std::endl;
     }
 
-    delete linkedList;
-    
+    delete linkedList;*/
+
     return EXIT_SUCCESS;
 }
 

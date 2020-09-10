@@ -15,11 +15,13 @@ private:
     int length;
 
 public:
+    //Constructor
     LinkedList() {
         head = nullptr;
         length = 0;
     }
 
+    //Deconstructor
     ~LinkedList() {
         Node<T> *temp = head;
         while (temp->next != nullptr) {
@@ -29,6 +31,7 @@ public:
         }
     }
 
+    //Add Node to the back of the list
     void addBack(T data){
         auto * node = new Node<T>;
         node->data = data;
@@ -43,16 +46,18 @@ public:
         length++;
     }
 
-    bool isEmpty(){
-        return length == 0;
-    }
-
+    //Add Node to the front of the list
     void addFront(T data){
         auto * newNode = new Node<T>();
         newNode->data = data;
         newNode->next = head;
         head = newNode;
         length++;
+    }
+
+    //Check whether list is empty
+    bool isEmpty(){
+        return length == 0;
     }
 
     //Retrieve a node at the required position
@@ -71,18 +76,20 @@ public:
         return result;
     }
 
+    //Remove item from front of the list
     void popFront(){
         if (head){
-            if (head->next){
-                Node<T> * temp = head;
-                head = head->next;
-                delete temp;
+           if (head->next){
+                Node<T> * temp = head->next;
+                delete head;
+                head = temp;
             }
             else {
                 std::cout << "HERE" << std::endl;
                 delete head;
                 head = nullptr;
             }
+
             length--;
         }
         else {
@@ -91,6 +98,7 @@ public:
 
     }
 
+    //Delete chosen Node
     void deleteNode(Node<T> * node){
         if (head == node){
             if (head->next == nullptr){
