@@ -2,7 +2,11 @@
 #define COSC_ASSIGN_TWO_GAME
 
 #include "Player.h"
+#include "LinkedList.h"
 #include <vector>
+#include "utils.h"
+#include <iostream>
+#include "Types.h"
 
 class Game
 {
@@ -35,6 +39,7 @@ public:
 private:
     std::vector<Player*> players;
     std::vector<std::string> savedInputs;
+    LinkedList<Tile*> * tileBag;
     Tile ** factories;
     std::vector<Tile*> center;
 };

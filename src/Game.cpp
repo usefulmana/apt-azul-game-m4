@@ -1,10 +1,7 @@
 #include "Game.h"
-#include "utils.h"
-#include <iostream>
-#include "Types.h"
+
 
 Game::Game() {
-
     // Declare factories
     factories = new Tile*[NUM_OF_FACTORIES];
     for (int i = 0; i < NUM_OF_FACTORIES; ++i) {
@@ -12,7 +9,16 @@ Game::Game() {
     }
 
     // TODO Fill Factories
-    // TODO Declare and Fill Tile Bag
+    // Declare n Fill Tile Bag
+    tileBag = new LinkedList<Tile*>();
+    tileBag->addBack(new Tile('F'));
+    for (int i = 0; i < 20; ++i) {
+        tileBag->addBack(new Tile('R'));
+        tileBag->addBack(new Tile('B'));
+        tileBag->addBack(new Tile('Y'));
+        tileBag->addBack(new Tile('U'));
+        tileBag->addBack(new Tile('L'));
+    }
 
 }
 
@@ -27,6 +33,9 @@ Game::~Game() {
         delete factories[i];
     }
     delete [] factories;
+
+    // Delete tile bag;
+    delete tileBag;
 }
 
 void Game::addPlayers(std::vector<Player *> p) {
@@ -45,7 +54,19 @@ void Game::save(const std::string &fileName, std::vector<std::string> vector) {
 
 void Game::play() {
 
-    // TODO Add tile Bag to input vector
+    //Add tile Bag to input vector
+    std::string bag;
+    for (int i = 0; i < 101; ++i) {
+        if (i == 100) {
+            bag += tileBag.get(i)->getName();
+        }
+        else {
+            bag += tileBag.get(i)->getName();
+            bag += " ";
+        }
+    }
+    savedInputs.push_back(bag);
+
     // Add players' names to file
     for (auto & player: players){
         savedInputs.push_back(player->getName());
