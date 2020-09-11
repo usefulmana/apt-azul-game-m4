@@ -74,6 +74,9 @@ void Player::resetScore() {
     score = 0;
 }
 
+/**
+ * Print out the mosaic
+ */
 void Player::printMosaic() {
 
     rowCount = 1;
@@ -99,6 +102,9 @@ void Player::printMosaic() {
     }
 }
 
+/**
+ * Print out the broken row
+ */
 void Player::printBrokenRow() {
     std::cout << "broken: ";
     for (int i = 0; i < BROKEN_ROW_SIZE; ++i) {
@@ -107,6 +113,10 @@ void Player::printBrokenRow() {
     std::cout << std::endl;
 }
 
+/**
+ * Add tile to broken row
+ * @param tile : tile to be added
+ */
 void Player::addToBrokenRow(Tile tile) {
     if (brokenRowCount < 7){
         brokenRow[brokenRowCount] = tile;

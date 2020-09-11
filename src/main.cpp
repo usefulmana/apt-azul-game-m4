@@ -6,7 +6,6 @@
 #include "Game.h"
 #include "Player.h"
 #include "utils.h"
-#include "LinkedList.h"
 
 [[noreturn]] void showMenu();
 

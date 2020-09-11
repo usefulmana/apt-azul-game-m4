@@ -7,8 +7,6 @@ Game::Game() {
     for (int i = 0; i < NUM_OF_FACTORIES; ++i) {
         factories[i] = new Tile[FACTORY_SIZE];
     }
-
-
 }
 
 Game::~Game() {
@@ -47,7 +45,6 @@ void Game::save(const std::string &fileName, std::vector<std::string> vector) {
 
 void Game::play() {
 
-
     //Add tile Bag to input vector
     std::string bag;
     for (int i = 0; i < 101; ++i) {
@@ -58,19 +55,13 @@ void Game::play() {
     // Add players' names to input vector
     for (auto &player: players) {
         savedInputs.push_back(player->getName());
-
-        // Add 'First' tile to first player's broken row
-//        if (tileBag->get(0)->getName() == 'F'){
-//            player->addToBrokenRow(*new Tile(tileBag->get(0)->getName()));
-//            tileBag->popFront();
-//        }
     }
 
-    // TODO Fill Factories and center
+    // Add first tile to center and fill factories
     addFirstTileToCenter();
     fillFactories();
 
-    // Variable to store turn
+    // Variable to store round
     int round = 1;
 
     // While game hasn't finished last round
@@ -90,10 +81,11 @@ void Game::play() {
 
             bool validInput = false;
 
+            // Instruction help
             std::cout << "To Play: turn <factory> <color> <row>" << std::endl;
             std::cout << "To Save: save <filename>" << std::endl;
 
-            // Exit if Invalid Input Entered
+            // Exit if Valid Input Entered
             while (!validInput) {
 
                 // Get user input
@@ -145,6 +137,8 @@ void Game::play() {
                     }
 
                 } else {
+
+                    // Notify users of errors
                     std::cout << "Invalid Input!" << std::endl;
                     std::cout << "Error(s): " << std::endl;
 
@@ -157,23 +151,60 @@ void Game::play() {
             }
             std::cout << std::endl;
         }
+
         // Next Round
         round++;
     }
 }
 
+/**
+ * Fill tile bag automatically in a pre-determined order
+ */
 void Game::setTileBagAutomatically() {
+    // Initialize the tile bag
     tileBag = new LinkedList<Tile *>();
+    // Add first tile to tile bag
     tileBag->addBack(new Tile('F'));
-    for (int i = 0; i < 20; ++i) {
+
+    // 10R, 0B, 5Y, 5U, 5L
+    for (int i = 0; i < 5; ++i) {
+        tileBag->addBack(new Tile('R'));
+        tileBag->addBack(new Tile('Y'));
+        tileBag->addBack(new Tile('U'));
+        tileBag->addBack(new Tile('L'));
+        tileBag->addBack(new Tile('R'));
+    }
+    // 0R, 10B, 5Y, 0U, 5L
+    for (int i = 0; i < 5; ++i) {
+        tileBag->addBack(new Tile('B'));
+        tileBag->addBack(new Tile('Y'));
+        tileBag->addBack(new Tile('B'));
+        tileBag->addBack(new Tile('L'));
+    }
+
+    // 10R, 10B, 5Y, 10U, 0L
+    for (int i = 0; i < 5; ++i) {
+        tileBag->addBack(new Tile('R'));
+        tileBag->addBack(new Tile('Y'));
+        tileBag->addBack(new Tile('U'));
+        tileBag->addBack(new Tile('U'));
         tileBag->addBack(new Tile('R'));
         tileBag->addBack(new Tile('B'));
+        tileBag->addBack(new Tile('B'));
+    }
+    // 0R, 0B, 5Y, 5U, 10L
+    for (int i = 0; i < 5; ++i) {
+        tileBag->addBack(new Tile('L'));
         tileBag->addBack(new Tile('Y'));
         tileBag->addBack(new Tile('U'));
         tileBag->addBack(new Tile('L'));
     }
 }
 
+/**
+ * Parse a string to get fill the tile bag wil tiles
+ * @param line : string to be parsed
+ */
 void Game::setTileBagFromString(const std::string &line) {
     tileBag = new LinkedList<Tile *>();
     for (size_t i = 0; i < line.length(); ++i) {
@@ -181,10 +212,17 @@ void Game::setTileBagFromString(const std::string &line) {
     }
 }
 
+/**
+ * return the tile bag
+ * @return : return the tile bag
+ */
 LinkedList<Tile *> * Game::getTileBag(){
     return tileBag;
 }
 
+/**
+ * Fill factories with tiles from the tile bag
+ */
 void Game::fillFactories() {
     for (int i = 0; i < NUM_OF_FACTORIES; ++i) {
         for (int j = 0; j < FACTORY_SIZE; ++j) {
@@ -194,13 +232,18 @@ void Game::fillFactories() {
     }
 }
 
+/**
+ * Print factories to console
+ */
 void Game::printFactories() {
+
+    // Print center
     std::cout << "0: ";
     for (size_t i = 0; i < center.size(); ++i) {
         std::cout << center[i]->getName() << ' ';
     }
     std::cout << std::endl;
-
+    // Print factories
     for (int i = 0; i < NUM_OF_FACTORIES; ++i) {
         std::cout << i + 1 << ": ";
         for (int j = 0; j < FACTORY_SIZE; ++j) {
@@ -210,6 +253,9 @@ void Game::printFactories() {
     }
 }
 
+/**
+ * Add first tile to Center
+ */
 void Game::addFirstTileToCenter() {
     center.push_back(new Tile(tileBag->get(0)->getName()));
     tileBag->popFront();
