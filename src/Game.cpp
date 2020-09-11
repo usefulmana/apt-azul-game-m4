@@ -67,91 +67,91 @@ void Game::play() {
     // While game hasn't finished last round
     while (round <= MAX_GAME_ROUNDS) {
         std::cout << "=== Start Round " << round << " ===" << std::endl;
+//        std::cout << areFactoriesEmpty() << std::endl;
+        // End round if center and factories r empty
+        while (!isCenterEmpty() && !areFactoriesEmpty()){
+            for (auto &player: players) {
+                std::cout << "TURN FOR PLAYER: " << player->getName() << std::endl;
+                std::cout << "Factories:" << std::endl;
+                printFactories();
+                std::cout << std::endl;
+                std::cout << "Mosaic for " << player->getName() << ":" << std::endl;
+                player->printMosaic();
+                player->printBrokenRow();
+                std::cout << std::endl;
 
-        // For all players
-        for (auto &player: players) {
-            std::cout << "TURN FOR PLAYER: " << player->getName() << std::endl;
-            std::cout << "Factories:" << std::endl;
-            printFactories();
-            std::cout << std::endl;
-            std::cout << "Mosaic for " << player->getName() << ":" << std::endl;
-            player->printMosaic();
-            player->printBrokenRow();
-            std::cout << std::endl;
+                bool validInput = false;
 
-            bool validInput = false;
+                // Instruction help
+                std::cout << "To Play: turn <factory> <color> <row>" << std::endl;
+                std::cout << "To Save: save <filename>" << std::endl;
 
-            // Instruction help
-            std::cout << "To Play: turn <factory> <color> <row>" << std::endl;
-            std::cout << "To Save: save <filename>" << std::endl;
+                // Exit if Valid Input Entered
+                while (!validInput) {
 
-            // Exit if Valid Input Entered
-            while (!validInput) {
+                    // Get user input
+                    std::string input;
 
-                // Get user input
-                std::string input;
+                    std::cout << "Your input:" << std::endl;
+                    std::cout << "> ";
 
-                std::cout << "Your input:" << std::endl;
-                std::cout << "> ";
+                    // Stores console input without leading whitespace
+                    std::getline(std::cin >> std::ws, input);
 
-                // Stores console input without leading whitespace
-                std::getline(std::cin >> std::ws, input);
+                    // Check EOF Character (^D)
+                    if (std::cin.eof()){
+                        quitGame();
+                    }
 
+                    // Check for errors
+                    std::vector<std::string> errors = checkInput(input);
 
-                // Check EOF Character (^D) 
-                if (std::cin.eof()){
-                    quitGame();
+                    // Check if there is any error
+                    if (errors.capacity() == 0) {
+
+                        // Returns substring of first 4 characters in input
+                        if (input.substr(0, 4) == "turn"){
+                            // TODO execute the command
+                            execute(input, player);
+                            // Add input to input vector
+                            savedInputs.push_back(input);
+                            std::cout << "Turn successful." << std::endl;
+                            std::cout << std::endl;
+                            // End input loop
+                            validInput = true;
+
+                        }
+                        else if (input.substr(0, 4) == "save"){
+                            // Find position of first whitespace
+                            int pos = input.find(' ');
+
+                            // Add datetime to the end of the file name to avoid collision
+
+                            // Return substring of everything following the whitespace
+                            std::string fileName = input.substr(pos + 1);
+
+                            // Save game
+                            save(fileName, savedInputs);
+
+                            std::cout << "Saved to " << fileName << std::endl;
+                        }
+
+                    } else {
+
+                        // Notify users of errors
+                        std::cout << "Invalid Input!" << std::endl;
+                        std::cout << "Error(s): " << std::endl;
+
+                        for (auto &error : errors) {
+                            std::cout << "- " << error << std::endl;
+                        }
+                        std::cout << "Please try again " << std::endl;
+                        std::cout << std::endl;
+                    }
                 }
-
-                // Check for errors
-                std::vector<std::string> errors = checkInput(input);
-
-                // Check if there is any error
-                if (errors.capacity() == 0) {
-
-                    // Returns substring of first 4 characters in input
-                    if (input.substr(0, 4) == "turn"){
-                        // TODO execute the command
-                        
-                        // Add input to input vector
-                        savedInputs.push_back(input);
-                        std::cout << "Turn successful." << std::endl;
-
-                        // End input loop
-                        validInput = true;
-
-                    }
-                    else if (input.substr(0, 4) == "save"){
-                        // Find position of first whitespace 
-                        int pos = input.find(' ');
-
-                        // Add datetime to the end of the file name to avoid collision
-
-                        // Return substring of everything following the whitespace
-                        std::string fileName = input.substr(pos + 1);
-
-                        // Save game
-                        save(fileName, savedInputs);
-
-                        std::cout << "Saved to " << fileName << std::endl;
-                    }
-
-                } else {
-
-                    // Notify users of errors
-                    std::cout << "Invalid Input!" << std::endl;
-                    std::cout << "Error(s): " << std::endl;
-
-                    for (auto &error : errors) {
-                        std::cout << "- " << error << std::endl;
-                    }
-                    std::cout << "Please try again " << std::endl;
-                    std::cout << std::endl;
-                }
+                std::cout << std::endl;
             }
-            std::cout << std::endl;
         }
-
         // Next Round
         round++;
     }
@@ -259,4 +259,131 @@ void Game::printFactories() {
 void Game::addFirstTileToCenter() {
     center.push_back(new Tile(tileBag->get(0)->getName()));
     tileBag->popFront();
+}
+
+/**
+ * Check if the center factory is empty
+ * @return true if empty, false if not
+ */
+bool Game::isCenterEmpty() {
+    return  center.empty();
+}
+
+/**
+ * Check if the factories are empty
+ * @return true if empty, false if not;
+ */
+bool Game::areFactoriesEmpty() {
+    int count = 0;
+    for (int i = 0; i < NUM_OF_FACTORIES; ++i) {
+        for (int j = 0; j < FACTORY_SIZE; ++j) {
+            if (factories[i][j].getName() == '\0'){
+                count++;
+            }
+        }
+    }
+    return count == 16;
+}
+
+void Game::execute(const std::string &command, Player * player) {
+
+}
+
+bool Game::isAFactoryEmpty(int factory) {
+    int count = 0;
+    for (int i = 0; i < FACTORY_SIZE; ++i) {
+        if (factories[factory][i].getName() == '\0'){
+            count++;
+        }
+    }
+    return count == 4;
+}
+
+/**
+ * Checking player's input
+ * @param input : input string to be checked
+ * @return : a vector containing errors of the player's input
+ */
+std::vector<std::string> Game::checkInput(std::string input) {
+    std::vector<std::string> result;
+    std::vector<std::string> inputArr = splitString(input, ' ');
+    std::string colors = "RYBLUF.";
+
+
+    // Check if entered num of args for save
+    if (inputArr.size() == 2){
+        // Check for save command
+        if (inputArr[0] != "save") {
+            result.push_back("Invalid input. Correct input = save. Your input = " + inputArr[0]);
+        }
+    }
+        // Check if entered num of args for turn
+    else if (inputArr.size() == 4){
+        // Check for turn command
+        if (inputArr[0] != "turn") {
+            result.push_back("Invalid input. Correct input = turn. Your input = " + inputArr[0]);
+        }
+
+        // Check Inputted Factory Number
+        try {
+            // Convert input from string to int
+            int factory = std::stoi(inputArr[1]);
+            if (factory < FIRST_FACTORY || factory > LAST_FACTORY) {
+                result.push_back("Invalid Factory #. Please enter an integer number for factories (0->5). Your input = "
+                                 + inputArr[1]);
+            }
+
+            if (isAFactoryEmpty(factory)){
+                result.push_back("The factory you have entered is empty. Your input = "
+                                 + inputArr[1]);
+            }
+            // Check Inputted Colour
+            size_t correctColor = colors.find(inputArr[2]);
+            if (correctColor == std::string::npos) {
+                result.push_back("Invalid color. Color should be R,Y,B,L,U. Your input: " + inputArr[2]);
+            }
+            else if (!tileExistsInAFactory(inputArr[2][0], factory)){
+                result.push_back("The tile you have chosen does not exist in the chosen factory.");
+            }
+        }
+        catch (std::exception const &e) {
+            result.push_back(
+                    "Invalid factory #. Please enter an integer number for factories (0->5). Your input = " +
+                    inputArr[1]);
+        }
+
+        // Check Inputted Storage Row
+        try {
+            // Convert input from string to int
+            int storageRow = std::stoi(inputArr[3]);
+            if (storageRow < FIRST_STORAGE_ROW || storageRow > LAST_STORAGE_ROW) {
+                result.push_back(
+                        "Invalid Storage #. Please enter an integer number for storage number (1->5). Your input = " + inputArr[3]);
+            }
+
+            // TODO Check if move is valid
+        }
+        catch (std::exception const &e) {
+            result.push_back(
+                    "Invalid Storage #. Please enter an integer number for storage number (1->5). Your input = " + inputArr[3]);
+        }
+
+
+    } else {
+        result.push_back(
+                "Wrong number of arguments or arguments are not separated by space or excessive whitespaces. "
+                "Your input = " + input);
+    }
+
+    return result;
+}
+
+bool Game::tileExistsInAFactory(const char &tile, int factory) {
+    bool exist = false;
+    for (int i = 0; i < FACTORY_SIZE; ++i) {
+        if (factories[factory][i].getName() == tile){
+            exist = true;
+        }
+    }
+    return exist;
 }
