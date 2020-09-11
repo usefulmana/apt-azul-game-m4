@@ -30,14 +30,18 @@ public:
 
     void printMosaic();
 
+    void printBrokenRow();
+
+    void addToBrokenRow(Tile tile);
+
 private:
     std::string name;
     int score;
     int rowCount;
     Tile ** grid;
     Tile ** unlaidRow;
-//    Tile brokenRow[BROKEN_ROW_SIZE];
-    // TODO BROKEN
+    Tile brokenRow[BROKEN_ROW_SIZE];
+    int brokenRowCount;
 };
 
 #endif // COSC_ASSIGN_TWO_PLAYER

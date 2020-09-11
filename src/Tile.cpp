@@ -18,3 +18,4 @@ Tile::Tile() {
 void Tile::setName(const char &n) {
     this->name = n;
 }
+

@@ -1,25 +1,19 @@
 #include "Game.h"
-#include "utils.h"
-#include <iostream>
-#include "Types.h"
+
 
 Game::Game() {
-
     // Declare factories
-    factories = new Tile*[NUM_OF_FACTORIES];
+    factories = new Tile *[NUM_OF_FACTORIES];
     for (int i = 0; i < NUM_OF_FACTORIES; ++i) {
         factories[i] = new Tile[FACTORY_SIZE];
     }
 
-    // TODO Fill Factories
-
-    // TODO Declare and Fill Tile Bag
 
 }
 
 Game::~Game() {
     // Delete players
-    for(auto & player: players){
+    for (auto &player: players) {
         delete player;
     }
 
@@ -27,12 +21,17 @@ Game::~Game() {
     for (int i = 0; i < NUM_OF_FACTORIES; ++i) {
         delete factories[i];
     }
-    delete [] factories;
+    delete[] factories;
+
+    // Delete tile bag;
+    delete tileBag;
 }
 
 void Game::addPlayers(std::vector<Player *> p) {
+
     // Add Player to back of Vector
     for(auto & player: p){
+
         players.push_back(player);
     }
 }
@@ -48,12 +47,28 @@ void Game::save(const std::string &fileName, std::vector<std::string> vector) {
 
 void Game::play() {
 
-    // TODO Add tile Bag to input vector
 
-    // Add players' names to file
-    for (auto & player: players){
-        savedInputs.push_back(player->getName());
+    //Add tile Bag to input vector
+    std::string bag;
+    for (int i = 0; i < 101; ++i) {
+        bag += tileBag->get(i)->getName();
     }
+    savedInputs.push_back(bag);
+
+    // Add players' names to input vector
+    for (auto &player: players) {
+        savedInputs.push_back(player->getName());
+
+        // Add 'First' tile to first player's broken row
+//        if (tileBag->get(0)->getName() == 'F'){
+//            player->addToBrokenRow(*new Tile(tileBag->get(0)->getName()));
+//            tileBag->popFront();
+//        }
+    }
+
+    // TODO Fill Factories and center
+    addFirstTileToCenter();
+    fillFactories();
 
     // Variable to store turn
     int round = 1;
@@ -66,12 +81,12 @@ void Game::play() {
         for (auto &player: players) {
             std::cout << "TURN FOR PLAYER: " << player->getName() << std::endl;
             std::cout << "Factories:" << std::endl;
-            // TODO print factories
+            printFactories();
             std::cout << std::endl;
             std::cout << "Mosaic for " << player->getName() << ":" << std::endl;
-            // TODO print mosaic
             player->printMosaic();
-            // TODO print broken
+            player->printBrokenRow();
+            std::cout << std::endl;
 
             bool validInput = false;
 
@@ -89,6 +104,7 @@ void Game::play() {
 
                 // Stores console input without leading whitespace
                 std::getline(std::cin >> std::ws, input);
+
 
                 // Check EOF Character (^D) 
                 if (std::cin.eof()){
@@ -111,6 +127,7 @@ void Game::play() {
 
                         // End input loop
                         validInput = true;
+
                     }
                     else if (input.substr(0, 4) == "save"){
                         // Find position of first whitespace 
@@ -131,7 +148,7 @@ void Game::play() {
                     std::cout << "Invalid Input!" << std::endl;
                     std::cout << "Error(s): " << std::endl;
 
-                    for (auto & error : errors){
+                    for (auto &error : errors) {
                         std::cout << "- " << error << std::endl;
                     }
                     std::cout << "Please try again " << std::endl;
@@ -143,4 +160,57 @@ void Game::play() {
         // Next Round
         round++;
     }
+}
+
+void Game::setTileBagAutomatically() {
+    tileBag = new LinkedList<Tile *>();
+    tileBag->addBack(new Tile('F'));
+    for (int i = 0; i < 20; ++i) {
+        tileBag->addBack(new Tile('R'));
+        tileBag->addBack(new Tile('B'));
+        tileBag->addBack(new Tile('Y'));
+        tileBag->addBack(new Tile('U'));
+        tileBag->addBack(new Tile('L'));
+    }
+}
+
+void Game::setTileBagFromString(const std::string &line) {
+    tileBag = new LinkedList<Tile *>();
+    for (size_t i = 0; i < line.length(); ++i) {
+        tileBag->addBack(new Tile(line[i]));
+    }
+}
+
+LinkedList<Tile *> * Game::getTileBag(){
+    return tileBag;
+}
+
+void Game::fillFactories() {
+    for (int i = 0; i < NUM_OF_FACTORIES; ++i) {
+        for (int j = 0; j < FACTORY_SIZE; ++j) {
+            factories[i][j] = *new Tile(tileBag->get(0)->getName());
+            tileBag->popFront();
+        }
+    }
+}
+
+void Game::printFactories() {
+    std::cout << "0: ";
+    for (size_t i = 0; i < center.size(); ++i) {
+        std::cout << center[i]->getName() << ' ';
+    }
+    std::cout << std::endl;
+
+    for (int i = 0; i < NUM_OF_FACTORIES; ++i) {
+        std::cout << i + 1 << ": ";
+        for (int j = 0; j < FACTORY_SIZE; ++j) {
+            std::cout << factories[i][j].getName() << ' ';
+        }
+        std::cout << std::endl;
+    }
+}
+
+void Game::addFirstTileToCenter() {
+    center.push_back(new Tile(tileBag->get(0)->getName()));
+    tileBag->popFront();
 }
