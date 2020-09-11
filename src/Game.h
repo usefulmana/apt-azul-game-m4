@@ -15,22 +15,22 @@ public:
     Game();
     ~Game();
 
-    // Save the Game
-    void save(const std::string & fileName, std::vector<std::string> vector);
-
     // Play
     void play();
 
     // Score
-    void score();
+    // void score();
 
     // Save the Game
-    void load(Game game);
+    void save(const std::string & fileName, std::vector<std::string> vector);
 
-    // Add Player
+    // Load the Game
+    void load(const std::string & fileName);
+
+    // Add Players
     void addPlayers(std::vector<Player*> p);
 
-    // Get Player
+    // Get All Players
     std::vector<Player*> getPlayers();
 
     void setTileBagAutomatically();
@@ -47,6 +47,7 @@ public:
 
 private:
     std::vector<Player*> players;
+    // Stores all Valid Turns
     std::vector<std::string> savedInputs;
     LinkedList<Tile*> * tileBag;
     Tile ** factories;

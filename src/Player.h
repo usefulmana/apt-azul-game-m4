@@ -20,14 +20,12 @@ public:
     // Save score of round
     void addScore(int s);
 
-
     int getScore();
 
     // Reset Score at end of game
     void resetScore();
 
     //Getters/Setters
-
     std::string getName();
 
     void printMosaic();

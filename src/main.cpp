@@ -31,14 +31,16 @@ int main(int argc, char ** argv) {
     else if (argc == 3){
         // 2 additional args => test mode
         const std::string flag = "-t";
+        
+        // If second argument is test flag
         if (argv[1] == flag){
+            // If File Exists
             if (checkIfFileExists(argv[2])){
                 engageTestMode(argv[2]);
             }
             else {
                 std::cout << "No such file exists!" << std::endl;
             }
-
         }
         else {
             std::cout << "Wrong flag" << std::endl;
@@ -79,7 +81,7 @@ int main(int argc, char ** argv) {
         if (std::cin.eof()) {
             quitGame();
         }
-            // Check fail conditions
+        // Check fail conditions
         else if (std::cin.fail() || choice < 0 || choice > 4) {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -158,7 +160,6 @@ void loadGame() {
     std::cout << "Loading Game" << std::endl;
 }
 
-
 /**
  * Check if a player's name is valid
  * @param name
@@ -193,10 +194,9 @@ std::vector<Player *> createPlayersFromUserInput() {
 
         // Check end of file
         if (std::cin.eof()) {
-
             quitGame();
         }
-            // Validate input
+        // Validate input
         else if (isNameValid(name)) {
             // Increase count by one
             playerCount++;
