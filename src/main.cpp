@@ -80,12 +80,14 @@ int main(int argc, char ** argv) {
         if (std::cin.eof()) {
             quitGame();
         }
+
         // Check fail conditions
         else if (std::cin.fail() || choice < 0 || choice > 4) {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cout << "Wrong Input. Please enter an integer number from 1 to 4" << std::endl;
             std::cout << std::endl;
+
         } else {
             if (choice == 1) {
                 playGame();
@@ -143,8 +145,8 @@ void playGame() {
     // Play the game
     game->play();
 
-    std::cout << "=== Game Over ===" << std::endl;
-    std::cout << "=== Scoreboard ===" << std::endl;
+    std::cout << "=== GAME OVER ===" << std::endl;
+    std::cout << "=== Final Scores: ===" << std::endl;
     // TODO RESULT
 
     // delete objects

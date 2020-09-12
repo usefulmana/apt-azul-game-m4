@@ -1,7 +1,8 @@
 #include "Player.h"
 
 Player::Player(std::string name)
-{
+{   
+    //Declare Variables
     this->name = name;
     this->score = 0;
     this->brokenRowCount = 0;
@@ -37,8 +38,7 @@ Player::Player(std::string name)
     }
 }
 
-Player::Player(Player &other) : name(other.name)
-{
+Player::Player(Player &other) : name(other.name){
 }
 
 Player::~Player()
@@ -57,8 +57,7 @@ Player::~Player()
 
 }
 
-std::string Player::getName()
-{
+std::string Player::getName(){
     return name;
 }
 
@@ -97,6 +96,8 @@ void Player::printMosaic() {
         for (int m = 0; m < MOSAIC_DIM; ++m) {
             std::cout << grid[i][m].getName() << " ";
         }
+        
+        //Increment Count
         rowCount++;
         std::cout << std::endl;
     }
