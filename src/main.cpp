@@ -6,7 +6,6 @@
 #include "Game.h"
 #include "Player.h"
 #include "utils.h"
-#include "LinkedList.h"
 
 [[noreturn]] void showMenu();
 
@@ -133,10 +132,10 @@ void playGame() {
     std::cout << "Starting a new Azul game" << std::endl;
     std::cout << std::endl;
 
-    // Object Initialization
+    // Game Initialization
     Game *game = new Game();
-    std::vector<Player *> players = createPlayersFromUserInput();
-    game->addPlayers(players);
+    game->addPlayers(createPlayersFromUserInput());
+    game->setTileBagAutomatically();
 
     std::cout << "Let's Play!" << std::endl;
     std::cout << std::endl;

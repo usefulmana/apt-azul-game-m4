@@ -4,6 +4,7 @@ Player::Player(std::string name)
 {
     this->name = name;
     this->score = 0;
+    this->brokenRowCount = 0;
 
     // Declare grid
     grid = new Tile*[MOSAIC_DIM];
@@ -73,23 +74,53 @@ void Player::resetScore() {
     score = 0;
 }
 
+/**
+ * Print out the mosaic
+ */
 void Player::printMosaic() {
 
     rowCount = 1;
 
     for (int i = 0; i < MOSAIC_DIM; ++i) {
         std::cout << i + 1 << ":";
+
+        // Print whitespaces
         for (int k = 0; k < MOSAIC_DIM - rowCount + 1; ++k) {
             std::cout << "  ";
         }
+        // Print unlaid row
         for (int j = 0; j < rowCount; ++j) {
             std::cout << unlaidRow[i][j].getName() << " ";
         }
         std::cout << "|| ";
+        // Print grid
         for (int m = 0; m < MOSAIC_DIM; ++m) {
             std::cout << grid[i][m].getName() << " ";
         }
         rowCount++;
         std::cout << std::endl;
+    }
+}
+
+/**
+ * Print out the broken row
+ */
+void Player::printBrokenRow() {
+    std::cout << "broken: ";
+    for (int i = 0; i < BROKEN_ROW_SIZE; ++i) {
+        if (brokenRow[i].getName() != '1') std::cout << brokenRow[i].getName() << " ";
+    }
+    std::cout << std::endl;
+}
+
+/**
+ * Add tile to broken row
+ * @param tile : tile to be added
+ */
+void Player::addToBrokenRow(Tile tile) {
+    if (brokenRowCount < 7){
+        brokenRow[brokenRowCount] = tile;
+        std::cout << tile.getName() << std::endl;
+        brokenRowCount++;
     }
 }

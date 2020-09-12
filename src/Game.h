@@ -2,7 +2,11 @@
 #define COSC_ASSIGN_TWO_GAME
 
 #include "Player.h"
+#include "LinkedList.h"
 #include <vector>
+#include "utils.h"
+#include <iostream>
+#include "Types.h"
 
 class Game
 {
@@ -29,13 +33,23 @@ public:
     // Get All Players
     std::vector<Player*> getPlayers();
 
-    void printTileBag();
+    void setTileBagAutomatically();
+
+    LinkedList<Tile *> * getTileBag();
+
+    void addFirstTileToCenter();
+
+    void setTileBagFromString(const std::string & line);
+
+    void fillFactories();
+
     void printFactories();
 
 private:
     std::vector<Player*> players;
     // Stores all Valid Turns
     std::vector<std::string> savedInputs;
+    LinkedList<Tile*> * tileBag;
     Tile ** factories;
     std::vector<Tile*> center;
 };
