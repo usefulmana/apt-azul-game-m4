@@ -2,6 +2,8 @@
 #include <limits>
 #include <vector>
 #include <string>
+#include <fstream>
+#include <cstring>
 #include "Types.h"
 #include "Game.h"
 #include "Player.h"
@@ -155,20 +157,56 @@ void playGame() {
  * This functional will load an Azul game from a file
  */
 void loadGame() {
+
+        // I CANNOT GET IT TO WORK READING IN SOMETHING FROM INPUT RIGHT NOW, SO LEAVE IT HARD CODED TO 
+        // BIN/TEST.TXT AND CONTINUE LIKE THAT. WE CAN WORK ON USER INPUT LATER
+
+        /*std::string fileName;
+        std::cout << "Enter the filename from which to load a game" << std::endl;
+        std::cin >> fileName;*/
+
+        //Open loaded file
+        std::ifstream loadFile;
+        loadFile.open ("bin/test.txt", std::ifstream::in);
+          
+        //If it exists  
+        if (loadFile.good()){ 
+        int newCount = 0;
+        std::string name;
+        std::vector<Player *> players;
+            
+            //Create 2 Players from first 2 lines of save file
+            do{
+                getline(loadFile, name);
+                players.push_back(new Player(name));
+                newCount++;
+            } while (newCount < 2);
+
+          }
+          
+        else{
+            std::cout << "Invalid file name. Please try again" << std::endl;
+        }
+        
+        loadFile.close();
+
+    // COMMENTED OUT BECAUSE I COPIED LITTLE BITS OF IT TO REMAKE IT
+
    // STEPS TO LOADING A GAME:
     
-    bool gameLoaded = false;
+   /* bool gameLoaded = false;
 
     // Continue to request user for correct file name
     while (gameLoaded == false) {
 
     //  1. Ask for the file name
         std::string fileName;
-        std::cout << "Enter Filename" << std::endl;
+        std::cout << "Enter the filename from which to load a game" << std::endl;
         std::cin >> fileName;
         std::ifstream file;
 
         file.open(fileName);
+        
 
     //  2. Check if file exists
         bool validFile = false;
@@ -192,7 +230,7 @@ void loadGame() {
         else {
             std::cout << "Invalid file name. Please try again" << std::endl;
         }
-    }
+    }*/
 }
 
 
