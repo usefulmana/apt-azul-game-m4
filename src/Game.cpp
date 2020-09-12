@@ -26,10 +26,8 @@ Game::~Game() {
 }
 
 void Game::addPlayers(std::vector<Player *> p) {
-
     // Add Player to back of Vector
     for(auto & player: p){
-
         players.push_back(player);
     }
 }

@@ -1,10 +1,11 @@
-
 #include "Tile.h"
 
+//Constructor
 Tile::Tile(char n) {
     this->name = n;
 }
 
+//Deconstructor
 Tile::~Tile() {
 };
 
