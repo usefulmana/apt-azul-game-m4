@@ -124,3 +124,11 @@ void Player::addToBrokenRow(Tile tile) {
         brokenRowCount++;
     }
 }
+
+Tile **Player::getUnlaidRow() {
+    return unlaidRow;
+}
+
+Tile **Player::getGrid() {
+    return grid;
+}

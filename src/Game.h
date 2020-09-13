@@ -47,6 +47,8 @@ public:
 
     void execute(const std::string & command, Player * player);
 
+    void score(Player * player);
+
     void fillFactories();
 
     void printFactories();
@@ -57,9 +59,16 @@ public:
 
     bool isAFactoryEmpty(int factory);
 
-    std::vector<std::string> checkInput(std::string input);
+    std::vector<std::string> checkInput(std::string input, Player * player);
 
     bool tileExistsInAFactory(const char & tile, int factory);
+
+    char getColorOfaRow(int row, Player * player);
+
+    std::string getGridColor(int row, Player * player);
+
+    bool isRowFull(int row, Player * player);
+
 
 private:
     std::vector<Player*> players;

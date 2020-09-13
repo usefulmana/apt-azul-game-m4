@@ -34,6 +34,10 @@ public:
 
     void addToBrokenRow(Tile tile);
 
+    Tile ** getUnlaidRow();
+
+    Tile ** getGrid();
+
 private:
     std::string name;
     int score;

@@ -104,18 +104,19 @@ void Game::play() {
                     }
 
                     // Check for errors
-                    std::vector<std::string> errors = checkInput(input);
+                    std::vector<std::string> errors = checkInput(input, player);
 
                     // Check if there is any error
                     if (errors.capacity() == 0) {
 
                         // Returns substring of first 4 characters in input
                         if (input.substr(0, 4) == "turn"){
-                            // TODO execute the command
                             execute(input, player);
                             // Add input to input vector
                             savedInputs.push_back(input);
                             std::cout << "Turn successful." << std::endl;
+                            // Display score
+                            std::cout << "Your score: " << player->getScore() << std::endl;
                             std::cout << std::endl;
                             // End input loop
                             validInput = true;
@@ -286,7 +287,21 @@ bool Game::areFactoriesEmpty() {
 }
 
 void Game::execute(const std::string &command, Player * player) {
+    // TODO implement execute the command
+    std::vector<std::string> commands = splitString(command, ' ');
+    int factory = std::stoi(commands[1]);
+    std::string color = commands[2];
+    int targetRow = std::stoi(commands[3]);
 
+    // Draw from factory
+
+    // Place on row
+
+    // Check row color
+
+    // Place on grid if row is full
+
+    // Score
 }
 
 bool Game::isAFactoryEmpty(int factory) {
@@ -300,11 +315,11 @@ bool Game::isAFactoryEmpty(int factory) {
 }
 
 /**
- * Checking player's input
+ * Boundary and type validation
  * @param input : input string to be checked
  * @return : a vector containing errors of the player's input
  */
-std::vector<std::string> Game::checkInput(std::string input) {
+std::vector<std::string> Game::checkInput(std::string input, Player * player) {
     std::vector<std::string> result;
     std::vector<std::string> inputArr = splitString(input, ' ');
     std::string colors = "RYBLUF.";
@@ -328,9 +343,12 @@ std::vector<std::string> Game::checkInput(std::string input) {
         try {
             // Convert input from string to int
             int factory = std::stoi(inputArr[1]);
+            int row = std::stoi(inputArr[3]);
             if (factory < FIRST_FACTORY || factory > LAST_FACTORY) {
-                result.push_back("Invalid Factory #. Please enter an integer number for factories (0->5). Your input = "
-                                 + inputArr[1]);
+                result.push_back("<factory> must be a number between 0 and 5");
+            }
+            if (row < FIRST_STORAGE_ROW || row > LAST_STORAGE_ROW) {
+                result.push_back("<row> must be a number between 1 and 5");
             }
 
             if (isAFactoryEmpty(factory)){
@@ -340,34 +358,29 @@ std::vector<std::string> Game::checkInput(std::string input) {
             // Check Inputted Colour
             size_t correctColor = colors.find(inputArr[2]);
             if (correctColor == std::string::npos) {
-                result.push_back("Invalid color. Color should be R,Y,B,L,U. Your input: " + inputArr[2]);
+                result.push_back("<color> must be one of these values: R, Y, B, L, U");
             }
             else if (!tileExistsInAFactory(inputArr[2][0], factory)){
                 result.push_back("The tile you have chosen does not exist in the chosen factory.");
             }
-        }
-        catch (std::exception const &e) {
-            result.push_back(
-                    "Invalid factory #. Please enter an integer number for factories (0->5). Your input = " +
-                    inputArr[1]);
-        }
 
-        // Check Inputted Storage Row
-        try {
-            // Convert input from string to int
-            int storageRow = std::stoi(inputArr[3]);
-            if (storageRow < FIRST_STORAGE_ROW || storageRow > LAST_STORAGE_ROW) {
-                result.push_back(
-                        "Invalid Storage #. Please enter an integer number for storage number (1->5). Your input = " + inputArr[3]);
+            if (isRowFull(row, player)){
+                result.push_back("Illegal move. Chosen row is full");
             }
 
-            // TODO Check if move is valid
+            if (getGridColor(row, player).find(inputArr[2])){
+                result.push_back("Illegal move. The grid has already had this color");
+            }
+
+            if(getColorOfaRow(row, player) != inputArr[2][0]){
+                result.push_back("Illegal move. All tiles in the same row must have the same color");
+            }
+
         }
         catch (std::exception const &e) {
-            result.push_back(
-                    "Invalid Storage #. Please enter an integer number for storage number (1->5). Your input = " + inputArr[3]);
+            result.push_back("<factory> must be a number between 0 and 5");
+            result.push_back("<row> must be a number between 1 and 5");
         }
-
 
     } else {
         result.push_back(
@@ -387,3 +400,30 @@ bool Game::tileExistsInAFactory(const char &tile, int factory) {
     }
     return exist;
 }
+
+void Game::score(Player *player) {
+    // TODO implement scoring
+}
+
+char Game::getColorOfaRow(int row, Player *player) {
+    return player->getUnlaidRow()[row][0].getName();
+}
+
+std::string Game::getGridColor(int row, Player *player) {
+    std::string result;
+    for (int i = 0; i < row; ++i) {
+        result += player->getGrid()[row][i].getName();
+    }
+    return result;
+}
+
+bool Game::isRowFull(int row, Player *player) {
+    int count = 0;
+    for (int i = 0; i < row; ++i) {
+        if (player->getUnlaidRow()[row][0].getName() != '.'){
+            count++;
+        }
+    }
+    return count == row;
+}
+
