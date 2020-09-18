@@ -150,7 +150,7 @@ void playGame() {
     // TODO RESULT
 
     // delete objects
-    delete game;
+    // delete game;
 
 }
 
