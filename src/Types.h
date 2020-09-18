@@ -6,7 +6,7 @@
 #include <vector>
 
 #define NUM_OF_PLAYERS 2
-#define MAX_GAME_ROUNDS 2
+#define MAX_GAME_ROUNDS 5
 #define MOSAIC_DIM 5
 #define MOSAIC_BOARD_SIZE (MOSAIC_DIM * MOSAIC_DIM)
 #define NUM_OF_FACTORIES 5
