@@ -146,7 +146,7 @@ void playGame() {
     std::cout << "=== Game Over ===" << std::endl;
     std::cout << "=== Scoreboard ===" << std::endl;
     // Print Scores
-    for (int i = 0; i < game->getPlayers().size(); ++i) {
+    for (size_t i = 0; i < game->getPlayers().size(); ++i) {
         std::cout << "Player " << game->getPlayers()[i]->getName() << ": " << game->getPlayers()[i]->getScore() << std::endl;
     }
 

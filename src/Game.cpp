@@ -67,7 +67,6 @@ void Game::play() {
     // While game hasn't finished last round
     while (round <= MAX_GAME_ROUNDS) {
         std::cout << "=== Start Round " << round << " ===" << std::endl;
-//        std::cout << areFactoriesEmpty() << std::endl;
         // End round if center and factories r empty
         while (!isCenterEmpty() && !areFactoriesEmpty()){
             for (auto &player: players) {
@@ -286,24 +285,6 @@ bool Game::areFactoriesEmpty() {
     return count == 16;
 }
 
-void Game::execute(const std::string &command, Player * player) {
-    // TODO implement execute the command
-    std::vector<std::string> commands = splitString(command, ' ');
-    int factory = std::stoi(commands[1]);
-    std::string color = commands[2];
-    int targetRow = std::stoi(commands[3]);
-
-    // Draw from factory
-
-    // Place on row
-
-    // Check row color
-
-    // Place on grid if row is full
-
-    // Score
-}
-
 bool Game::isAFactoryEmpty(int factory) {
     int count = 0;
     for (int i = 0; i < FACTORY_SIZE; ++i) {
@@ -350,6 +331,9 @@ std::vector<std::string> Game::checkInput(std::string input, Player * player) {
             if (row < FIRST_STORAGE_ROW || row > LAST_STORAGE_ROW) {
                 result.push_back("<row> must be a number between 1 and 5");
             }
+            else if (isRowFull(row, player)){
+                result.push_back("Illegal move. Chosen row is full");
+            }
 
             if (isAFactoryEmpty(factory)){
                 result.push_back("The factory you have entered is empty. Your input = "
@@ -364,15 +348,12 @@ std::vector<std::string> Game::checkInput(std::string input, Player * player) {
                 result.push_back("The tile you have chosen does not exist in the chosen factory.");
             }
 
-            if (isRowFull(row, player)){
-                result.push_back("Illegal move. Chosen row is full");
-            }
-
-            if (getGridColor(row, player).find(inputArr[2])){
+            size_t grid = getGridColor(row, player).find(inputArr[2]);
+            if ( grid != std::string::npos){
                 result.push_back("Illegal move. The grid has already had this color");
             }
 
-            if(getColorOfaRow(row, player) != inputArr[2][0]){
+            if( getColorOfaRow(row, player) != '.' && (getColorOfaRow(row, player) != inputArr[2][0])){
                 result.push_back("Illegal move. All tiles in the same row must have the same color");
             }
 
@@ -387,7 +368,6 @@ std::vector<std::string> Game::checkInput(std::string input, Player * player) {
                 "Wrong number of arguments or arguments are not separated by space or excessive whitespaces. "
                 "Your input = " + input);
     }
-
     return result;
 }
 
@@ -405,13 +385,32 @@ void Game::score(Player *player) {
     // TODO implement scoring
 }
 
+void Game::execute(const std::string &command, Player * player) {
+    // TODO implement execute the command
+//    std::vector<std::string> commands = splitString(command, ' ');
+//    int factory = std::stoi(commands[1]);
+//    char color = commands[2][0];
+//    int targetRow = std::stoi(commands[3]);
+    std::cout << "Test" << std::endl;
+    // Draw from factory
+
+    // Place on row
+
+    // Check row color
+
+    // Place on grid if row is full
+
+    // Score
+}
+
+
 char Game::getColorOfaRow(int row, Player *player) {
     return player->getUnlaidRow()[row][0].getName();
 }
 
 std::string Game::getGridColor(int row, Player *player) {
     std::string result;
-    for (int i = 0; i < row; ++i) {
+    for (int i = 0; i < 5; ++i) {
         result += player->getGrid()[row][i].getName();
     }
     return result;
