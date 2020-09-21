@@ -1,8 +1,5 @@
-
-
 #ifndef A2_TILE_H
 #define A2_TILE_H
-
 
 class Tile {
 private:

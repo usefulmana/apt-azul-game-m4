@@ -8,7 +8,6 @@
 #include "Game.h"
 #include "Player.h"
 #include "utils.h"
-#include "LinkedList.h"
 
 [[noreturn]] void showMenu();
 
@@ -33,14 +32,16 @@ int main(int argc, char ** argv) {
     else if (argc == 3){
         // 2 additional args => test mode
         const std::string flag = "-t";
+        
+        // If second argument is test flag
         if (argv[1] == flag){
+            // If File Exists
             if (checkIfFileExists(argv[2])){
                 engageTestMode(argv[2]);
             }
             else {
                 std::cout << "No such file exists!" << std::endl;
             }
-
         }
         else {
             std::cout << "Wrong flag" << std::endl;
@@ -81,7 +82,7 @@ int main(int argc, char ** argv) {
         if (std::cin.eof()) {
             quitGame();
         }
-            // Check fail conditions
+        // Check fail conditions
         else if (std::cin.fail() || choice < 0 || choice > 4) {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -133,10 +134,10 @@ void playGame() {
     std::cout << "Starting a new Azul game" << std::endl;
     std::cout << std::endl;
 
-    // Object Initialization
+    // Game Initialization
     Game *game = new Game();
-    std::vector<Player *> players = createPlayersFromUserInput();
-    game->addPlayers(players);
+    game->addPlayers(createPlayersFromUserInput());
+    game->setTileBagAutomatically();
 
     std::cout << "Let's Play!" << std::endl;
     std::cout << std::endl;
@@ -146,7 +147,10 @@ void playGame() {
 
     std::cout << "=== Game Over ===" << std::endl;
     std::cout << "=== Scoreboard ===" << std::endl;
-    // TODO RESULT
+    // Print Scores
+    for (int i = 0; i < game->getPlayers().size(); ++i) {
+        std::cout << "Player " << game->getPlayers()[i]->getName() << ": " << game->getPlayers()[i]->getScore() << std::endl;
+    }
 
     // delete objects
     delete game;
@@ -266,7 +270,6 @@ void loadGame() {
     }
 }
 
-
 /**
  * Check if a player's name is valid
  * @param name
@@ -301,10 +304,9 @@ std::vector<Player *> createPlayersFromUserInput() {
 
         // Check end of file
         if (std::cin.eof()) {
-
             quitGame();
         }
-            // Validate input
+        // Validate input
         else if (isNameValid(name)) {
             // Increase count by one
             playerCount++;

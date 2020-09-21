@@ -20,17 +20,23 @@ public:
     // Save score of round
     void addScore(int s);
 
-
     int getScore();
 
     // Reset Score at end of game
     void resetScore();
 
     //Getters/Setters
-
     std::string getName();
 
     void printMosaic();
+
+    void printBrokenRow();
+
+    void addToBrokenRow(Tile tile);
+
+    Tile ** getUnlaidRow();
+
+    Tile ** getGrid();
 
 private:
     std::string name;
@@ -38,8 +44,8 @@ private:
     int rowCount;
     Tile ** grid;
     Tile ** unlaidRow;
-//    Tile brokenRow[BROKEN_ROW_SIZE];
-    // TODO BROKEN
+    Tile brokenRow[BROKEN_ROW_SIZE];
+    int brokenRowCount;
 };
 
 #endif // COSC_ASSIGN_TWO_PLAYER

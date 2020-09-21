@@ -8,11 +8,12 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include "Game.h"
 
 
 std::vector<std::string> splitString(std::string str, char delimiter);
 
-std::vector<std::string> checkInput(std::string input);
+
 
 const std::string getDateTime();
 
