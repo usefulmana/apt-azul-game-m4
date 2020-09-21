@@ -288,10 +288,13 @@ bool Game::areFactoriesEmpty() {
 
 void Game::execute(const std::string &command, Player * player) {
     // TODO implement execute the command
-    std::vector<std::string> commands = splitString(command, ' ');
-    int factory = std::stoi(commands[1]);
-    std::string color = commands[2];
-    int targetRow = std::stoi(commands[3]);
+    
+    // Commented out to ignore unused variable warning
+    
+    // std::vector<std::string> commands = splitString(command, ' ');
+    // int factory = std::stoi(commands[1]);
+    // std::string color = commands[2];
+    // int targetRow = std::stoi(commands[3]);
 
     // Draw from factory
 

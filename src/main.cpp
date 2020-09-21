@@ -201,14 +201,17 @@ void loadGame() {
 
 
 
-    // Assumes info in saved game is already validated
+
+    // ---------------------------------------------
+
+    // CURRENT SOLUTION ASSUMES ALL DATA IN FILE ARE VALID AND PLACED IN CORRECT LINE
 
     std::string fileName;
     std::ifstream loadFile;
 
     bool gameLoaded = false;
 
-    // Continue to request user for correct file name
+    // Continue to prompt user for correct file name if given invalid name
     while (gameLoaded == false) {
 
         std::cout << "Enter the filename from which to load a game" << std::endl;
@@ -224,43 +227,45 @@ void loadGame() {
 
             std::string line;
 
+            // Sort Through Each File Line
             for (int lineNum = 0; getline(loadFile,line); lineNum++){
 
                 // First Line - TileBag Data
-                if (lineNum == 0){
-
-                    std::cout << "TileBag: " << line << std::endl;
-                    // setTileBagFromString(line);
-
+                if (lineNum == 0) {
+                    loadedGame->setTileBagFromString(line);
                 }
 
                 // Second or Third Line - Player Data
       	        if (lineNum == 1 || lineNum == 2){
-
-                    std::cout << "Player: " << line << std::endl;
 
                     // Initialize and add player object to the vector
                     loadedPlayers.push_back(new Player(line)); 
 
                     // When all players found
                     if (loadedPlayers.size() == NUM_OF_PLAYERS) 
-                        // Add to Game
+                        // Add Players to Game
                         loadedGame->addPlayers(loadedPlayers);                    
-
                 }
 
                 // Fourth Line Onwards - Turn Data
 	            if (lineNum >= 3) {
                     std::cout << "Turn: " << line << std::endl;
-
+                    // TO DO: Execute Turn
                 }
             }
             
+            // TESTING ------------------------
+            // PRINT ALL FOUND DATA FROM FILE
             for(int i = 0; i < loadedPlayers.size(); i++){
                 std::cout << loadedGame->getPlayers().at(i)->getName() << std::endl;
             } 
+            std::cout << loadedGame->getTileBag()->getLength() << std::endl;
+            // --------------------------------
+
+            loadedGame->play();
 
             loadFile.close();
+
             gameLoaded = true;
         }
 
@@ -268,6 +273,8 @@ void loadGame() {
             std::cout << "Invalid file name. Please try again" << std::endl;
         }
     }
+    // ---------------------------------------------
+
 }
 
 /**
