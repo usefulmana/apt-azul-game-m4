@@ -166,71 +166,104 @@ void loadGame() {
         std::cin >> fileName;*/
 
         //Open loaded file
-        std::ifstream loadFile;
-        loadFile.open ("bin/test.txt", std::ifstream::in);
+        // std::ifstream loadFile;
+        // loadFile.open ("bin/test.txt", std::ifstream::in);
           
-        //If it exists  
-        if (loadFile.good()){ 
-        int newCount = 0;
-        std::string name;
-        std::vector<Player *> players;
+        // //If it exists  
+        // if (loadFile.good()){ 
+        // int newCount = 0;
+        // std::string name;
+        // std::vector<Player *> players;
             
-            //Create 2 Players from first 2 lines of save file
-            do{
-                getline(loadFile, name);
-                players.push_back(new Player(name));
-                newCount++;
-            } while (newCount < 2);
+        //     //Create 2 Players from first 2 lines of save file
+        //     do{
+        //         getline(loadFile, name);
+        //         players.push_back(new Player(name));
+        //         newCount++;
+        //     } while (newCount < 2);
 
-          }
+        //   }
           
-        else{
-            std::cout << "Invalid file name. Please try again" << std::endl;
-        }
+        // else{
+        //     std::cout << "Invalid file name. Please try again" << std::endl;
+        // }
         
-        loadFile.close();
+        // loadFile.close();
 
     // COMMENTED OUT BECAUSE I COPIED LITTLE BITS OF IT TO REMAKE IT
 
    // STEPS TO LOADING A GAME:
     
-   /* bool gameLoaded = false;
+
+
+
+    // Assumes info in saved game is already validated
+
+    std::string fileName;
+    std::ifstream loadFile;
+
+    bool gameLoaded = false;
 
     // Continue to request user for correct file name
     while (gameLoaded == false) {
 
-    //  1. Ask for the file name
-        std::string fileName;
         std::cout << "Enter the filename from which to load a game" << std::endl;
+
         std::cin >> fileName;
-        std::ifstream file;
+        loadFile.open(fileName);
 
-        file.open(fileName);
-        
+        if (loadFile.good()){
 
-    //  2. Check if file exists
-        bool validFile = false;
-        // Returns true if file exists
-        validFile = file.is_open();
+            // Object Initialization
+            Game *loadedGame = new Game();
+            std::vector<Player *> loadedPlayers;
 
-        if (validFile == true){
-
-    //  2a. If it does exist, read in the file contents
             std::string line;
-            while (getline(file, line)) {
-                std::cout << line << std::endl;
-            }
-            gameLoaded = true;
 
-    //         2b. Apply file contents to a Game object
-    //         2c. Set up game with these parameters
+            for (int lineNum = 0; getline(loadFile,line); lineNum++){
+
+                // First Line - TileBag Data
+                if (lineNum == 0){
+
+                    std::cout << "TileBag: " << line << std::endl;
+                    // setTileBagFromString(line);
+
+                }
+
+                // Second or Third Line - Player Data
+      	        if (lineNum == 1 || lineNum == 2){
+
+                    std::cout << "Player: " << line << std::endl;
+
+                    // Initialize and add player object to the vector
+                    loadedPlayers.push_back(new Player(line)); 
+
+                    // When all players found
+                    if (loadedPlayers.size() == NUM_OF_PLAYERS) 
+                        // Add to Game
+                        loadedGame->addPlayers(loadedPlayers);                    
+
+                }
+
+                // Fourth Line Onwards - Turn Data
+	            if (lineNum >= 3) {
+                    std::cout << "Turn: " << line << std::endl;
+
+                }
+            }
+            
+            for(int i = 0; i < loadedPlayers.size(); i++){
+                std::cout << loadedGame->getPlayers().at(i)->getName() << std::endl;
+            } 
+
+            loadFile.close();
+            gameLoaded = true;
         }
 
-    //     3. If it doesnt exist, ask for new file name
         else {
             std::cout << "Invalid file name. Please try again" << std::endl;
         }
-    }*/
+    }
 }
 
 
