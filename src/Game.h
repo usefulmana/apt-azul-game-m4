@@ -7,6 +7,10 @@
 #include "utils.h"
 #include <iostream>
 #include "Types.h"
+#define FIRST_FACTORY 0
+#define LAST_FACTORY 5
+#define FIRST_STORAGE_ROW 1
+#define LAST_STORAGE_ROW 5
 
 class Game
 {
@@ -41,9 +45,32 @@ public:
 
     void setTileBagFromString(const std::string & line);
 
+    void execute(const std::string & command, Player * player);
+
+    void score(Player * player);
+
     void fillFactories();
 
     void printFactories();
+
+    bool isCenterEmpty();
+
+    bool areFactoriesEmpty();
+
+    bool isAFactoryEmpty(int factory);
+
+    std::vector<std::string> checkInput(std::string input, Player * player);
+
+    bool tileExistsInAFactory(const char & tile, int factory);
+
+    char getColorOfaRow(int row, Player * player);
+
+    std::string getGridColor(int row, Player * player);
+
+    bool isRowFull(int row, Player * player);
+
+    void playerTurn(Player* player);
+
 
 private:
     std::vector<Player*> players;

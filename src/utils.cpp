@@ -3,11 +3,7 @@
 #include <iostream>
 #include <time.h>
 
-#define FIRST_FACTORY 0
-#define LAST_FACTORY 5
 
-#define FIRST_STORAGE_ROW 1
-#define LAST_STORAGE_ROW 5
 
 /**
  * Split a string into elements of a vector
@@ -25,75 +21,7 @@ std::vector<std::string> splitString(std::string str, char delimiter) {
     return result;
 }
 
-/**
- * Checking player's input
- * @param input : input string to be checked
- * @return : a vector containing errors of the player's input
- */
-std::vector<std::string> checkInput(std::string input) {
-    std::vector<std::string> result;
-    std::vector<std::string> inputArr = splitString(input, ' ');
-    std::string colors = "RYBLUF.";
 
-
-    // Check if entered num of args for save
-    if (inputArr.size() == 2){
-        // Check for save command
-        if (inputArr[0] != "save") {
-            result.push_back("Invalid input. Correct input = save. Your input = " + inputArr[0]);
-        }
-    }
-    // Check if entered num of args for turn
-    else if (inputArr.size() == 4){
-        // Check for turn command
-        if (inputArr[0] != "turn") {
-            result.push_back("Invalid input. Correct input = turn. Your input = " + inputArr[0]);
-        }
-
-        // Check Inputted Factory Number
-        try {
-            // Convert input from string to int
-            int factory = std::stoi(inputArr[1]);
-            if (factory < FIRST_FACTORY || factory > LAST_FACTORY) {
-                result.push_back("Invalid Factory #. Please enter an integer number for factories (0->5). Your input = "
-                                 + inputArr[1]);
-            }
-        }
-        catch (std::exception const &e) {
-            result.push_back(
-                    "Invalid factory #. Please enter an integer number for factories (0->5). Your input = " +
-                    inputArr[1]);
-        }
-
-        // Check Inputted Colour
-        size_t correctColor = colors.find(inputArr[2]);
-        if (correctColor == std::string::npos) {
-            result.push_back("Invalid color. Color should be R,Y,B,L,U. Your input: " + inputArr[2]);
-        }
-
-        // Check Inputted Storage Row
-        try {
-            // Convert input from string to int
-            int storageRow = std::stoi(inputArr[3]);
-            if (storageRow < FIRST_STORAGE_ROW || storageRow > LAST_STORAGE_ROW) {
-                result.push_back(
-                    "Invalid Storage #. Please enter an integer number for storage number (1->5). Your input = " + inputArr[3]);
-            }
-        }
-        catch (std::exception const &e) {
-            result.push_back(
-                    "Invalid Storage #. Please enter an integer number for storage number (1->5). Your input = " + inputArr[3]);
-        }
-
-        // TODO Check move validity
-    } else {
-        result.push_back(
-                "Wrong number of arguments or arguments are not separated by space or excessive whitespaces. "
-                "Your input = " + input);
-    }
-
-    return result;
-}
 
 /**
  * Get current date time

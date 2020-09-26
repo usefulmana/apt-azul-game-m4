@@ -145,9 +145,13 @@ void playGame() {
     // Play the game
     game->play();
 
-    std::cout << "=== GAME OVER ===" << std::endl;
-    std::cout << "=== Final Scores: ===" << std::endl;
-    // TODO RESULT
+    std::cout << "=== Game Over ===" << std::endl;
+    std::cout << "=== Scoreboard ===" << std::endl;
+    // Print Scores
+    for (int i = 0; i < game->getPlayers().size(); ++i) {
+        std::cout << "Player " << game->getPlayers()[i]->getName() << ": " << game->getPlayers()[i]->getScore() << std::endl;
+    }
+
 
     // delete objects
     // delete game;
