@@ -13,8 +13,6 @@ Score::Score(Player player, int placedX, int placedY) {
 
     this->roundScore = 0;
 
-    this->direction = Direction(UP);
-
     // Calculate Scoring
     addScoring();
 
@@ -25,7 +23,8 @@ Score::Score(Player player, int placedX, int placedY) {
 void Score::addScoring() {
 
     for(int i = 0; i < MAX_DIRECTIONS; i ++) {
-        // orientation = i;
+        
+        // For each Direction
         direction = (Direction)i;
 
         // Set Current as Placed Piece
