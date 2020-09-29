@@ -5,30 +5,34 @@
 class Score
 {
 public:
-    Score(Tile ** newlyPlaced, Player player);
+    Score(Player player, int placedX, int placedY);
 
-    // Apply Horizontal Scoring
+    // Apply Scoring
     void addScoring();
-    // Check if there is a next tile
-    bool nextExists(Tile ** current);
-    // Decide to go up, down, left or right
-    void getNextCoordinates(int currentX, int currentY);
+    // Set Coordinates of Current Tile
+    void setCurrent(int x, int y);
+    // Set Coordinates of Next Tile
+    void setNext(int orientation);
 
     // Get Round Score
     int getRoundScore();
 
 private:
     // Placed Piece in Mosaic
-    Tile ** newlyPlaced;
+    int placedX;
+    int placedY;
 
     // Checking From
-    Tile ** current;
-    // Checking
-    Tile ** next;
+    int currentX;
+    int currentY;
 
     // Next Position to check
     int nextX;
     int nextY;
+    char nextTileChar;
+
+    // Keep Track of Direction checking
+    int orientation;
 
     int roundScore;
     Player player;

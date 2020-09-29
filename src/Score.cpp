@@ -1,12 +1,17 @@
 #include "Score.h"
-#define EMPTY_SPACE '.'
+#include <ctype.h>
+#define maxDirections 3
 
-Score::Score(Tile ** newlyPlaced, Player player) {   
+
+Score::Score(Player player, int placedX, int placedY) {   
     // Declare Variables
-    this->newlyPlaced = newlyPlaced;
-    this->roundScore = 0;
     this->player = player;
     this->grid = player.getGrid();
+
+    this->placedX = placedX;
+    this->placedY = placedY;
+
+    this->roundScore = 0;
 
     // Calculate Scoring
     addScoring();
@@ -16,53 +21,67 @@ Score::Score(Tile ** newlyPlaced, Player player) {
 }
 
 void Score::addScoring() {
-    // For up, down, left, right
-    for (int i = 0; i < 4; i ++){
 
-        current = newlyPlaced;
-        while (nextExists(current)) {
-            roundScore++;
-            current = next;
+    for(int i = 0; i < maxDirections; i ++) {
+
+        orientation = i;
+
+        // Set Current as Placed Piece
+        setCurrent(placedX, placedY);
+        // Set Next
+        setNext(orientation);
+        // Set Next Char
+        nextTileChar = grid[nextX][nextY].getName();
+
+        // If nextChar == capital
+        while (isupper(nextTileChar)) {
+
+            // Add Score
+            roundScore++;   
+
+            // Reset Current and Next Piece
+            setCurrent(nextX, nextY);
+            setNext(orientation);
+            nextTileChar = grid[nextX][nextY].getName();
+
         }
     }
 }
 
-
-bool Score::nextExists(Tile ** current) {
-    int currentX = current.getX();
-    int currentY = current.getY();
-
-    getNextCoordinates(currentX, currentY);
-    
-    if (grid[nextX][nextY] != EMPTY_SPACE) { // Tile found next to current
-        next = grid[nextX][nextY]; // Position of Next Tile
-        return true; 
-    } else {
-        return false; 
-    }
+void Score::setCurrent(int x, int y) {
+    currentX = x;
+    currentY = y;
 }
 
-void Score::getNextCoordinates(int currentX, int currentY) {
+void Score::setNext(int orientation) {
 
-    nextY = currentY;
     nextX = currentX;
+    nextY = currentY;
 
-    if (rightDone == false) {
-        // Right
-        nextX = currentX + 1;
-    } else if (leftDone == false) {
-        // Left
-        nextX = currentX - 1;
-    } else if (upDone == false) {
-        // Up
+    // Up
+    if (orientation == 0) {
+
         nextY = currentY + 1;
-    } else if (downDone == false) {
-        // Down
-        nextY = currentY - 1;
-    }
 
+    // Right
+    } else if (orientation == 1) {
+
+        nextX = currentX + 1;
+
+    // Down
+    } else if (orientation == 2) {
+
+        nextY = currentY - 1;
+
+    // Left
+    } else if (orientation == 3) {
+
+        nextX = currentX - 1;
+
+    }
 }
 
 int Score::getRoundScore() {
     return roundScore;
 }
+
