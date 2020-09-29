@@ -1,6 +1,6 @@
 #include "Score.h"
 #include <ctype.h>
-#define maxDirections 3
+#define MAX_DIRECTIONS 4
 
 
 Score::Score(Player player, int placedX, int placedY) {   
@@ -13,6 +13,8 @@ Score::Score(Player player, int placedX, int placedY) {
 
     this->roundScore = 0;
 
+    this->direction = Direction(UP);
+
     // Calculate Scoring
     addScoring();
 
@@ -22,18 +24,19 @@ Score::Score(Player player, int placedX, int placedY) {
 
 void Score::addScoring() {
 
-    for(int i = 0; i < maxDirections; i ++) {
-
-        orientation = i;
+    for(int i = 0; i < MAX_DIRECTIONS; i ++) {
+        // orientation = i;
+        direction = (Direction)i;
 
         // Set Current as Placed Piece
         setCurrent(placedX, placedY);
         // Set Next
-        setNext(orientation);
+        setNext(direction);
         // Set Next Char
         nextTileChar = grid[nextX][nextY].getName();
 
-        // If nextChar == capital
+        // Look at all elements in selected direction that have next
+        // Where next == capital
         while (isupper(nextTileChar)) {
 
             // Add Score
@@ -41,7 +44,7 @@ void Score::addScoring() {
 
             // Reset Current and Next Piece
             setCurrent(nextX, nextY);
-            setNext(orientation);
+            setNext(direction);
             nextTileChar = grid[nextX][nextY].getName();
 
         }
@@ -53,28 +56,28 @@ void Score::setCurrent(int x, int y) {
     currentY = y;
 }
 
-void Score::setNext(int orientation) {
+void Score::setNext(Direction direction) {
 
     nextX = currentX;
     nextY = currentY;
 
     // Up
-    if (orientation == 0) {
+    if (direction == 0) {
 
         nextY = currentY + 1;
 
     // Right
-    } else if (orientation == 1) {
+    } else if (direction == 1) {
 
         nextX = currentX + 1;
 
     // Down
-    } else if (orientation == 2) {
+    } else if (direction == 2) {
 
         nextY = currentY - 1;
 
     // Left
-    } else if (orientation == 3) {
+    } else if (direction == 3) {
 
         nextX = currentX - 1;
 

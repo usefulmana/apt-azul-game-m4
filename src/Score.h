@@ -2,6 +2,13 @@
 #define COSC_ASSIGN_TWO_SCORE
 #include "Player.h"
 
+enum Direction {
+    UP,
+    RIGHT,
+    DOWN, 
+    LEFT
+};
+
 class Score
 {
 public:
@@ -12,7 +19,7 @@ public:
     // Set Coordinates of Current Tile
     void setCurrent(int x, int y);
     // Set Coordinates of Next Tile
-    void setNext(int orientation);
+    void setNext(Direction direction);
 
     // Get Round Score
     int getRoundScore();
@@ -31,12 +38,13 @@ private:
     int nextY;
     char nextTileChar;
 
-    // Keep Track of Direction checking
-    int orientation;
+    // Keep Track of Direction
+    Direction direction;
 
     int roundScore;
     Player player;
     Tile ** grid;
+
 };
 
 #endif // COSC_ASSIGN_TWO_SCORE
