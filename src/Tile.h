@@ -9,7 +9,7 @@ public:
     Tile();
     ~Tile();
     char getName();
-    void setName(const char& n);
+    void setName(char n);
 };
 
 

@@ -12,8 +12,13 @@ sudo make
 # Move to tests folder
 cd bin
 
+# Debug
+#gdb azul
+
 # Run
-./azul
+#./azul
+
+valgrind --leak-check=full ./azul
 
 # Go back to previous directory
 cd ..

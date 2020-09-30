@@ -32,7 +32,7 @@ public:
 
     void printBrokenRow();
 
-    void addToBrokenRow(Tile tile);
+    void addToBrokenRow(char tile);
 
     Tile ** getUnlaidRow();
 

@@ -51,6 +51,8 @@ public:
 
     void fillFactories();
 
+    void reset();
+
     void printFactories();
 
     bool isCenterEmpty();

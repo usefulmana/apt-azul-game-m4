@@ -125,9 +125,9 @@ void Player::printBrokenRow() {
  * Add tile to broken row
  * @param tile : tile to be added
  */
-void Player::addToBrokenRow(Tile tile) {
-    if (brokenRowCount < 7){
-        brokenRow[brokenRowCount] = tile;
+void Player::addToBrokenRow(char tile) {
+    if (brokenRowCount < BROKEN_ROW_SIZE){
+        brokenRow[brokenRowCount].setName(tile);
         brokenRowCount++;
     }
 }

@@ -72,10 +72,15 @@ void Game::play() {
 
     // While game hasn't finished last round
     while (round <= MAX_GAME_ROUNDS) {
-        std::cout << "=== Start Round " << round << " ===" << std::endl;
+        std::cout << "=== Round " << round << " Starts ===" << std::endl;
         // End round if center and factories r empty
-        while (!endRound()){
+        bool end = endRound();
+        while (!end){
             for (auto &player: players) {
+                if (endRound()){
+                    // End loop
+                    end = true;
+                }
                 std::cout << "TURN FOR PLAYER: " << player->getName() << std::endl;
                 std::cout << "Factories:" << std::endl;
                 printFactories();
@@ -159,8 +164,10 @@ void Game::play() {
             }
         }
         // Next Round
+        std::cout << "=== Round " << round << " Ends ===" << std::endl;
         round++;
         // TODO RESET
+        reset();
     }
 }
 
@@ -298,7 +305,7 @@ bool Game::isAFactoryEmpty(int factory) {
     int count = 0;
     if (factory != 0){
         for (int i = 0; i < FACTORY_SIZE; ++i) {
-            if (factories[factory][i].getName() == '\0'){
+            if (factories[factory - 1][i].getName() == '\0'){
                 count++;
             }
         }
@@ -418,6 +425,7 @@ void Game::execute(const std::string &command, Player * player) {
     std::string chosenTiles;
 
     // Draw from factory or center
+    std::cout << "BEFORE DRAW: " << chosenTiles << std::endl;
     if (factory + 1 != 0){
         for (int i = 0; i < FACTORY_SIZE; ++i) {
             if (factories[factory][i].getName() == color){
@@ -438,17 +446,21 @@ void Game::execute(const std::string &command, Player * player) {
             }
         }
     }
-    
+    std::cout << "AFTER DRAW: " << chosenTiles << std::endl;
 
     // Move excess tiles to centre factory
-    for (int i = 0; i < FACTORY_SIZE; ++i) {
-        if (factories[factory][i].getName() != ' '){
-            // Add tile to centre factory
-            center.push_back(new Tile(factories[factory][i].getName()));
-            // Set non-chosen tiles to empty space
-            factories[factory][i].setName(' ');
+    std::cout << "BEFORE MOVING: " << chosenTiles << std::endl;
+    if (factory + 1 != 0){
+        for (int i = 0; i < FACTORY_SIZE; ++i) {
+            if (factories[factory][i].getName() != ' '){
+                // Add tile to centre factory
+                center.push_back(new Tile(factories[factory][i].getName()));
+                // Set non-chosen tiles to empty space
+                factories[factory][i].setName(' ');
+            }
         }
     }
+    std::cout << "AFTER MOVING: " << chosenTiles << std::endl;
 
     // Add F at the of the string if player chooses centre factory
     if (factory + 1 == 0 && center.size() > 0 && center[0]->getName() == 'F'){
@@ -458,43 +470,61 @@ void Game::execute(const std::string &command, Player * player) {
     }
 
     // Place on row
+    std::cout << "BEFORE ADDING TO ROW: " << chosenTiles << std::endl;
+    for (int i = 0; i < targetRow; ++i) {
 
-//    for (size_t i = 0; i < targetRow || i < chosenTiles.length(); ++i) {
-//        if (player->getUnlaidRow()[targetRow - 1][i].getName() == '.' && chosenTiles[i] != 'F'){
-//            player->getUnlaidRow()[targetRow - 1][i].setName(chosenTiles[i]);
-//            // Delete first tile
-//            chosenTiles.erase(chosenTiles.begin());
-//        }
-//    }
-
+        if (player->getUnlaidRow()[targetRow - 1][i].getName() == '.'){
+            if (chosenTiles[0] == 'B'){
+                player->getUnlaidRow()[targetRow - 1][i].setName( 'B');
+            }
+            else if (chosenTiles[0] == 'Y'){
+                player->getUnlaidRow()[targetRow - 1][i].setName( 'Y');
+            }
+            else if (chosenTiles[0] == 'R'){
+                player->getUnlaidRow()[targetRow - 1][i].setName( 'R');
+            }
+            else if (chosenTiles[0] == 'U'){
+                player->getUnlaidRow()[targetRow - 1][i].setName( 'U');
+            }
+            else if (chosenTiles[0] == 'L'){
+                player->getUnlaidRow()[targetRow - 1][i].setName( 'L');
+            }
+            // Delete first tile
+            if (chosenTiles.length() > 0 && chosenTiles[0] != 'F') {
+                chosenTiles.erase(chosenTiles.begin());
+            }
+        }
+    }
+    std::cout << "AFTER ADDING TO ROW: " << chosenTiles << std::endl;
 
 
     // Move leftover tiles to broken rows
     int brokenRowCount = player->getBrokenRowCount();
     if (chosenTiles[chosenTiles.length() - 1] == 'F'){
-
-        player->getBrokenRow()[brokenRowCount].setName('F');
-        brokenRowCount++;
+        player->addToBrokenRow('F');
         // Delete F at the end of the string
         chosenTiles.pop_back();
-        for (size_t i = 0; i < chosenTiles.length() - 1; ++i) {
+        std::cout << "BEFORE BROKEN: " << chosenTiles[chosenTiles.length() - 1] << std::endl;
+        for (size_t i = 0; i < chosenTiles.length(); ++i) {
             if (brokenRowCount <= BROKEN_ROW_SIZE){
-                player->getBrokenRow()[brokenRowCount].setName(chosenTiles[i]);
-                brokenRowCount++;
+                player->addToBrokenRow(chosenTiles[i]);
+                if (chosenTiles.length() > 0){
+                    chosenTiles.erase(chosenTiles.begin());
+                }
             }
         }
-        player->setBrokenRowCount(brokenRowCount);
+        std::cout << "AFTER BROKEN: " << chosenTiles << std::endl;
     }
     else {
         for (size_t i = 0; i < chosenTiles.length(); ++i) {
             if (brokenRowCount <= BROKEN_ROW_SIZE){
-                player->getBrokenRow()[brokenRowCount].setName(chosenTiles[i]);
+                player->addToBrokenRow(chosenTiles[i]);
                 // Delete the first character
-                chosenTiles.erase(chosenTiles.begin());
-                brokenRowCount++;
+                if (chosenTiles.length() > 0){
+                    chosenTiles.erase(chosenTiles.begin());
+                }
             }
         }
-        player->setBrokenRowCount(brokenRowCount);
     }
 
     // Capitalize corresponding tile on the mosaic if applicable;
@@ -530,21 +560,46 @@ char Game::getColorOfaRow(int row, Player *player) {
 std::string Game::getGridColor(int row, Player *player) {
     std::string result;
     for (int i = 0; i < 5; ++i) {
-        result += player->getGrid()[row][i].getName();
+        result += player->getGrid()[row - 1][i].getName();
     }
     return result;
 }
 
 bool Game::isRowFull(int row, Player *player) {
-    int count = 0;
+    int full = true;
     for (int i = 0; i < row; ++i) {
-        if (player->getUnlaidRow()[row][0].getName() != '.'){
-            count++;
+        if (player->getUnlaidRow()[row - 1][i].getName() == '.'){
+            full = false;
+            i = row;
         }
     }
-    return count == row;
+    return full;
 }
 
 bool Game::endRound() {
     return isCenterEmpty() && areFactoriesEmpty();
+}
+
+void Game::reset() {
+    setTileBagAutomatically();
+    fillFactories();
+    for (auto &player: players) {
+        // Reset Broken Row
+        for (int i = 0; i < BROKEN_ROW_SIZE; ++i) {
+            player->getBrokenRow()[i].setName(' ');
+        }
+
+        // Reset Broken Row Count
+        player->setBrokenRowCount(0);
+
+        // Reset Unlaid Rows
+        int rowCount = 1;
+        for (int i = 0; i < MOSAIC_DIM; ++i) {
+            for (int j = 0; j < rowCount; ++j) {
+                player->getUnlaidRow()[i][j].setName('.');
+            }
+            rowCount++;
+        }
+
+    }
 }

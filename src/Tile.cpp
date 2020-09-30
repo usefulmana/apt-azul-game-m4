@@ -15,7 +15,7 @@ char Tile::getName() {
 Tile::Tile() {
 }
 
-void Tile::setName(const char &n) {
+void Tile::setName(char n) {
     this->name = n;
 }
 
