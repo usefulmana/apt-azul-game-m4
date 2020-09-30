@@ -12,10 +12,14 @@ Player::Player(std::string name)
         grid[i] = new Tile[MOSAIC_DIM];
     }
 
+    // Mosaic Color
+    std::string mosaicColors = "byrullbyruulbyrrulbyyrulb";
+    int count = 0;
     // Initialize Grid
     for (int i = 0; i < MOSAIC_DIM; ++i) {
         for (int j = 0; j < MOSAIC_DIM; ++j) {
-            grid[i][j] = *new Tile('.');
+            grid[i][j] = *new Tile(mosaicColors[count]);
+            count++;
         }
     }
 
