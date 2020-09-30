@@ -69,6 +69,7 @@ public:
 
     bool isRowFull(int row, Player * player);
 
+    bool endRound();
 
 private:
     std::vector<Player*> players;

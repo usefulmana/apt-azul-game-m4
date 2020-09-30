@@ -38,6 +38,11 @@ Player::Player(std::string name)
         }
         rowCount++;
     }
+
+    // Initilize broken row
+    for (int i = 0; i < BROKEN_ROW_SIZE; ++i) {
+        brokenRow[i] = *new Tile(' ');
+    }
 }
 
 Player::Player(Player &other) : name(other.name)
@@ -111,7 +116,7 @@ void Player::printMosaic() {
 void Player::printBrokenRow() {
     std::cout << "broken: ";
     for (int i = 0; i < BROKEN_ROW_SIZE; ++i) {
-        if (brokenRow[i].getName() != '1') std::cout << brokenRow[i].getName() << " ";
+        std::cout << brokenRow[i].getName() << " ";
     }
     std::cout << std::endl;
 }
@@ -123,7 +128,6 @@ void Player::printBrokenRow() {
 void Player::addToBrokenRow(Tile tile) {
     if (brokenRowCount < 7){
         brokenRow[brokenRowCount] = tile;
-        std::cout << tile.getName() << std::endl;
         brokenRowCount++;
     }
 }
@@ -134,4 +138,16 @@ Tile **Player::getUnlaidRow() {
 
 Tile **Player::getGrid() {
     return grid;
+}
+
+Tile* Player::getBrokenRow() {
+    return brokenRow;
+}
+
+int Player::getBrokenRowCount() {
+    return brokenRowCount;
+}
+
+void Player::setBrokenRowCount(int count) {
+    brokenRowCount = count;
 }
