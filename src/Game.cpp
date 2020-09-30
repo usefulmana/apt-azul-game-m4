@@ -77,6 +77,8 @@ void Game::play() {
         bool end = endRound();
         while (!end){
             for (auto &player: players) {
+
+                // Check if end round condition is met
                 if (endRound()){
                     // End loop
                     end = true;
@@ -298,6 +300,7 @@ bool Game::areFactoriesEmpty() {
             }
         }
     }
+    std::cout << "FACTORIES TILES COUNT: " << count << std::endl;
     return count == 20;
 }
 
@@ -439,12 +442,18 @@ void Game::execute(const std::string &command, Player * player) {
     }
     else {
         for (size_t i = 0; i < center.size(); ++i) {
-
             if (center[i]->getName() == color){
                 chosenTiles += color;
-                center.erase(center.begin() + i);
             }
         }
+        // TODO FIX ERASE ALL OCCURENCES
+//        for (size_t i = 0; i < center.size(); ++i) {
+//
+//            if (center[i]->getName() == color){
+//                center.erase(center.begin() + i);
+//
+//            }
+//        }
     }
     std::cout << "AFTER DRAW: " << chosenTiles << std::endl;
 
@@ -501,7 +510,29 @@ void Game::execute(const std::string &command, Player * player) {
     // Move leftover tiles to broken rows
     int brokenRowCount = player->getBrokenRowCount();
     if (chosenTiles[chosenTiles.length() - 1] == 'F'){
-        player->addToBrokenRow('F');
+
+        if (player->getBrokenRow()[0].getName() == ' '){
+            player->addToBrokenRow('F');
+        }
+        else {
+            std::string savedBrokenTiles;
+            for (int i = 0; i < BROKEN_ROW_SIZE; ++i) {
+                char temp = player->getBrokenRow()[i].getName();
+                if (temp != ' '){
+                    savedBrokenTiles += temp;
+                }
+            }
+            // Reset Counter
+            player->setBrokenRowCount(0);
+            player->addToBrokenRow('F');
+
+            // Add Broken tile back to broken row
+            for (size_t i = 0; i < savedBrokenTiles.size(); ++i) {
+                std::cout << savedBrokenTiles[i] << std::endl;
+                player->addToBrokenRow(savedBrokenTiles[i]);
+            }
+        }
+
         // Delete F at the end of the string
         chosenTiles.pop_back();
         std::cout << "BEFORE BROKEN: " << chosenTiles[chosenTiles.length() - 1] << std::endl;
@@ -577,6 +608,9 @@ bool Game::isRowFull(int row, Player *player) {
 }
 
 bool Game::endRound() {
+    // TODO CHECK IF MOVE IS POSSIBLE. IF NOT AUTOMATICALLY END ROUND
+    std::cout << "EMPTY CENTER: " << isCenterEmpty();
+    std::cout << "EMPTY FACTORIES: " << areFactoriesEmpty();
     return isCenterEmpty() && areFactoriesEmpty();
 }
 
@@ -602,4 +636,8 @@ void Game::reset() {
         }
 
     }
+}
+
+bool Game::markedToBeDeleted(Tile *tile, char color) {
+    return tile->getName() == color;
 }
