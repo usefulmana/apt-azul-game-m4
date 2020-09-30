@@ -12,6 +12,7 @@
 #define NUM_OF_FACTORIES 5
 #define FACTORY_SIZE 4
 #define BROKEN_ROW_SIZE 7
+#define MOSAIC_BOARD_COLOR "byrullbyruulbyrrulbyyrulb"
 
 
 #endif // COSC_ASSIGN_TWO_TYPES
