@@ -446,14 +446,17 @@ void Game::execute(const std::string &command, Player * player) {
                 chosenTiles += color;
             }
         }
-        // TODO FIX ERASE ALL OCCURENCloopES
-//        for (size_t i = 0; i < center.size(); ++i) {
-//
-//            if (center[i]->getName() == color){
-//                center.erase(center.begin() + i);
-//
-//            }
-//        }
+        // Delete chosen tiles
+        std::vector<Tile *>::iterator it = center.begin();
+        while (it != center.end()){
+            if ((*it)->getName() == color){
+                it = center.erase(it);
+            }
+            else {
+                it++;
+            }
+        }
+
     }
     std::cout << "AFTER DRAW: " << chosenTiles << std::endl;
 

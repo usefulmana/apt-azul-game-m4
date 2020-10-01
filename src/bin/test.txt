@@ -3,3 +3,6 @@ a
 b
 turn 1 R 1
 turn 2 R 1
+turn 3 R 2
+turn 5 R 2
+turn 0 Y 4
