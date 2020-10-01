@@ -77,7 +77,6 @@ void Game::play() {
         bool end = endRound();
         while (!end){
             for (auto &player: players) {
-
                 // Check if end round condition is met
                 if (endRound()){
                     // End loop
@@ -650,13 +649,15 @@ void Game::testLoadGame(char* fileName) {
     // Initialize test mode variables
     std::ifstream file;
     file.open(fileName, std::ifstream::in);
-    int lineCount = 0;
+    int lineCount = 1;
     std::string line;
     std::string validChars = "RYBLUF";
     std::vector<Player *> testPlayers;
 
-    do {
+    while (lineCount <= 1) {
         getline(file, line);
+
+        // Validate tile bag input
         for (size_t i = 0; i < line.size(); ++i) {
             size_t checked = validChars.find(line[i]);
             if (checked == std::string::npos) {
@@ -670,18 +671,20 @@ void Game::testLoadGame(char* fileName) {
         addFirstTileToCenter();
         fillFactories();
         lineCount++;
-    } while (lineCount < 1);
+    }
 
-    do {
+    // Grab players' names
+    while (lineCount <= 3) {
         getline(file, line);
         if (line.empty()){
             std::cout << "Corrupted save file. A player's name cannot be blank!" << std::endl;
             std::cout << "Disengaging test mode..." << std::endl;
             quitGame();
         }
+
         testPlayers.push_back(new Player(line));
         lineCount++;
-    } while (lineCount < 3);
+    }
 
     // Add players to game;
     addPlayers(testPlayers);
@@ -696,16 +699,17 @@ void Game::testLoadGame(char* fileName) {
             if (endRound()){
                 // End loop
                 end = true;
+                std::cout << "ROUND ENDS" << std::endl;
             }
             // Play
             for (auto &player: players) {
+
                 // Check Eof
                 if (getline(file, line)){
                     // Vector to store error messages
                     std::vector<std::string> errors = checkInput(line, player);
                     if (errors.capacity() == 0){
                         execute(line, player);
-
                     }
                     else {
                         std::cout << "Corrupted save file. Error at line " << lineCount + 1 << std::endl;
@@ -718,9 +722,11 @@ void Game::testLoadGame(char* fileName) {
                     std::cout << "Factories: " <<std::endl;
                     printFactories();
                     std::cout << std::endl;
-                    // TODO add scoring
+
                     for (auto &testPlayer: players) {
-                        std::cout << "Mosaic for " << player->getName() << ":" <<  std::endl;
+                        // TODO add scoring
+                        std::cout << "Score for player " << testPlayer->getName() << ": " << testPlayer->getScore() <<  std::endl;
+                        std::cout << "Mosaic for " << testPlayer->getName() << ":" <<  std::endl;
                         testPlayer->printMosaic();
                         testPlayer->printBrokenRow();
                         std::cout << std::endl;
@@ -731,6 +737,7 @@ void Game::testLoadGame(char* fileName) {
                 lineCount++;
             }
         }
+
         round++;
         // TODO Reset game
     }

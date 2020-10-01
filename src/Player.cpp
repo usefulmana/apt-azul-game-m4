@@ -98,7 +98,7 @@ void Player::printMosaic() {
         }
         // Print unlaid row
         for (int j = 0; j < rowCount; ++j) {
-            std::cout << unlaidRow[i][j].getName() << " ";
+            std::cout << unlaidRow[i][rowCount - 1 - j].getName() << " ";
         }
         std::cout << "|| ";
         // Print grid

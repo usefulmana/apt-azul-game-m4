@@ -5,7 +5,7 @@
 # shellcheck disable=SC2164
 cd src
 
-#sudo rm -rf obj
+sudo make clean
 
 # Compile
 sudo make
