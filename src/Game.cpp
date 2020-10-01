@@ -446,7 +446,7 @@ void Game::execute(const std::string &command, Player * player) {
                 chosenTiles += color;
             }
         }
-        // TODO FIX ERASE ALL OCCURENCES
+        // TODO FIX ERASE ALL OCCURENCloopES
 //        for (size_t i = 0; i < center.size(); ++i) {
 //
 //            if (center[i]->getName() == color){
@@ -640,4 +640,97 @@ void Game::reset() {
 
 bool Game::markedToBeDeleted(Tile *tile, char color) {
     return tile->getName() == color;
+}
+
+void Game::testLoadGame(char* fileName) {
+
+    // Initialize test mode variables
+    std::ifstream file;
+    file.open(fileName, std::ifstream::in);
+    int lineCount = 0;
+    std::string line;
+    std::string validChars = "RYBLUF";
+    std::vector<Player *> testPlayers;
+
+    do {
+        getline(file, line);
+        for (size_t i = 0; i < line.size(); ++i) {
+            size_t checked = validChars.find(line[i]);
+            if (checked == std::string::npos) {
+                std::cout << "Corrupted save file. Tile bag contains invalid characters!" << std::endl;
+                std::cout << "Disengaging test mode..." << std::endl;
+                quitGame();
+            }
+        }
+        // Setting up game
+        setTileBagFromString(line);
+        addFirstTileToCenter();
+        fillFactories();
+        lineCount++;
+    } while (lineCount < 1);
+
+    do {
+        getline(file, line);
+        if (line.empty()){
+            std::cout << "Corrupted save file. A player's name cannot be blank!" << std::endl;
+            std::cout << "Disengaging test mode..." << std::endl;
+            quitGame();
+        }
+        testPlayers.push_back(new Player(line));
+        lineCount++;
+    } while (lineCount < 3);
+
+    // Add players to game;
+    addPlayers(testPlayers);
+
+
+    // Count round
+    int round = 1;
+    while (round <= MAX_GAME_ROUNDS){
+        bool end = endRound();
+        while (!end){
+            // Check if end round condition is met
+            if (endRound()){
+                // End loop
+                end = true;
+            }
+            // Play
+            for (auto &player: players) {
+                // Check Eof
+                if (getline(file, line)){
+                    // Vector to store error messages
+                    std::vector<std::string> errors = checkInput(line, player);
+                    if (errors.capacity() == 0){
+                        execute(line, player);
+
+                    }
+                    else {
+                        std::cout << "Corrupted save file. Error at line " << lineCount + 1 << std::endl;
+                        std::cout << "Disengaging test mode..." << std::endl;
+                        quitGame();
+                    }
+                }
+                else {
+                    // Print result
+                    std::cout << "Factories: " <<std::endl;
+                    printFactories();
+                    std::cout << std::endl;
+                    // TODO add scoring
+                    for (auto &testPlayer: players) {
+                        std::cout << "Mosaic for " << player->getName() << ":" <<  std::endl;
+                        testPlayer->printMosaic();
+                        testPlayer->printBrokenRow();
+                        std::cout << std::endl;
+                    }
+                    std::cout << "=== Game Loaded Successfully ===" << std::endl;
+                    quitGame();
+                }
+                lineCount++;
+            }
+        }
+        round++;
+        // TODO Reset game
+    }
+    // Cleaning up
+    file.close();
 }

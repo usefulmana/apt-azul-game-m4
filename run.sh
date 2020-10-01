@@ -17,8 +17,13 @@ cd bin
 
 # Run
 #./azul
+# shellcheck disable=SC2154
+if [ "$1" == "test" ]; then
+  ./azul -t test.txt
+else
+  valgrind --leak-check=full ./azul
+fi
 
-valgrind --leak-check=full ./azul
 
 # Go back to previous directory
 cd ..

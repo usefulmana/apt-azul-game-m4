@@ -75,6 +75,8 @@ public:
     bool endRound();
 
     bool markedToBeDeleted(Tile* tile, char color);
+
+    void testLoadGame(char* fileName);
 private:
     std::vector<Player*> players;
     // Stores all Valid Turns

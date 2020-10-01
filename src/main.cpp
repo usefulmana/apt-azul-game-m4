@@ -133,7 +133,7 @@ void playGame() {
     std::cout << std::endl;
 
     // Game Initialization
-    Game *game = new Game();
+    auto game = new Game();
     game->addPlayers(createPlayersFromUserInput());
     game->setTileBagAutomatically();
 
@@ -151,6 +151,7 @@ void playGame() {
     }
 
     // delete objects
+    // TODO quit after finishing 1 game?
     delete game;
 
 }
@@ -213,5 +214,9 @@ std::vector<Player *> createPlayersFromUserInput() {
 }
 
 void engageTestMode(char* fileName){
-    std::cout << "Engaged Test Mode" << std::endl;
+    // Initialize New Game
+    auto game = new Game();
+    // Load game from file
+    game->testLoadGame(fileName);
+
 }
