@@ -1,5 +1,9 @@
 #include "Player.h"
 
+Player::Player() {
+    name = "DEAFULT NAME";
+}
+
 Player::Player(std::string name)
 {
     //Declare Variables

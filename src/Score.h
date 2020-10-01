@@ -12,7 +12,6 @@ enum Direction {
 class Score
 {
 public:
-
     Score(Player player, int placedX, int placedY);
 
     // Apply Scoring

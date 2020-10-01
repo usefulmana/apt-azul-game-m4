@@ -11,6 +11,7 @@ class Player
 {
 public:
     // Constructor/Desctructor
+    Player();
     Player(std::string name);
     ~Player();
 
