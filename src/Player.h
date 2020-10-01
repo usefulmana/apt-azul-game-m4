@@ -44,6 +44,14 @@ public:
 
     void setBrokenRowCount(int count);
 
+    void createPlayers();
+
+    Tile ** getUnlaidRow();
+
+    Tile* getBrokenRow();
+
+    Tile ** getGrid();
+
 private:
     std::string name;
     int score;

@@ -1,6 +1,5 @@
 #include "Game.h"
 
-
 Game::Game() {
     // Declare factories
     factories = new Tile *[NUM_OF_FACTORIES];
@@ -32,10 +31,8 @@ Game::~Game() {
 }
 
 void Game::addPlayers(std::vector<Player *> p) {
-
     // Add Player to back of Vector
     for(auto & player: p){
-
         players.push_back(player);
     }
 }
@@ -51,20 +48,22 @@ void Game::save(const std::string &fileName, std::vector<std::string> vector) {
 
 void Game::play() {
 
-    //Add tile Bag to input vector
+    //FILL TILE BAG
     std::string bag;
     for (int i = 0; i < 101; ++i) {
         bag += tileBag->get(i)->getName();
     }
     savedInputs.push_back(bag);
 
-    // Add players' names to input vector
+    //ADD PLAYERS
     for (auto &player: players) {
         savedInputs.push_back(player->getName());
     }
 
-    // Add first tile to center and fill factories
+    //ADD FIRST TILE
     addFirstTileToCenter();
+
+    // ADD FACTORIES
     fillFactories();
 
     // Variable to store round

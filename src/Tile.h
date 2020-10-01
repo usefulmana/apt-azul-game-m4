@@ -4,6 +4,7 @@
 class Tile {
 private:
     char name;
+    char tile;
 public:
     Tile(char n);
     Tile();

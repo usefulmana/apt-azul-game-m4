@@ -30,7 +30,7 @@ int main(int argc, char ** argv) {
     else if (argc == 3){
         // 2 additional args => test mode
         const std::string flag = "-t";
-        
+
         // If second argument is test flag
         if (argv[1] == flag){
             // If File Exists
@@ -80,12 +80,14 @@ int main(int argc, char ** argv) {
         if (std::cin.eof()) {
             quitGame();
         }
+
         // Check fail conditions
         else if (std::cin.fail() || choice < 0 || choice > 4) {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cout << "Wrong Input. Please enter an integer number from 1 to 4" << std::endl;
             std::cout << std::endl;
+
         } else {
             if (choice == 1) {
                 playGame();
@@ -151,7 +153,7 @@ void playGame() {
     }
 
     // delete objects
-    delete game;
+    // delete game;
 
 }
 
