@@ -574,8 +574,8 @@ void Game::execute(const std::string &command, Player * player) {
             if (color == toupper(temp)){
                 player->getGrid()[targetRow - 1][i].setName(color);
 
-                placedTileX = targetRow - 1;
-                placedTileY = i;
+                placedTileY = targetRow - 1;
+                placedTileX = i;
 
                 // Break loop
                 i = MOSAIC_DIM;
