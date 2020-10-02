@@ -808,11 +808,6 @@ void Game::load(const std::string &fileName) {
     while (round <= MAX_GAME_ROUNDS) {
         std::cout << "=== Round " << round << " ===" << std::endl;
         bool end = endRound();
-        if (round == MAX_GAME_ROUNDS) {
-            // TODO Fix round 5 bug
-            std::cout << "----------------------- " << areFactoriesEmpty() << std::endl;
-            std::cout << "----------------------- " << isCenterEmpty() << std::endl;
-        }
         while (!end) {
             for (size_t i = 0; i < players.size() && !end; ++i) {
                 auto player = players[i];
@@ -932,10 +927,11 @@ void Game::load(const std::string &fileName) {
         std::cout << "=== Round " << round << " Ends ===" << std::endl;
         round++;
         // Preventing Seg fault
-        if (round < MAX_GAME_ROUNDS) {
+        if (round <= MAX_GAME_ROUNDS) {
             reset();
         }
     }
     // Cleaning up
     file.close();
+    quitGame();
 }
