@@ -77,6 +77,10 @@ void Player::addScore(int s) {
     score += s;
 }
 
+void Player::setScore(int s) {
+    score = s;
+}
+
 int Player::getScore() {
     return score;
 }

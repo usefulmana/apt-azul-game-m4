@@ -20,7 +20,7 @@ public:
 
     // Save score of round
     void addScore(int s);
-
+    void setScore(int s);
     int getScore();
 
     // Reset Score at end of game

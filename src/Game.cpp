@@ -177,6 +177,22 @@ void Game::play() {
     }
 }
 
+void Game::deductBrokenTile(Player player) {
+    
+    int deductBy = 0;
+
+    for (int i = 0; i < BROKEN_ROW_SIZE; i++){
+
+        if (player.getBrokenRow()[i].getName() == ' '){
+            deductBy++;
+        }
+    }
+
+    int score = player.getScore() - deductBy;
+    player.setScore(score);
+
+}
+
 /**
  * Fill tile bag automatically in a pre-determined order
  */

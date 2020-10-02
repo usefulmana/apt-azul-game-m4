@@ -77,6 +77,8 @@ public:
 
     void printGameState();
 
+    void deductBrokenTile(Player player);
+
 private:
     std::vector<Player*> players;
     // Stores all Valid Turns
