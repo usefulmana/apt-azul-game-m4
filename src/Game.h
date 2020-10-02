@@ -77,7 +77,6 @@ public:
 
     void printGameState();
 
-    bool isMovePossible();
 private:
     std::vector<Player*> players;
     // Stores all Valid Turns
