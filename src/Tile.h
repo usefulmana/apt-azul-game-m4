@@ -11,6 +11,7 @@ public:
     ~Tile();
     char getName();
     void setName(char n);
+    char getTile();
 };
 
 

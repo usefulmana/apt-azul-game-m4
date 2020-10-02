@@ -35,12 +35,6 @@ public:
 
     void addToBrokenRow(char tile);
 
-    Tile ** getUnlaidRow();
-
-    Tile ** getGrid();
-
-    Tile* getBrokenRow();
-
     int getBrokenRowCount();
 
     void setBrokenRowCount(int count);

@@ -8,6 +8,7 @@
 #include <iostream>
 #include "Types.h"
 #include <algorithm>
+#include "Score.h"
 #define FIRST_FACTORY 0
 #define LAST_FACTORY 5
 #define FIRST_STORAGE_ROW 1
@@ -82,6 +83,10 @@ private:
     LinkedList<Tile*> * tileBag;
     Tile ** factories;
     std::vector<Tile*> center;
+
+    // Coordinates of Rcently Placed Tile
+    int placedTileX;
+    int placedTileY;
 };
 
 #endif // COSC_ASSIGN_TWO_GAME

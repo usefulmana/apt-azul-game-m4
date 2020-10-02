@@ -573,6 +573,10 @@ void Game::execute(const std::string &command, Player * player) {
             char temp = player->getGrid()[targetRow - 1][i].getName();
             if (color == toupper(temp)){
                 player->getGrid()[targetRow - 1][i].setName(color);
+
+                placedTileX = targetRow - 1;
+                placedTileY = i;
+
                 // Break loop
                 i = MOSAIC_DIM;
             }
@@ -580,6 +584,11 @@ void Game::execute(const std::string &command, Player * player) {
     }
 
     // Score
+    std::cout << "x = " << placedTileX << std::endl;
+    std::cout << "y = " << placedTileY << std::endl;
+    Score score = Score(player, placedTileX, placedTileY);
+    std::cout << "Round Score: " << score.getRoundScore() << std::endl;
+
 }
 
 
