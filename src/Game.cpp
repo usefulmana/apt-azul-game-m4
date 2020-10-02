@@ -193,6 +193,11 @@ void Game::deductBrokenTile(Player * player) {
     }
 
     int score = player->getScore() - deductBy;
+
+    std::cout << "Deduct By: " << deductBy << std::endl;
+    std::cout << "Total Score before Deduction: " << player->getScore() << std::endl;
+    std::cout << "Total Score after Deduction: " << score << std::endl;
+
     player->setScore(score);
 
 }
