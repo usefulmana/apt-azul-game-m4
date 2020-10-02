@@ -12,7 +12,7 @@ enum Direction {
 class Score
 {
 public:
-    Score(Player player, int placedX, int placedY);
+    Score(Player *player, int placedX, int placedY);
 
     // Apply Scoring
     void addScoring();
@@ -43,7 +43,7 @@ private:
     Direction direction;
 
     int roundScore;
-    Player player;
+    Player * player;
     Tile ** grid;
 
 };

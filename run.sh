@@ -13,12 +13,12 @@ sudo make
 cd bin
 
 # Debug
-#gdb azul
+gdb azul
 
 # Run
-#./azul
+./azul
 
-valgrind --leak-check=full ./azul
+#valgrind --leak-check=full ./azul
 
 # Go back to previous directory
 cd ..
