@@ -171,7 +171,7 @@ void Game::play() {
         std::cout << "=== Round " << round << " Ends ===" << std::endl;
         round++;
         // Preventing Seg fault
-        if (round < MAX_GAME_ROUNDS) {
+        if (round <= MAX_GAME_ROUNDS) {
             reset();
         }
     }
