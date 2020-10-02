@@ -46,6 +46,9 @@ private:
     Player * player;
     Tile ** grid;
 
+    bool wasVertical;
+    bool wasHoriz;
+
 };
 
 #endif // COSC_ASSIGN_TWO_SCORE

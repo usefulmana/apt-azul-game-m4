@@ -587,7 +587,7 @@ void Game::execute(const std::string &command, Player * player) {
     std::cout << "x = " << placedTileX << std::endl;
     std::cout << "y = " << placedTileY << std::endl;
     Score score = Score(player, placedTileX, placedTileY);
-    std::cout << "Round Score: " << score.getRoundScore() << std::endl;
+    // std::cout << "Round Score: " << score.getRoundScore() << std::endl;
 
 }
 

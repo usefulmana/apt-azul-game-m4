@@ -2,8 +2,8 @@
 #include <ctype.h>
 #define MAX_DIRECTIONS 4
 #define MAX_UP 0
-#define MAX_DOWN 3
-#define MAX_RIGHT 3
+#define MAX_DOWN 4
+#define MAX_RIGHT 4
 #define MAX_LEFT 0
 
 #define INVALID_COORDINATE -2
@@ -23,10 +23,12 @@ Score::Score(Player * player, int placedX, int placedY) {
     addScoring();
 
     // // Add Round Score to Player Total
-    // player->addScore(roundScore);
+    player->addScore(roundScore);
 }
 
 void Score::addScoring() {
+
+    roundScore++;
 
     for(int i = 0; i < MAX_DIRECTIONS; i ++) {
         
@@ -37,35 +39,53 @@ void Score::addScoring() {
 
         // Set Current as Placed Piece
         setCurrent(placedX, placedY);
-        std::cout << "passed 2" << std::endl;
 
         // Set Next
         setNext(direction);
-        std::cout << "passed 3" << std::endl;
         
-        // Set Next Char
-        nextTileChar = grid[nextX][nextY].getName();
-        std::cout << "passed 4 - nextTileChar: " << nextTileChar << std::endl;
+        // If setNext returns invalid coordinates
+        if (nextX != INVALID_COORDINATE){
+
+
+            // Set Next Char
+            nextTileChar = grid[nextY][nextX].getName();
+            std::cout << "passed 4 - nextTileChar to check: " << nextTileChar << std::endl;
+        }
 
         // Look at all elements in selected direction that have next
         // Where next == capital
         while (isupper(nextTileChar) && nextX != -2) {
-            std::cout << "passed 5" << std::endl;
+            std::cout << "passed 5 - That tile is a capital letter" << std::endl;
             // Add Score
-            roundScore++;   
+            roundScore++; 
+            std::cout << "roundScore: " << roundScore << std::endl;
+
+            if (direction == 0 || direction == 2) {
+                wasVertical = true;
+            }
+            if (direction == 1 || direction == 4) {
+                wasHoriz = true;
+            }
+            if (wasVertical && wasHoriz) {
+                roundScore++;
+            }
 
             // Reset Current and Next Piece
             setCurrent(nextX, nextY);
             
             setNext(direction);
 
-            nextTileChar = grid[nextX][nextY].getName();
-            std::cout << "passed 6 - nextTileChar: " << nextTileChar << std::endl;
+            if (nextX != INVALID_COORDINATE){
+                nextTileChar = grid[nextY][nextX].getName();
+                std::cout << "passed 4 - nextTileChar to check: " << nextTileChar << std::endl;
+            }
 
 
         }
     }
     std::cout << "got out of for loop alive" << std::endl;
+    std::cout << "Final roundScore: " << roundScore << std::endl;
+
 
 }
 
@@ -85,7 +105,7 @@ void Score::setNext(Direction direction) {
     // Up
     if (direction == 0 && currentY != MAX_UP) {
 
-        nextY = currentY + 1;
+        nextY = currentY - 1;
 
     // Right
     } else if (direction == 1 && currentX != MAX_RIGHT) {
@@ -95,16 +115,16 @@ void Score::setNext(Direction direction) {
     // Down
     } else if (direction == 2 && currentY != MAX_DOWN) {
 
-        nextY = currentY - 1;
+        nextY = currentY + 1;
 
     // Left
-    } else if (direction == 3 && currentY != MAX_LEFT) {
+    } else if (direction == 3 && currentX != MAX_LEFT) {
 
         nextX = currentX - 1;
     }
 
     // If it fails to set new Next Coordinate
-    if (currentX == nextX && currentY == nextY) {
+    if (nextX == currentX && nextY == currentY) {
         nextX = INVALID_COORDINATE;
         nextY = INVALID_COORDINATE;
     }
