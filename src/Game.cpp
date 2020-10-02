@@ -933,5 +933,22 @@ void Game::load(const std::string &fileName) {
     }
     // Cleaning up
     file.close();
-    quitGame();
+
+    std::cout << "=== Game Over ===" << std::endl;
+    std::cout << "=== Scoreboard ===" << std::endl;
+    // Print Scores
+    for (size_t i = 0; i < players.size(); ++i) {
+        std::cout << "Player " << players[i]->getName() << ": " << players[i]->getScore() << std::endl;
+    }
+
+    // Print result
+    if (players[0]->getScore() > players[1]->getScore()){
+        std::cout << "Player " << players[0]->getName() << " wins!" << std::endl;
+    }
+    else if (players[0]->getScore() < players[1]->getScore()){
+        std::cout << "Player " << players[1]->getName() << " wins!" << std::endl;
+    }
+    else {
+        std::cout << "It's a tie!" << std::endl;
+    }
 }
