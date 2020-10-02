@@ -14,7 +14,7 @@ sudo make
 cd bin
 
 if [ "$1" == "test" ]; then
-  ./azul -t test.txt
+  ./azul -t "$2"
 else
   ./azul
 fi

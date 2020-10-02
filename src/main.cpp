@@ -150,9 +150,8 @@ void playGame() {
         std::cout << "Player " << game->getPlayers()[i]->getName() << ": " << game->getPlayers()[i]->getScore() << std::endl;
     }
 
-    // delete objects
-    // TODO quit after finishing 1 game?
-    delete game;
+    // Quitting game after completing a game
+    quitGame();
 
 }
 

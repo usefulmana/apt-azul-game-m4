@@ -8,10 +8,7 @@
 #include <iostream>
 #include "Types.h"
 #include <algorithm>
-#define FIRST_FACTORY 0
-#define LAST_FACTORY 5
-#define FIRST_STORAGE_ROW 1
-#define LAST_STORAGE_ROW 5
+
 
 class Game
 {
@@ -77,6 +74,10 @@ public:
     bool markedToBeDeleted(Tile* tile, char color);
 
     void testLoadGame(char* fileName);
+
+    void printGameState();
+
+    bool isMovePossible();
 private:
     std::vector<Player*> players;
     // Stores all Valid Turns
