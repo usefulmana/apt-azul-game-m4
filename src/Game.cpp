@@ -172,24 +172,28 @@ void Game::play() {
         round++;
         // Preventing Seg fault
         if (round < MAX_GAME_ROUNDS){
+
+            for (auto &player: players)
+                deductBrokenTile(player);
+
             reset();
         }
     }
 }
 
-void Game::deductBrokenTile(Player player) {
+void Game::deductBrokenTile(Player * player) {
     
     int deductBy = 0;
 
     for (int i = 0; i < BROKEN_ROW_SIZE; i++){
 
-        if (player.getBrokenRow()[i].getName() == ' '){
+        if (player->getBrokenRow()[i].getName() == ' '){
             deductBy++;
         }
     }
 
-    int score = player.getScore() - deductBy;
-    player.setScore(score);
+    int score = player->getScore() - deductBy;
+    player->setScore(score);
 
 }
 

@@ -77,7 +77,7 @@ public:
 
     void printGameState();
 
-    void deductBrokenTile(Player player);
+    void deductBrokenTile(Player * player);
 
 private:
     std::vector<Player*> players;
