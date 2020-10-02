@@ -14,7 +14,7 @@ sudo make
 cd bin
 
 if [ "$1" == "test" ]; then
-  valgrind --leak-check=full ./azul -t "$2"
+  ./azul -t "$2"
 else
   ./azul
 fi

@@ -50,7 +50,7 @@ void Game::save(const std::string &fileName, std::vector<std::string> vector) {
 }
 
 void Game::play() {
-
+    // TODO TEST A FULL GAME
     //Add tile Bag to input vector
     std::string bag;
     for (int i = 0; i < 101; ++i) {
@@ -170,7 +170,10 @@ void Game::play() {
         // Next Round
         std::cout << "=== Round " << round << " Ends ===" << std::endl;
         round++;
-        reset();
+        // Preventing Seg fault
+        if (round < MAX_GAME_ROUNDS){
+            reset();
+        }
     }
 }
 
@@ -597,7 +600,6 @@ std::string Game::getGridColor(int row, Player *player) {
 
 bool Game::isRowFull(int row, Player *player) {
     int full = true;
-    std::cout << "-----------------" << row << std::endl;
     if (row != 0) {
         for (int i = 0; i < row; ++i) {
             if (player->getUnlaidRow()[row - 1][i].getName() == '.') {
