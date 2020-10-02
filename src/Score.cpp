@@ -6,6 +6,8 @@
 #define MAX_RIGHT 3
 #define MAX_LEFT 0
 
+#define INVALID_COORDINATE -2
+
 
 Score::Score(Player * player, int placedX, int placedY) {   
     // Declare Variables
@@ -47,7 +49,7 @@ void Score::addScoring() {
 
         // Look at all elements in selected direction that have next
         // Where next == capital
-        while (isupper(nextTileChar)) {
+        while (isupper(nextTileChar) && nextX != -2) {
             std::cout << "passed 5" << std::endl;
             // Add Score
             roundScore++;   
@@ -56,6 +58,7 @@ void Score::addScoring() {
             setCurrent(nextX, nextY);
             
             setNext(direction);
+
             nextTileChar = grid[nextX][nextY].getName();
             std::cout << "passed 6 - nextTileChar: " << nextTileChar << std::endl;
 
@@ -79,9 +82,6 @@ void Score::setNext(Direction direction) {
     nextX = currentX;
     nextY = currentY;
 
-    // Check if next piece will be out of bounds at end
-    // If thats the case break away from that direction
-
     // Up
     if (direction == 0 && currentY != MAX_UP) {
 
@@ -101,7 +101,12 @@ void Score::setNext(Direction direction) {
     } else if (direction == 3 && currentY != MAX_LEFT) {
 
         nextX = currentX - 1;
+    }
 
+    // If it fails to set new Next Coordinate
+    if (currentX == nextX && currentY == nextY) {
+        nextX = INVALID_COORDINATE;
+        nextY = INVALID_COORDINATE;
     }
 
     std::cout << "nextX: " << nextX << std::endl;
