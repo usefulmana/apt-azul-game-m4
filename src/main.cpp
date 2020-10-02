@@ -161,16 +161,47 @@ void playGame() {
         std::cout << "It's a tie!" << std::endl;
     }
 
-    // Quitting game after completing a game
-    quitGame();
-
 }
 
 /**
  * This functional will load an Azul game from a file
  */
 void loadGame() {
-    std::cout << "Loading Game" << std::endl;
+
+    bool valid = false;
+    std::string fileName;
+    // Clear input
+    std::cin.clear();
+    std::cin.ignore(10000, '\n');
+
+    std::cout << "Enter the name of save file: " << std::endl;
+    while (!valid){
+
+        std::cout << "> ";
+
+        // Grab file name
+        getline(std::cin, fileName);
+
+        // Check EOF
+        if (!std::cin){
+            quitGame();
+        }
+        // Check if file exists
+        if (checkIfFileExists(fileName.c_str())){
+            // Break loop
+            valid = true;
+        }
+        else {
+            // Display error message
+            std::cout << "No such file exists. Please try again!" << std::endl;
+        }
+    }
+
+
+    // Initialize New Game
+    auto game = new Game();
+    // Load game from file
+    game->load(fileName);
 }
 
 /**
