@@ -2,9 +2,10 @@
 
 # Simple bash script to run and test
 
+# shellcheck disable=SC2164
 cd src
 
-#sudo rm -rf obj
+sudo make clean
 
 # Compile
 sudo make
@@ -12,17 +13,19 @@ sudo make
 # Move to tests folder
 cd bin
 
+if [ "$1" == "test" ]; then
+  ./azul -t "$2"
+else
+  ./azul
+fi
+
+# Valgrind
+# valgrind --leak-check=full ./azul
+
 # Debug
-gdb azul
-
-# Run
-./azul
-
-#valgrind --leak-check=full ./azul
+# gdb azul
 
 # Go back to previous directory
-cd ..
-
-cd ..
+cd ../..
 
 exit 0;

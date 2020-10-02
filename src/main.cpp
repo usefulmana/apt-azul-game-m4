@@ -2,6 +2,8 @@
 #include <limits>
 #include <vector>
 #include <string>
+#include <fstream>
+#include <cstring>
 #include "Types.h"
 #include "Game.h"
 #include "Player.h"
@@ -136,7 +138,7 @@ void playGame() {
     std::cout << std::endl;
 
     // Game Initialization
-    Game *game = new Game();
+    auto game = new Game();
     game->addPlayers(createPlayersFromUserInput());
     game->setTileBagAutomatically();
 
@@ -153,8 +155,16 @@ void playGame() {
         std::cout << "Player " << game->getPlayers()[i]->getName() << ": " << game->getPlayers()[i]->getScore() << std::endl;
     }
 
-    // delete objects
-    // delete game;
+    // Print result
+    if (game->getPlayers()[0]->getScore() > game->getPlayers()[1]->getScore()){
+        std::cout << "Player " << game->getPlayers()[0]->getName() << " wins!" << std::endl;
+    }
+    else if (game->getPlayers()[0]->getScore() < game->getPlayers()[1]->getScore()){
+        std::cout << "Player " << game->getPlayers()[1]->getName() << " wins!" << std::endl;
+    }
+    else {
+        std::cout << "It's a tie!" << std::endl;
+    }
 
 }
 
@@ -162,7 +172,41 @@ void playGame() {
  * This functional will load an Azul game from a file
  */
 void loadGame() {
-    std::cout << "Loading Game" << std::endl;
+
+    bool valid = false;
+    std::string fileName;
+    // Clear input
+    std::cin.clear();
+    std::cin.ignore(10000, '\n');
+
+    std::cout << "Enter the name of save file: " << std::endl;
+    while (!valid){
+
+        std::cout << "> ";
+
+        // Grab file name
+        getline(std::cin, fileName);
+
+        // Check EOF
+        if (!std::cin){
+            quitGame();
+        }
+        // Check if file exists
+        if (checkIfFileExists(fileName.c_str())){
+            // Break loop
+            valid = true;
+        }
+        else {
+            // Display error message
+            std::cout << "No such file exists. Please try again!" << std::endl;
+        }
+    }
+
+
+    // Initialize New Game
+    auto game = new Game();
+    // Load game from file
+    game->load(fileName);
 }
 
 /**
@@ -216,5 +260,9 @@ std::vector<Player *> createPlayersFromUserInput() {
 }
 
 void engageTestMode(char* fileName){
-    std::cout << "Engaged Test Mode" << std::endl;
+    // Initialize New Game
+    auto game = new Game();
+    // Load game from file
+    game->testLoadGame(fileName);
+
 }
