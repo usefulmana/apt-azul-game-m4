@@ -2,6 +2,8 @@
 #include <limits>
 #include <vector>
 #include <string>
+#include <fstream>
+#include <cstring>
 #include "Types.h"
 #include "Game.h"
 #include "Player.h"
