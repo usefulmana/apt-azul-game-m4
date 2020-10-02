@@ -150,6 +150,17 @@ void playGame() {
         std::cout << "Player " << game->getPlayers()[i]->getName() << ": " << game->getPlayers()[i]->getScore() << std::endl;
     }
 
+    // Print result
+    if (game->getPlayers()[0]->getScore() > game->getPlayers()[1]->getScore()){
+        std::cout << "Player " << game->getPlayers()[0]->getName() << " wins!" << std::endl;
+    }
+    else if (game->getPlayers()[0]->getScore() < game->getPlayers()[1]->getScore()){
+        std::cout << "Player " << game->getPlayers()[1]->getName() << " wins!" << std::endl;
+    }
+    else {
+        std::cout << "It's a tie!" << std::endl;
+    }
+
     // Quitting game after completing a game
     quitGame();
 
