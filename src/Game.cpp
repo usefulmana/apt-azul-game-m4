@@ -125,7 +125,7 @@ void Game::play() {
                             savedInputs.push_back(input);
                             std::cout << "Turn successful." << std::endl;
                             // Display score
-                            std::cout << "Your score: " << player->getScore() << std::endl;
+                            std::cout << "Total Score: " << player->getScore() << std::endl;
                             std::cout << std::endl;
                             // End input loop
                             validInput = true;
@@ -564,9 +564,14 @@ void Game::execute(const std::string &command, Player *player) {
             }
         }
 
-//    std::cout << "Row Count: " << countColorInRow << std::endl;
-//    std::cout << "Target Row Count: " << targetRow << std::endl;
+    //    std::cout << "Row Count: " << countColorInRow << std::endl;
+    //    std::cout << "Target Row Count: " << targetRow << std::endl;
     // if the number of color = target row number
+
+    // Set Placed as Invalid to Ensure it Holds a Placed Value
+    placedTileX = INVALID_COORDINATE;
+    placedTileY = INVALID_COORDINATE;
+
     if (countColorInRow == targetRow){
         for (int i = 0; i < MOSAIC_DIM; ++i) {
             char temp = player->getGrid()[targetRow - 1][i].getName();
@@ -586,13 +591,13 @@ void Game::execute(const std::string &command, Player *player) {
         }
     }
 
-
     // Score
-    std::cout << "x = " << placedTileX << std::endl;
-    std::cout << "y = " << placedTileY << std::endl;
     Score score = Score(player, placedTileX, placedTileY);
-    // std::cout << "Round Score: " << score.getRoundScore() << std::endl;
 
+    // Display Round Score
+    std::cout << "Round Score: " << score.getRoundScore() << std::endl;
+
+    }
 }
 
 
@@ -890,8 +895,8 @@ void Game::load(const std::string & fileName) {
                                 // Add input to input vector
                                 savedInputs.push_back(input);
                                 std::cout << "Turn successful." << std::endl;
-                                // Display score
-                                std::cout << "Your score: " << player->getScore() << std::endl;
+                                // Display Score
+                                std::cout << "Total Score: " << player->getScore() << std::endl;
                                 std::cout << std::endl;
                                 // End input loop
                                 validInput = true;

@@ -17,6 +17,7 @@
 #define LAST_FACTORY 5
 #define FIRST_STORAGE_ROW 0
 #define LAST_STORAGE_ROW 5
+#define INVALID_COORDINATE -2
 
 
 

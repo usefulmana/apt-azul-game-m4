@@ -6,9 +6,6 @@
 #define MAX_RIGHT 4
 #define MAX_LEFT 0
 
-#define INVALID_COORDINATE -2
-
-
 Score::Score(Player * player, int placedX, int placedY) {   
     // Declare Variables
     this->player = player;
@@ -19,82 +16,77 @@ Score::Score(Player * player, int placedX, int placedY) {
 
     this->roundScore = 0;
 
-    // // Calculate Scoring
-    addScoring();
+    // Was a placement actually made?
+    if (placedY != INVALID_COORDINATE && placedY != INVALID_COORDINATE) {
+        // Calculate Scoring
+        addScoring();
+    }
 
-    // // Add Round Score to Player Total
+    // Add Round Score to Player Total
     player->addScore(roundScore);
 }
 
 void Score::addScoring() {
-
+    
+    //Inital Point for Placement
     roundScore++;
 
+    // For each Direction
     for(int i = 0; i < MAX_DIRECTIONS; i ++) {
         
-        // For each Direction
+        // Direction from index
         direction = (Direction)i;
-
-        std::cout << "passed 1 - Direction: " << direction << std::endl;
 
         // Set Current as Placed Piece
         setCurrent(placedX, placedY);
 
-        // Set Next
+        // Set Next Piece
         setNext(direction);
         
         // If setNext returns invalid coordinates
         if (nextX != INVALID_COORDINATE){
 
-
             // Set Next Char
             nextTileChar = grid[nextY][nextX].getName();
-            std::cout << "passed 4 - nextTileChar to check: " << nextTileChar << std::endl;
+
         }
 
-        // Look at all elements in selected direction that have next
-        // Where next == capital
+        // Look at all elements in selected direction that are capital
         while (isupper(nextTileChar) && nextX != -2) {
-            std::cout << "passed 5 - That tile is a capital letter" << std::endl;
+
             // Add Score
             roundScore++; 
-            std::cout << "roundScore: " << roundScore << std::endl;
 
+            // If Touching Placed Vertical Block
             if (direction == 0 || direction == 2) {
                 wasVertical = true;
             }
-            if (direction == 1 || direction == 4) {
+            // If Touching Placed Horizontal Block
+            if (direction == 1 || direction == 3) {
                 wasHoriz = true;
             }
+            // If Touching Horzonital and Vertical Placed Block
             if (wasVertical && wasHoriz) {
+                // Add extra point
                 roundScore++;
             }
 
             // Reset Current and Next Piece
             setCurrent(nextX, nextY);
-            
             setNext(direction);
 
+            // If the Next Coordinate is Valid
             if (nextX != INVALID_COORDINATE){
+                // Get Value of Next Tile
                 nextTileChar = grid[nextY][nextX].getName();
-                std::cout << "passed 4 - nextTileChar to check: " << nextTileChar << std::endl;
             }
-
-
         }
     }
-    std::cout << "got out of for loop alive" << std::endl;
-    std::cout << "Final roundScore: " << roundScore << std::endl;
-
-
 }
 
 void Score::setCurrent(int x, int y) {
     currentX = x;
     currentY = y;
-    std::cout << "currentX: " << currentX << std::endl;
-    std::cout << "currentY: " << currentY << std::endl;
-
 }
 
 void Score::setNext(Direction direction) {
@@ -102,22 +94,22 @@ void Score::setNext(Direction direction) {
     nextX = currentX;
     nextY = currentY;
 
-    // Up
+    // Go Up
     if (direction == 0 && currentY != MAX_UP) {
 
         nextY = currentY - 1;
 
-    // Right
+    // Go Right
     } else if (direction == 1 && currentX != MAX_RIGHT) {
 
         nextX = currentX + 1;
 
-    // Down
+    // Go Down
     } else if (direction == 2 && currentY != MAX_DOWN) {
 
         nextY = currentY + 1;
 
-    // Left
+    // Go Left
     } else if (direction == 3 && currentX != MAX_LEFT) {
 
         nextX = currentX - 1;
@@ -125,12 +117,10 @@ void Score::setNext(Direction direction) {
 
     // If it fails to set new Next Coordinate
     if (nextX == currentX && nextY == currentY) {
+        // Next Coordinate must be out-of-bounds
         nextX = INVALID_COORDINATE;
         nextY = INVALID_COORDINATE;
     }
-
-    std::cout << "nextX: " << nextX << std::endl;
-    std::cout << "nextY: " << nextY << std::endl;
 
 }
 
