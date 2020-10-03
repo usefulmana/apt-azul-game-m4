@@ -16,7 +16,7 @@ cd bin
 if [ "$1" == "test" ]; then
   ./azul -t "$2"
 else
-  ./azul
+  valgrind --leak-check=full ./azul
 fi
 
 # Valgrind

@@ -182,7 +182,7 @@ void Game::play() {
 }
 
 void Game::deductBrokenTile(Player * player) {
-    
+
     int deductBy = 0;
 
     for (int i = 0; i < BROKEN_ROW_SIZE; i++){
@@ -377,15 +377,27 @@ std::vector<std::string> Game::checkInput(std::string input, Player *player) {
             int row = std::stoi(inputArr[3]);
             if (factory < FIRST_FACTORY || factory > LAST_FACTORY) {
                 result.push_back("<factory> must be a number between 0 and 5");
-            }
-            if (row < FIRST_STORAGE_ROW || row > LAST_STORAGE_ROW) {
-                result.push_back("<row> must be a number between 0 and 5");
-            } else if (isRowFull(row, player)) {
-                result.push_back("Illegal move. Chosen row is full");
-            }
-            if (isAFactoryEmpty(factory)) {
+            } else if (isAFactoryEmpty(factory)) {
                 result.push_back("The factory you have entered is empty. Your input = "
                                  + inputArr[1]);
+            }
+
+            if (row < FIRST_STORAGE_ROW || row > LAST_STORAGE_ROW) {
+                result.push_back("<row> must be a number between 0 and 5");
+            } else {
+                if (isRowFull(row, player)) {
+                    result.push_back("Illegal move. Chosen row is full");
+                }
+                if (row != 0) {
+                    size_t grid = getGridColor(row, player).find(inputArr[2]);
+                    if (grid != std::string::npos) {
+                        result.push_back("Illegal move. The grid has already had this color");
+                    }
+
+                    if (getColorOfaRow(row, player) != '.' && (getColorOfaRow(row, player) != inputArr[2][0])) {
+                        result.push_back("Illegal move. All tiles in the same row must have the same color");
+                    }
+                }
             }
 
             // Check Inputted Colour
@@ -396,16 +408,6 @@ std::vector<std::string> Game::checkInput(std::string input, Player *player) {
                 result.push_back("The tile you have chosen does not exist in the chosen factory.");
             }
 
-            if (row != 0) {
-                size_t grid = getGridColor(row, player).find(inputArr[2]);
-                if (grid != std::string::npos) {
-                    result.push_back("Illegal move. The grid has already had this color");
-                }
-
-                if (getColorOfaRow(row, player) != '.' && (getColorOfaRow(row, player) != inputArr[2][0])) {
-                    result.push_back("Illegal move. All tiles in the same row must have the same color");
-                }
-            }
         }
         catch (std::exception const &e) {
             result.push_back("<factory> must be a number between 0 and 5");
@@ -422,6 +424,7 @@ std::vector<std::string> Game::checkInput(std::string input, Player *player) {
 
 bool Game::tileExistsInAFactory(const char &tile, int factory) {
     bool exist = false;
+
     if (factory == 0) {
         for (size_t i = 0; i < center.size(); ++i) {
             if (center[i]->getName() == tile) {
@@ -429,7 +432,7 @@ bool Game::tileExistsInAFactory(const char &tile, int factory) {
                 i = center.size();
             }
         }
-    } else {
+    } else if (factory > FIRST_FACTORY && factory < LAST_FACTORY + 1) {
         for (int i = 0; i < FACTORY_SIZE; ++i) {
             if (factories[factory - 1][i].getName() == tile) {
                 exist = true;
@@ -438,6 +441,7 @@ bool Game::tileExistsInAFactory(const char &tile, int factory) {
             }
         }
     }
+
     return exist;
 }
 
@@ -749,7 +753,7 @@ void Game::testLoadGame(char *fileName) {
                     if (errors.capacity() == 0) {
                         execute(line, player);
                     } else {
-                        std::cout << "Corrupted save file. Error at line " << lineCount + 1 << std::endl;
+                        std::cout << "Corrupted save file. Error at line " << lineCount << std::endl;
                         std::cout << "Disengaging test mode..." << std::endl;
                         quitGame();
                     }
@@ -797,7 +801,7 @@ void Game::printGameState() {
     }
 }
 
-void Game::load(const std::string & fileName) {
+void Game::load(const std::string &fileName) {
     // Initialize test mode variables
     std::ifstream file;
     file.open(fileName, std::ifstream::in);
@@ -844,11 +848,6 @@ void Game::load(const std::string & fileName) {
     while (round <= MAX_GAME_ROUNDS) {
         std::cout << "=== Round " << round << " ===" << std::endl;
         bool end = endRound();
-        if (round == MAX_GAME_ROUNDS){
-            // TODO Fix round 5 bug
-            std::cout << "----------------------- " << areFactoriesEmpty() << std::endl;
-            std::cout << "----------------------- " << isCenterEmpty() << std::endl;
-        }
         while (!end) {
             for (size_t i = 0; i < players.size() && !end; ++i) {
                 auto player = players[i];
@@ -861,7 +860,7 @@ void Game::load(const std::string & fileName) {
                     if (errors.capacity() == 0) {
                         execute(line, player);
                     } else {
-                        std::cout << "Corrupted save file. Error at line " << lineCount + 1 << std::endl;
+                        std::cout << "Corrupted save file. Error at line " << lineCount << std::endl;
                         std::cout << "Disengaging test mode..." << std::endl;
                         quitGame();
                     }
@@ -968,10 +967,28 @@ void Game::load(const std::string & fileName) {
         std::cout << "=== Round " << round << " Ends ===" << std::endl;
         round++;
         // Preventing Seg fault
-        if (round < MAX_GAME_ROUNDS){
+        if (round <= MAX_GAME_ROUNDS) {
             reset();
         }
     }
     // Cleaning up
     file.close();
+
+    std::cout << "=== Game Over ===" << std::endl;
+    std::cout << "=== Scoreboard ===" << std::endl;
+    // Print Scores
+    for (size_t i = 0; i < players.size(); ++i) {
+        std::cout << "Player " << players[i]->getName() << ": " << players[i]->getScore() << std::endl;
+    }
+
+    // Print result
+    if (players[0]->getScore() > players[1]->getScore()){
+        std::cout << "Player " << players[0]->getName() << " wins!" << std::endl;
+    }
+    else if (players[0]->getScore() < players[1]->getScore()){
+        std::cout << "Player " << players[1]->getName() << " wins!" << std::endl;
+    }
+    else {
+        std::cout << "It's a tie!" << std::endl;
+    }
 }
