@@ -15,7 +15,6 @@ std::vector<std::string> splitString(std::string str, char delimiter) {
     return result;
 }
 
-
 const std::string getDateTime(){
     // Current time of system
     time_t now = time(0);
@@ -27,14 +26,12 @@ const std::string getDateTime(){
     return buf;
 }
 
-
 void writeToFile(const std::string &fileName, const std::string &str) {
     std::ofstream file;
     file.open(fileName, std::ios_base::app);
     file << str + '\n';
     file.close();
 }
-
 
 void writeMultipleStrToFile(const std::string &fileName, std::vector<std::string> vector) {
     std::ofstream file;
@@ -47,7 +44,6 @@ void writeMultipleStrToFile(const std::string &fileName, std::vector<std::string
     file.close();
 }
 
-
 void deleteAFile(const std::string &fileName) {
     const int success = std::remove(fileName.c_str());
     if (success == 0) {
@@ -59,17 +55,14 @@ void deleteAFile(const std::string &fileName) {
     }
 }
 
-
 void renameAFile(const std::string &oldName, const std::string &newName) {
     std::rename(oldName.c_str(), newName.c_str());
 }
-
 
 bool checkIfFileExists(const char *file) {
     std::ifstream f(file);
     return f.good();
 }
-
 
 void quitGame() {
     std::cout << std::endl;

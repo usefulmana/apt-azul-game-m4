@@ -1,10 +1,4 @@
 #include "Score.h"
-#include <ctype.h>
-#define MAX_DIRECTIONS 4
-#define MAX_UP 0
-#define MAX_DOWN 4
-#define MAX_RIGHT 4
-#define MAX_LEFT 0
 
 Score::Score(Player * player, int placedX, int placedY) {   
     // Declare Variables
@@ -19,76 +13,57 @@ Score::Score(Player * player, int placedX, int placedY) {
     this->wasVertical = false;
     this->wasHoriz = false;
 
-    // Was a placement actually made?
+    // Check if placement was made
     if (placedY != INVALID_COORDINATE && placedY != INVALID_COORDINATE) {
         // Calculate Scoring
         addScoring();
     }
 
-    // Add Round Score to Player Total
     player->addScore(roundScore);
 }
 
 void Score::addScoring() {
-    
-    //Inital Point for Placement
     roundScore++;
 
-    // For each Direction
+    // Cycle through direction
     for(int i = 0; i < MAX_DIRECTIONS; i ++) {
-        
-        std::cout << "Direction Checking: " << i << std::endl;
 
         // Direction from index
         direction = (Direction)i;
 
         // Set Current as Placed Piece
         setCurrent(placedX, placedY);
-        std::cout << "Current Tile (x,y): " << currentX << ", " << currentY << " Character on Tile: " << grid[currentY][currentX].getName() << std::endl;
 
         // Set Next Piece
         setNext(direction);
-        std::cout << "Next Tile (x,y): " << nextX << ", " << nextY << std::endl;
 
-        
-        // If setNext returns invalid coordinates
+        //Check for Invalid Coordinates
         if (nextX != INVALID_COORDINATE){
-
             // Set Next Char
             nextTileChar = grid[nextY][nextX].getName();
-            std::cout << " Character on Tile: " << nextTileChar << std::endl;
 
         }
+
         else {
-            std::cout << " Character on Tile: " << INVALID_COORDINATE << std::endl;
-
         }
 
-        // Look at all elements in selected direction that are capital
+        //Check for Capitilisation
         while (isupper(nextTileChar) && nextX != -2) {
-
-            std::cout << "Found Tile (x,y): " << nextX << ", " << nextY << " Character on Tile: " << nextTileChar << std::endl;
-
-            // Add Score
             roundScore++; 
 
-            // If Touching Placed Vertical Block
+            // If there is a Vertical connection
             if (direction == 0 || direction == 2) {
                 wasVertical = true;
-                std::cout << "==Found Vertical Placed" << std::endl;
-
             }
-            // If Touching Placed Horizontal Block
+
+            // If there is a Horizontal connection
             if (direction == 1 || direction == 3) {
                 wasHoriz = true;
-                std::cout << "==Found Horizontal Placed" << std::endl;
-
             }
-            // If Touching Horzonital and Vertical Placed Block
+
+            // If there is a dual (horizontal and vertical) connection
             if (wasVertical && wasHoriz) {
-                // Add extra point
                 roundScore++;
-                std::cout << "Added Extra Point" << std::endl;
             }
 
             // Reset Current and Next Piece
@@ -97,7 +72,7 @@ void Score::addScoring() {
 
             // If the Next Coordinate is Valid
             if (nextX != INVALID_COORDINATE){
-                // Get Value of Next Tile
+                //Fetch Coordinate
                 nextTileChar = grid[nextY][nextX].getName();
             }
         }
@@ -105,43 +80,39 @@ void Score::addScoring() {
 }
 
 void Score::setCurrent(int x, int y) {
+    //Set Variables
     currentX = x;
     currentY = y;
 }
 
 void Score::setNext(Direction direction) {
-
+    //Set Variables
     nextX = currentX;
     nextY = currentY;
 
-    // Go Up
+    // Check Upwards Direction
     if (direction == 0 && currentY != MAX_UP) {
-
         nextY = currentY - 1;
 
-    // Go Right
+    // Check Right Direction
     } else if (direction == 1 && currentX != MAX_RIGHT) {
-
         nextX = currentX + 1;
 
-    // Go Down
+    // Check Downwards Direction
     } else if (direction == 2 && currentY != MAX_DOWN) {
-
         nextY = currentY + 1;
 
-    // Go Left
+    // Check Left Direction
     } else if (direction == 3 && currentX != MAX_LEFT) {
-
         nextX = currentX - 1;
     }
 
-    // If it fails to set new Next Coordinate
+    // Check for inability to set next coordinates
     if (nextX == currentX && nextY == currentY) {
-        // Next Coordinate must be out-of-bounds
+        //Declare Out-Of-Bounds
         nextX = INVALID_COORDINATE;
         nextY = INVALID_COORDINATE;
     }
-
 }
 
 int Score::getRoundScore() {

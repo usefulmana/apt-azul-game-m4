@@ -12,7 +12,6 @@
 #define LIGHT_BLUE 'L'
 #define BLACK 'U'
 
-
 #define NUM_OF_PLAYERS 2
 #define MAX_GAME_ROUNDS 5
 #define MOSAIC_DIM 5
@@ -28,6 +27,12 @@
 #define INVALID_COORDINATE -2
 #define MAX_TILE_NUM 20
 #define VALID_CHARS "RYBLUF"
+
+#define MAX_DIRECTIONS 4
+#define MAX_UP 0
+#define MAX_DOWN 4
+#define MAX_RIGHT 4
+#define MAX_LEFT 0
 
 #define WHITESPACE ' '
 #define NO_TILE '.'

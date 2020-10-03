@@ -1,6 +1,8 @@
 #ifndef COSC_ASSIGN_TWO_SCORE
 #define COSC_ASSIGN_TWO_SCORE
+#include <ctype.h>
 #include "Player.h"
+#include "Types.h"
 
 enum Direction {
     UP,
