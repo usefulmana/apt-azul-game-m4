@@ -23,6 +23,9 @@ Score::Score(Player * player, int placedX, int placedY) {
 }
 
 void Score::addScoring() {
+
+    bool extraGiven = false;
+
     roundScore++;
 
     // Cycle through direction
@@ -41,10 +44,6 @@ void Score::addScoring() {
         if (nextX != INVALID_COORDINATE){
             // Set Next Char
             nextTileChar = grid[nextY][nextX].getName();
-
-        }
-
-        else {
         }
 
         //Check for Capitilisation
@@ -62,8 +61,10 @@ void Score::addScoring() {
             }
 
             // If there is a dual (horizontal and vertical) connection
-            if (wasVertical && wasHoriz) {
+            if (wasVertical && wasHoriz && extraGiven != true) {    
                 roundScore++;
+                // Only allows one extra point
+                extraGiven = true;
             }
 
             // Reset Current and Next Piece
