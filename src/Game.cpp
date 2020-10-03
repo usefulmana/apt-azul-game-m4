@@ -187,13 +187,14 @@ void Game::deductBrokenTile(Player * player) {
 
     for (int i = 0; i < BROKEN_ROW_SIZE; i++){
 
-        if (player->getBrokenRow()[i].getName() == ' '){
+        if (player->getBrokenRow()[i].getName() != ' '){
             deductBy++;
         }
     }
 
     int score = player->getScore() - deductBy;
 
+    std::cout << " -> For " << player->getName() << std::endl;
     std::cout << "Deduct By: " << deductBy << std::endl;
     std::cout << "Total Score before Deduction: " << player->getScore() << std::endl;
     std::cout << "Total Score after Deduction: " << score << std::endl;
@@ -624,7 +625,7 @@ void Game::execute(const std::string &command, Player *player) {
     Score score = Score(player, placedTileX, placedTileY);
 
     // Display Round Score
-    std::cout << "Round Score: " << score.getRoundScore() << std::endl;
+    std::cout << player->getName() << "'s Round Score: " << score.getRoundScore() << std::endl;
 
     }
 }
@@ -920,7 +921,7 @@ void Game::load(const std::string &fileName) {
                                 savedInputs.push_back(input);
                                 std::cout << "Turn successful." << std::endl;
                                 // Display Score
-                                std::cout << "Total Score: " << player->getScore() << std::endl;
+                                std::cout << player->getName() << "'s Total Score: " << player->getScore() << std::endl;
                                 std::cout << std::endl;
                                 // End input loop
                                 validInput = true;
@@ -968,6 +969,18 @@ void Game::load(const std::string &fileName) {
         round++;
         // Preventing Seg fault
         if (round <= MAX_GAME_ROUNDS) {
+
+
+
+            for (auto &player: players){
+                std::cout << "Broken Row (" << std::endl;
+                for (int i = 0; i < BROKEN_ROW_SIZE; i ++) {
+                    std::cout << player->getBrokenRow()[i].getName() << ", ";
+                }
+                std::cout << ") " << std::endl;
+                deductBrokenTile(player);
+            }
+
             reset();
         }
     }

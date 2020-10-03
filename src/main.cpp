@@ -202,7 +202,6 @@ void loadGame() {
         }
     }
 
-
     // Initialize New Game
     auto game = new Game();
     // Load game from file
