@@ -174,6 +174,11 @@ public:
      * Print final result of the game
      */
     void printFinalResults();
+
+    /**
+     * Print players' score
+     */
+    void printScores();
 private:
     // Stores all game players
     std::vector<Player*> players;

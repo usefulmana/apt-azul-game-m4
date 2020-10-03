@@ -135,8 +135,6 @@ void Game::play() {
                             savedInputs.push_back(input);
                             std::cout << "Turn successful." << std::endl;
                             // Display score
-                            std::cout << "Current Score for " << player->getName() << ": " << player->getScore()
-                                      << std::endl;
                             std::cout << std::endl;
                             // End input loop
                             validInput = true;
@@ -185,7 +183,7 @@ void Game::play() {
             for (auto &player: players) {
                 deductBrokenTile(player);
             }
-
+            printScores();
             // Reset game state
             reset();
         }
@@ -757,6 +755,9 @@ void Game::testLoadGame(char *fileName) {
             quitGame();
         } else {
             round++;
+            for (auto &player: players) {
+                deductBrokenTile(player);
+            }
             reset();
         }
     }
@@ -853,6 +854,7 @@ void Game::load(const std::string &fileName) {
                 } else {
 
                     // End Of File is reached
+                    std::cout << "Game Loaded!" << std::endl;
                     std::cout << "TURN FOR PLAYER: " << player->getName() << std::endl;
                     std::cout << "Factories:" << std::endl;
                     printFactories();
@@ -898,9 +900,7 @@ void Game::load(const std::string &fileName) {
                                 // Add input to input vector
                                 savedInputs.push_back(input);
                                 std::cout << "Turn successful." << std::endl;
-                                // Display Score
-                                std::cout << "Current Score for " << player->getName() << ": " << player->getScore()
-                                          << std::endl;
+
                                 std::cout << std::endl;
                                 // End input loop
                                 validInput = true;
@@ -943,6 +943,7 @@ void Game::load(const std::string &fileName) {
         // Next Round
         std::cout << "=== Round " << round << " Ends ===" << std::endl;
         round++;
+
         // Error Checking
         if (round <= MAX_GAME_ROUNDS) {
             for (auto &player: players) {
@@ -953,6 +954,7 @@ void Game::load(const std::string &fileName) {
 //                std::cout << ") " << std::endl;
                 deductBrokenTile(player);
             }
+            printScores();
             reset();
         }
     }
@@ -965,11 +967,7 @@ void Game::load(const std::string &fileName) {
 }
 
 void Game::printFinalResults() {
-    // Print Scores
-    for (size_t i = 0; i < players.size(); ++i) {
-        std::cout << "Player " << players[i]->getName() << ": " << players[i]->getScore() << std::endl;
-    }
-
+    printScores();
     // Print result
     if (players[0]->getScore() > players[1]->getScore()) {
         std::cout << "Player " << players[0]->getName() << " wins!" << std::endl;
@@ -979,4 +977,11 @@ void Game::printFinalResults() {
         std::cout << "It's a tie!" << std::endl;
     }
     std::cout << std::endl;
+}
+
+void Game::printScores() {
+    for (auto & player : players){
+        std::cout << "Score for " << player->getName() << ": " << player->getScore()
+                  << std::endl;
+    }
 }
