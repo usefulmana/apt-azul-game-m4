@@ -11,30 +11,24 @@
 #include "Score.h"
 
 [[noreturn]] void showMenu();
-
 void showCredits();
-
 void playGame();
-
 void loadGame();
-
 std::vector<Player *> createPlayersFromUserInput();
-
 bool isNameValid(const std::string &name);
-
 void engageTestMode(char* fileName);
 
 int main(int argc, char ** argv) {
-    // Check num of argument
+    // Check number of argument
     if (argc == 1){
-        // No additional arg => show menu
+        // No additional arguments shows menu
         showMenu();
     }
     else if (argc == 3){
-        // 2 additional args => test mode
+        // 2 additional arguments directs to test mode
         const std::string flag = "-t";
 
-        // If second argument is test flag
+        // Check for Flag
         if (argv[1] == flag){
             // If File Exists
             if (checkIfFileExists(argv[2])){
@@ -56,15 +50,17 @@ int main(int argc, char ** argv) {
     return EXIT_SUCCESS;
 }
 
+/**
+ * Displays Initial Menu
+ */
 [[noreturn]] void showMenu() {
-    // Display welcome message
+    // Welcome message
     std::cout << "Welcome to Azul!" << std::endl;
     std::cout << "-----------------------" << std::endl;
     std::cout << std::endl;
 
-
     while (true) {
-        // Display menu
+        // Print Menu Contents
         std::cout << "Menu" << std::endl;
         std::cout << "-----" << std::endl;
         std::cout << "1. New Game" << std::endl;
@@ -130,7 +126,7 @@ void showCredits() {
 }
 
 /**
- * This functional will initialize an Azul game
+ * This function will initialize an Azul game
  */
 void playGame() {
     std::cout << std::endl;
@@ -150,6 +146,7 @@ void playGame() {
 
     std::cout << "=== Game Over ===" << std::endl;
     std::cout << "=== Scoreboard ===" << std::endl;
+
     // Print Scores
     for (size_t i = 0; i < game->getPlayers().size(); ++i) {
         std::cout << "Player " << game->getPlayers()[i]->getName() << ": " << game->getPlayers()[i]->getScore() << std::endl;
@@ -175,6 +172,7 @@ void loadGame() {
 
     bool valid = false;
     std::string fileName;
+    
     // Clear input
     std::cin.clear();
     std::cin.ignore(10000, '\n');
@@ -254,7 +252,6 @@ std::vector<Player *> createPlayersFromUserInput() {
             std::cout << "Invalid name. Please try again" << std::endl;
         }
     }
-
     return players;
 }
 

@@ -878,8 +878,6 @@ void Game::load(const std::string &fileName) {
                                 // Find position of first whitespace
                                 int pos = input.find(WHITESPACE);
 
-                                // Add datetime to the end of the file name to avoid collision
-
                                 // Return substring of everything following the whitespace
                                 std::string fileName = input.substr(pos + 1);
 
