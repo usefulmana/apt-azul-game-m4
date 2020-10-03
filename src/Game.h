@@ -169,7 +169,11 @@ public:
     * @param player : Us
     */
     void deductBrokenTile(Player * player);
-  
+
+    /**
+     * Print final result of the game
+     */
+    void printFinalResults();
 private:
     // Stores all game players
     std::vector<Player*> players;

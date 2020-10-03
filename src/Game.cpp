@@ -7,6 +7,7 @@ Game::Game() {
         factories[i] = new Tile[FACTORY_SIZE];
     }
 
+    // Initialize factories
     for (int i = 0; i < NUM_OF_FACTORIES; ++i) {
         for (int j = 0; j < FACTORY_SIZE; ++j) {
             factories[i][j] = *new Tile(WHITESPACE);
@@ -49,11 +50,18 @@ void Game::save(const std::string &fileName, std::vector<std::string> vector) {
 
 void Game::play() {
 
+    // Clear saved inputs
+    if (savedInputs.size() > 0) {
+        savedInputs.clear();
+    }
+
     //Fill Tile Bag
     std::string bag;
+
     for (int i = 0; i < 101; ++i) {
         bag += tileBag->get(i)->getName();
     }
+    // Save tile bag to input string;
     savedInputs.push_back(bag);
 
     //Add Players to Game
@@ -120,12 +128,15 @@ void Game::play() {
 
                         // Returns substring of first 4 characters in input
                         if (input.substr(0, 4) == "turn") {
+
+                            // Execute command
                             execute(input, player);
                             // Add input to input vector
                             savedInputs.push_back(input);
                             std::cout << "Turn successful." << std::endl;
                             // Display score
-                            std::cout << "Total Score: " << player->getScore() << std::endl;
+                            std::cout << "Current Score for " << player->getName() << ": " << player->getScore()
+                                      << std::endl;
                             std::cout << std::endl;
                             // End input loop
                             validInput = true;
@@ -156,7 +167,7 @@ void Game::play() {
                     }
                     // Check if end round condition is met
                     if (endRound()) {
-                        // End loop
+                        // End loops
                         validInput = true;
                         end = true;
                     }
@@ -169,21 +180,24 @@ void Game::play() {
         round++;
 
         // Error Checking
-        if (round <= MAX_GAME_ROUNDS){
-            for (auto &player: players)
+        if (round <= MAX_GAME_ROUNDS) {
+            // Deduct players' scores from tiles in the broken row
+            for (auto &player: players) {
                 deductBrokenTile(player);
+            }
 
+            // Reset game state
             reset();
         }
     }
 }
 
-void Game::deductBrokenTile(Player * player) {
+void Game::deductBrokenTile(Player *player) {
     int deductBy = 0;
 
     //Check contents of Player's Broken Row
-    for (int i = 0; i < BROKEN_ROW_SIZE; i++){
-        if (player->getBrokenRow()[i].getName() != WHITESPACE){
+    for (int i = 0; i < BROKEN_ROW_SIZE; i++) {
+        if (player->getBrokenRow()[i].getName() != WHITESPACE) {
             deductBy++;
         }
     }
@@ -191,10 +205,10 @@ void Game::deductBrokenTile(Player * player) {
     //Perform deduction
     int score = player->getScore() - deductBy;
 
-    std::cout << " -> For " << player->getName() << std::endl;
-    std::cout << "Total Score before Deduction: " << player->getScore() << std::endl;
-    std::cout << "Deduct By: " << deductBy << std::endl;
-    std::cout << "Final Score: " << score << std::endl;
+//    std::cout << " -> For " << player->getName() << std::endl;
+//    std::cout << "Total Score before Deduction: " << player->getScore() << std::endl;
+//    std::cout << "Deduct By: " << deductBy << std::endl;
+//    std::cout << "Final Score: " << score << std::endl;
 
     //Allocate Player Score
     player->setScore(score);
@@ -251,16 +265,17 @@ void Game::setTileBagFromString(const std::string &line) {
     }
 }
 
-LinkedList<Tile *> * Game::getTileBag(){
+LinkedList<Tile *> *Game::getTileBag() {
     return tileBag;
 }
 
 void Game::fillFactories() {
+    // Fill factories with tiles from the tile bag
     for (int i = 0; i < NUM_OF_FACTORIES; ++i) {
         for (int j = 0; j < FACTORY_SIZE; ++j) {
             factories[i][j].setName(tileBag->get(0)->getName());
 
-            //Remove from Head
+            //Remove tile from tile bag
             tileBag->popFront();
         }
     }
@@ -308,10 +323,13 @@ bool Game::areFactoriesEmpty() {
 }
 
 bool Game::isAFactoryEmpty(int factory) {
+    // Initialize a counter
     int count = 0;
+
     if (factory != 0) {
+        // Loop through the chosen factory
         for (int i = 0; i < FACTORY_SIZE; ++i) {
-            if (factories[factory - 1][i].getName() == END_OF_FILE) {
+            if (factories[factory - 1][i].getName() == WHITESPACE) {
                 count++;
             }
         }
@@ -319,10 +337,15 @@ bool Game::isAFactoryEmpty(int factory) {
     return count == FACTORY_SIZE;
 }
 
-std::vector<std::string> Game::checkInput(std::string input, Player * player) {
+std::vector<std::string> Game::checkInput(std::string input, Player *player) {
+    // a vector that contains all error messages
     std::vector<std::string> result;
+
+    // Split input string into pieces
     std::vector<std::string> inputArr = splitString(input, WHITESPACE);
-    std::string colors = "RYBLUF.";
+
+    // Valid color characters
+    std::string colors = VALID_CHARS;
 
 
     // Check if save argument number was entered
@@ -385,7 +408,7 @@ std::vector<std::string> Game::checkInput(std::string input, Player * player) {
 
     } else {
         result.push_back(
-                "Wrong number of arguments or arguments are not separated by space or excessive whitespaces. "
+                "Wrong number of arguments or arguments are not separated by whitespace or excessive whitespaces. "
                 "Your input = " + input);
     }
     return result;
@@ -399,6 +422,7 @@ bool Game::tileExistsInAFactory(const char &tile, int factory) {
         for (size_t i = 0; i < center.size(); ++i) {
             if (center[i]->getName() == tile) {
                 exist = true;
+                // Break loop
                 i = center.size();
             }
         }
@@ -406,6 +430,7 @@ bool Game::tileExistsInAFactory(const char &tile, int factory) {
         for (int i = 0; i < FACTORY_SIZE; ++i) {
             if (factories[factory - 1][i].getName() == tile) {
                 exist = true;
+                // Break loop
                 i = FACTORY_SIZE;
             }
         }
@@ -415,7 +440,11 @@ bool Game::tileExistsInAFactory(const char &tile, int factory) {
 }
 
 void Game::execute(const std::string &command, Player *player) {
+
+    // Split command
     std::vector<std::string> commands = splitString(command, WHITESPACE);
+
+    // Store variables from the command
     int factory = std::stoi(commands[1]) - 1;
     char color = commands[2][0];
     int targetRow = std::stoi(commands[3]);
@@ -425,6 +454,7 @@ void Game::execute(const std::string &command, Player *player) {
 
     // Draw from factory or center
     if (factory + 1 != 0) {
+        // Draw from factory
         for (int i = 0; i < FACTORY_SIZE; ++i) {
             if (factories[factory][i].getName() == color) {
                 // Add Tile to tiles list
@@ -435,6 +465,7 @@ void Game::execute(const std::string &command, Player *player) {
         }
 
     } else {
+        // Draw from center
         for (size_t i = 0; i < center.size(); ++i) {
             if (center[i]->getName() == color) {
                 chosenTiles += color;
@@ -495,6 +526,7 @@ void Game::execute(const std::string &command, Player *player) {
 
         // Move leftover tiles to broken rows
         int brokenRowCount = player->getBrokenRowCount();
+        // Check if there is a first tile
         if (chosenTiles[chosenTiles.length() - 1] == FIRST_TILE) {
 
             if (player->getBrokenRow()[0].getName() == WHITESPACE) {
@@ -548,34 +580,31 @@ void Game::execute(const std::string &command, Player *player) {
             }
         }
 
-    // Set Placed as Invalid to Ensure it Holds a Placed Value
-    placedTileX = INVALID_COORDINATE;
-    placedTileY = INVALID_COORDINATE;
+        // Set Placed as Invalid to Ensure it Holds a Placed Value
+        placedTileX = INVALID_COORDINATE;
+        placedTileY = INVALID_COORDINATE;
 
-    if (countColorInRow == targetRow){
-        for (int i = 0; i < MOSAIC_DIM; ++i) {
-            char temp = player->getGrid()[targetRow - 1][i].getName();
-            if (color == toupper(temp)){
-                player->getGrid()[targetRow - 1][i].setName(color);
+        if (countColorInRow == targetRow) {
+            for (int i = 0; i < MOSAIC_DIM; ++i) {
+                char temp = player->getGrid()[targetRow - 1][i].getName();
+                if (color == toupper(temp)) {
+                    player->getGrid()[targetRow - 1][i].setName(color);
 
-                placedTileY = targetRow - 1;
-                placedTileX = i;
+                    placedTileY = targetRow - 1;
+                    placedTileX = i;
 
-                i = MOSAIC_DIM;
+                    i = MOSAIC_DIM;
+                }
+            }
+        } else {
+            for (size_t i = 0; i < chosenTiles.size(); ++i) {
+                player->addToBrokenRow(chosenTiles[i]);
             }
         }
-    } else {
-        for (size_t i = 0; i < chosenTiles.size(); ++i) {
-            player->addToBrokenRow(chosenTiles[i]);
-        }
-    }
 
-    // Initialise Score
-    Score score = Score(player, placedTileX, placedTileY);
-
-    // Display Round Score
-    std::cout << player->getName() << "'s Round Score: " << score.getRoundScore() << std::endl;
-
+        // Initialise Score
+        auto score = Score(player, placedTileX, placedTileY);
+        score.getRoundScore();
     }
 }
 
@@ -597,6 +626,7 @@ bool Game::isRowFull(int row, Player *player) {
         for (int i = 0; i < row; ++i) {
             if (player->getUnlaidRow()[row - 1][i].getName() == '.') {
                 full = false;
+                // Break loop
                 i = row;
             }
         }
@@ -612,6 +642,7 @@ bool Game::endRound() {
 }
 
 void Game::reset() {
+    // Fill factories from tile bag
     fillFactories();
 
     for (auto &player: players) {
@@ -719,7 +750,7 @@ void Game::testLoadGame(char *fileName) {
                 }
             }
         }
-
+        // Check if the next line is empty
         if (file.peek() == EOF) {
             printGameState();
             std::cout << "=== Game Loaded Successfully ===" << std::endl;
@@ -729,7 +760,7 @@ void Game::testLoadGame(char *fileName) {
             reset();
         }
     }
-    
+
     // Cleaning up
     file.close();
 }
@@ -740,7 +771,6 @@ void Game::printGameState() {
     std::cout << std::endl;
 
     for (auto &testPlayer: players) {
-        // TODO ADD SCORING
         std::cout << "Score for player " << testPlayer->getName() << ": " << testPlayer->getScore() << std::endl;
         std::cout << "Mosaic for " << testPlayer->getName() << ":" << std::endl;
         testPlayer->printMosaic();
@@ -869,7 +899,8 @@ void Game::load(const std::string &fileName) {
                                 savedInputs.push_back(input);
                                 std::cout << "Turn successful." << std::endl;
                                 // Display Score
-                                std::cout << player->getName() << "'s Total Score: " << player->getScore() << std::endl;
+                                std::cout << "Current Score for " << player->getName() << ": " << player->getScore()
+                                          << std::endl;
                                 std::cout << std::endl;
                                 // End input loop
                                 validInput = true;
@@ -914,12 +945,12 @@ void Game::load(const std::string &fileName) {
         round++;
         // Error Checking
         if (round <= MAX_GAME_ROUNDS) {
-            for (auto &player: players){
-                std::cout << "Broken Row (" << std::endl;
-                for (int i = 0; i < BROKEN_ROW_SIZE; i ++) {
-                    std::cout << player->getBrokenRow()[i].getName() << ", ";
-                }
-                std::cout << ") " << std::endl;
+            for (auto &player: players) {
+//                std::cout << "Broken Row (" << std::endl;
+//                for (int i = 0; i < BROKEN_ROW_SIZE; i ++) {
+//                    std::cout << player->getBrokenRow()[i].getName() << ", ";
+//                }
+//                std::cout << ") " << std::endl;
                 deductBrokenTile(player);
             }
             reset();
@@ -930,19 +961,22 @@ void Game::load(const std::string &fileName) {
 
     std::cout << "=== Game Over ===" << std::endl;
     std::cout << "=== Scoreboard ===" << std::endl;
+    printFinalResults();
+}
+
+void Game::printFinalResults() {
     // Print Scores
     for (size_t i = 0; i < players.size(); ++i) {
         std::cout << "Player " << players[i]->getName() << ": " << players[i]->getScore() << std::endl;
     }
 
     // Print result
-    if (players[0]->getScore() > players[1]->getScore()){
+    if (players[0]->getScore() > players[1]->getScore()) {
         std::cout << "Player " << players[0]->getName() << " wins!" << std::endl;
-    }
-    else if (players[0]->getScore() < players[1]->getScore()){
+    } else if (players[0]->getScore() < players[1]->getScore()) {
         std::cout << "Player " << players[1]->getName() << " wins!" << std::endl;
-    }
-    else {
+    } else {
         std::cout << "It's a tie!" << std::endl;
     }
+    std::cout << std::endl;
 }
