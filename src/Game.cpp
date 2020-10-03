@@ -203,9 +203,7 @@ void Game::deductBrokenTile(Player * player) {
 
 }
 
-/**
- * Fill tile bag automatically in a pre-determined order
- */
+
 void Game::setTileBagAutomatically() {
     // Initialize the tile bag
     tileBag = new LinkedList<Tile *>();
@@ -247,10 +245,7 @@ void Game::setTileBagAutomatically() {
     }
 }
 
-/**
- * Parse a string to get fill the tile bag wil tiles
- * @param line : string to be parsed
- */
+
 void Game::setTileBagFromString(const std::string &line) {
     tileBag = new LinkedList<Tile *>();
     for (size_t i = 0; i < line.length(); ++i) {
@@ -258,17 +253,13 @@ void Game::setTileBagFromString(const std::string &line) {
     }
 }
 
-/**
- * return the tile bag
- * @return : return the tile bag
- */
-LinkedList<Tile *> *Game::getTileBag() {
+
+LinkedList<Tile *> * Game::getTileBag(){
+
     return tileBag;
 }
 
-/**
- * Fill factories with tiles from the tile bag
- */
+
 void Game::fillFactories() {
     for (int i = 0; i < NUM_OF_FACTORIES; ++i) {
         for (int j = 0; j < FACTORY_SIZE; ++j) {
@@ -278,9 +269,7 @@ void Game::fillFactories() {
     }
 }
 
-/**
- * Print factories to console
- */
+
 void Game::printFactories() {
 
     // Print center
@@ -301,26 +290,18 @@ void Game::printFactories() {
     }
 }
 
-/**
- * Add first tile to Center
- */
+
 void Game::addFirstTileToCenter() {
     center.push_back(new Tile(tileBag->get(0)->getName()));
     tileBag->popFront();
 }
 
-/**
- * Check if the center factory is empty
- * @return true if empty, false if not
- */
+
 bool Game::isCenterEmpty() {
     return center.empty();
 }
 
-/**
- * Check if the factories are empty
- * @return true if empty, false if not;
- */
+
 bool Game::areFactoriesEmpty() {
     int count = 0;
     for (int i = 0; i < NUM_OF_FACTORIES; ++i) {
@@ -346,12 +327,9 @@ bool Game::isAFactoryEmpty(int factory) {
     return count == 4;
 }
 
-/**
- * Boundary and type validation
- * @param input : input string to be checked
- * @return : a vector containing errors of the player's input
- */
-std::vector<std::string> Game::checkInput(std::string input, Player *player) {
+
+std::vector<std::string> Game::checkInput(std::string input, Player * player) {
+
     std::vector<std::string> result;
     std::vector<std::string> inputArr = splitString(input, ' ');
     std::string colors = "RYBLUF.";
