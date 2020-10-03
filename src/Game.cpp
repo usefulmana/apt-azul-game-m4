@@ -401,7 +401,7 @@ std::vector<std::string> Game::checkInput(std::string input, Player *player) {
         } //Check other exceptions
         catch (std::exception const &e) {
             result.push_back("<factory> must be a number between 0 and 5");
-            result.push_back("<row> must be a number between 1 and 5");
+            result.push_back("<row> must be a number between 0 and 5");
         }
 
     } else {
