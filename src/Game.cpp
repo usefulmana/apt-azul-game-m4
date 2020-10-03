@@ -513,17 +513,14 @@ void Game::execute(const std::string &command, Player *player) {
                 } else if (chosenTiles[0] == LIGHT_BLUE) {
                     player->getUnlaidRow()[targetRow - 1][i].setName(LIGHT_BLUE);
                 }
-                // Delete first tile
+                // Delete tiles
                 if (chosenTiles.length() > 0 && chosenTiles[0] != FIRST_TILE) {
                     chosenTiles.erase(chosenTiles.begin());
                 }
             }
         }
 
-        // Move leftover tiles to broken rows
-        int brokenRowCount = player->getBrokenRowCount();
         // Check if there is a first tile
-        std::cout << "------------------BEFORE " << chosenTiles << std::endl;
         if (chosenTiles[chosenTiles.length() - 1] == FIRST_TILE) {
 
             if (player->getBrokenRow()[0].getName() == WHITESPACE) {
@@ -540,36 +537,34 @@ void Game::execute(const std::string &command, Player *player) {
                 player->setBrokenRowCount(0);
                 player->addToBrokenRow('F');
 
-                // Add Broken tile back to broken row
+                // Add previous tiles back to broken row
                 for (size_t i = 0; i < savedBrokenTiles.size(); ++i) {
-                    std::cout << savedBrokenTiles[i] << std::endl;
                     player->addToBrokenRow(savedBrokenTiles[i]);
                 }
             }
 
             // Delete F from the Tail
             chosenTiles.pop_back();
-            std::cout << "-------CHOSEN " << chosenTiles << std::endl;
+
+            // Add the rest of tiles to the broken row
             for (size_t i = 0; i < chosenTiles.length(); ++i) {
-                if (brokenRowCount <= BROKEN_ROW_SIZE) {
-                    player->addToBrokenRow(chosenTiles[i]);
-                    if (chosenTiles.length() > 0) {
-                        chosenTiles.erase(chosenTiles.begin());
-                    }
-                }
+                player->addToBrokenRow(chosenTiles[i]);
             }
+
+            // Delete after adding things to broken row
+            chosenTiles.clear();
         } else {
             for (size_t i = 0; i < chosenTiles.length(); ++i) {
-                if (brokenRowCount <= BROKEN_ROW_SIZE) {
-                    player->addToBrokenRow(chosenTiles[i]);
-                    // Delete the first character
-                    if (chosenTiles.length() > 0) {
-                        chosenTiles.erase(chosenTiles.begin());
-                    }
-                }
+                player->addToBrokenRow(chosenTiles[i]);
+
             }
+            // Delete after adding things to broken row
+            chosenTiles.clear();
         }
-        std::cout << "------------------AFTER " << chosenTiles << std::endl;
+
+        // Set Placed as Invalid to Ensure it Holds a Placed Value
+        placedTileX = INVALID_COORDINATE;
+        placedTileY = INVALID_COORDINATE;
 
         // Capitalize corresponding tile on the mosaic if applicable;
         int countColorInRow = 0;
@@ -578,11 +573,7 @@ void Game::execute(const std::string &command, Player *player) {
                 countColorInRow++;
             }
         }
-
-        // Set Placed as Invalid to Ensure it Holds a Placed Value
-        placedTileX = INVALID_COORDINATE;
-        placedTileY = INVALID_COORDINATE;
-
+        
         if (countColorInRow == targetRow) {
             for (int i = 0; i < MOSAIC_DIM; ++i) {
                 char temp = player->getGrid()[targetRow - 1][i].getName();
@@ -594,10 +585,6 @@ void Game::execute(const std::string &command, Player *player) {
 
                     i = MOSAIC_DIM;
                 }
-            }
-        } else {
-            for (size_t i = 0; i < chosenTiles.size(); ++i) {
-                player->addToBrokenRow(chosenTiles[i]);
             }
         }
 
@@ -820,8 +807,7 @@ void Game::load(const std::string &fileName) {
             std::cout << "Corrupted save file. A player's name cannot be blank!" << std::endl;
             std::cout << "Disengaging test mode..." << std::endl;
             quitGame();
-        }
-        else {
+        } else {
             savedInputs.push_back(line);
         }
 
@@ -989,7 +975,7 @@ void Game::printFinalResults() {
 }
 
 void Game::printScores() {
-    for (auto & player : players){
+    for (auto &player : players) {
         std::cout << "Score for " << player->getName() << ": " << player->getScore()
                   << std::endl;
     }
