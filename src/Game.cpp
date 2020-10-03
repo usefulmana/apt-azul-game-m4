@@ -573,7 +573,7 @@ void Game::execute(const std::string &command, Player *player) {
                 countColorInRow++;
             }
         }
-        
+
         if (countColorInRow == targetRow) {
             for (int i = 0; i < MOSAIC_DIM; ++i) {
                 char temp = player->getGrid()[targetRow - 1][i].getName();
