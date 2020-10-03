@@ -33,6 +33,8 @@
 #define NO_TILE '.'
 #define END_OF_FILE '\0'
 
+#define DEFAULT_NAME "default"
+
 
 
 #endif // COSC_ASSIGN_TWO_TYPES

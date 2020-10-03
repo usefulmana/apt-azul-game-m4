@@ -1,7 +1,7 @@
 #include "Player.h"
 
 Player::Player() {
-    name = "DEAFULT NAME";
+    name = DEFAULT_NAME;
 }
 
 Player::Player(std::string name)
@@ -66,7 +66,6 @@ Player::~Player()
         delete unlaidRow[i];
     }
     delete [] unlaidRow;
-
 }
 
 std::string Player::getName(){
@@ -89,9 +88,6 @@ void Player::resetScore() {
     score = 0;
 }
 
-/**
- * Print out the mosaic
- */
 void Player::printMosaic() {
 
     rowCount = 1;
@@ -101,16 +97,16 @@ void Player::printMosaic() {
 
         // Print whitespaces
         for (int k = 0; k < MOSAIC_DIM - rowCount + 1; ++k) {
-            std::cout << "  ";
+            std::cout << WHITESPACE;
         }
         // Print unlaid row
         for (int j = 0; j < rowCount; ++j) {
-            std::cout << unlaidRow[i][rowCount - 1 - j].getName() << " ";
+            std::cout << unlaidRow[i][rowCount - 1 - j].getName() << WHITESPACE;
         }
         std::cout << "|| ";
         // Print grid
         for (int m = 0; m < MOSAIC_DIM; ++m) {
-            std::cout << grid[i][m].getName() << " ";
+            std::cout << grid[i][m].getName() << WHITESPACE;
         }
 
         //Increment Count
@@ -119,21 +115,14 @@ void Player::printMosaic() {
     }
 }
 
-/**
- * Print out the broken row
- */
 void Player::printBrokenRow() {
     std::cout << "broken: ";
     for (int i = 0; i < BROKEN_ROW_SIZE; ++i) {
-        std::cout << brokenRow[i].getName() << " ";
+        std::cout << brokenRow[i].getName() << WHITESPACE;
     }
     std::cout << std::endl;
 }
 
-/**
- * Add tile to broken row
- * @param tile : tile to be added
- */
 void Player::addToBrokenRow(char tile) {
     if (brokenRowCount < BROKEN_ROW_SIZE){
         brokenRow[brokenRowCount].setName(tile);
