@@ -89,15 +89,13 @@ void Player::resetScore() {
 }
 
 void Player::printMosaic() {
-
     rowCount = 1;
-
     for (int i = 0; i < MOSAIC_DIM; ++i) {
         std::cout << i + 1 << ":";
-
+        
         // Print whitespaces
         for (int k = 0; k < MOSAIC_DIM - rowCount + 1; ++k) {
-            std::cout << WHITESPACE;
+            std::cout << DOUBLE_WHITESPACE;
         }
         // Print unlaid row
         for (int j = 0; j < rowCount; ++j) {
@@ -114,7 +112,6 @@ void Player::printMosaic() {
         std::cout << std::endl;
     }
 }
-
 void Player::printBrokenRow() {
     std::cout << "broken: ";
     for (int i = 0; i < BROKEN_ROW_SIZE; ++i) {

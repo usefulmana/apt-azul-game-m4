@@ -35,6 +35,7 @@
 #define MAX_LEFT 0
 
 #define WHITESPACE ' '
+#define DOUBLE_WHITESPACE "  "
 #define NO_TILE '.'
 #define END_OF_FILE '\0'
 
