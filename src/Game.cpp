@@ -50,10 +50,8 @@ void Game::save(const std::string &fileName, std::vector<std::string> vector) {
 
 void Game::play() {
 
-    // Clear saved inputs
-    if (savedInputs.size() > 0) {
-        savedInputs.clear();
-    }
+    // A vector to save inputs
+    std::vector<std::string> savedInputs;
 
     //Fill Tile Bag
     std::string bag;
@@ -525,6 +523,7 @@ void Game::execute(const std::string &command, Player *player) {
         // Move leftover tiles to broken rows
         int brokenRowCount = player->getBrokenRowCount();
         // Check if there is a first tile
+        std::cout << "------------------BEFORE " << chosenTiles << std::endl;
         if (chosenTiles[chosenTiles.length() - 1] == FIRST_TILE) {
 
             if (player->getBrokenRow()[0].getName() == WHITESPACE) {
@@ -550,6 +549,7 @@ void Game::execute(const std::string &command, Player *player) {
 
             // Delete F from the Tail
             chosenTiles.pop_back();
+            std::cout << "-------CHOSEN " << chosenTiles << std::endl;
             for (size_t i = 0; i < chosenTiles.length(); ++i) {
                 if (brokenRowCount <= BROKEN_ROW_SIZE) {
                     player->addToBrokenRow(chosenTiles[i]);
@@ -569,6 +569,7 @@ void Game::execute(const std::string &command, Player *player) {
                 }
             }
         }
+        std::cout << "------------------AFTER " << chosenTiles << std::endl;
 
         // Capitalize corresponding tile on the mosaic if applicable;
         int countColorInRow = 0;
@@ -789,6 +790,9 @@ void Game::load(const std::string &fileName) {
     std::string validChars = VALID_CHARS;
     std::vector<Player *> testPlayers;
 
+    // A vector to save inputs
+    std::vector<std::string> savedInputs;
+
     while (lineCount <= 1) {
         getline(file, line);
 
@@ -801,6 +805,7 @@ void Game::load(const std::string &fileName) {
                 quitGame();
             }
         }
+        savedInputs.push_back(line);
         // Setting up game
         setTileBagFromString(line);
         addFirstTileToCenter();
@@ -815,6 +820,9 @@ void Game::load(const std::string &fileName) {
             std::cout << "Corrupted save file. A player's name cannot be blank!" << std::endl;
             std::cout << "Disengaging test mode..." << std::endl;
             quitGame();
+        }
+        else {
+            savedInputs.push_back(line);
         }
 
         testPlayers.push_back(new Player(line));
@@ -840,6 +848,7 @@ void Game::load(const std::string &fileName) {
                     // If no errors are found
                     if (errors.capacity() == 0) {
                         execute(line, player);
+                        savedInputs.push_back(line);
                     } else {
                         std::cout << "Corrupted save file. Error at line " << lineCount << std::endl;
                         std::cout << "Disengaging test mode..." << std::endl;

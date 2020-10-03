@@ -179,12 +179,10 @@ public:
      * Print players' score
      */
     void printScores();
+
 private:
     // Stores all game players
     std::vector<Player*> players;
-
-    // Stores all Valid Turns
-    std::vector<std::string> savedInputs;
 
     // Structure of Tile Bag
     LinkedList<Tile*> * tileBag;
