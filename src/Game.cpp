@@ -169,7 +169,7 @@ void Game::play() {
         round++;
 
         // Error Checking
-        if (round < MAX_GAME_ROUNDS){
+        if (round <= MAX_GAME_ROUNDS){
             for (auto &player: players)
                 deductBrokenTile(player);
 
