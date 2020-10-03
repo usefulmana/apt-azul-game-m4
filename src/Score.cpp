@@ -16,6 +16,9 @@ Score::Score(Player * player, int placedX, int placedY) {
 
     this->roundScore = 0;
 
+    this->wasVertical = false;
+    this->wasHoriz = false;
+
     // Was a placement actually made?
     if (placedY != INVALID_COORDINATE && placedY != INVALID_COORDINATE) {
         // Calculate Scoring
@@ -34,14 +37,19 @@ void Score::addScoring() {
     // For each Direction
     for(int i = 0; i < MAX_DIRECTIONS; i ++) {
         
+        std::cout << "Direction Checking: " << i << std::endl;
+
         // Direction from index
         direction = (Direction)i;
 
         // Set Current as Placed Piece
         setCurrent(placedX, placedY);
+        std::cout << "Current Tile (x,y): " << currentX << ", " << currentY << " Character on Tile: " << grid[currentY][currentX].getName() << std::endl;
 
         // Set Next Piece
         setNext(direction);
+        std::cout << "Next Tile (x,y): " << nextX << ", " << nextY << std::endl;
+
         
         // If setNext returns invalid coordinates
         if (nextX != INVALID_COORDINATE){
@@ -54,21 +62,28 @@ void Score::addScoring() {
         // Look at all elements in selected direction that are capital
         while (isupper(nextTileChar) && nextX != -2) {
 
+            std::cout << "Found Tile (x,y): " << nextX << ", " << nextY << " Character on Tile: " << nextTileChar << std::endl;
+
             // Add Score
             roundScore++; 
 
             // If Touching Placed Vertical Block
             if (direction == 0 || direction == 2) {
                 wasVertical = true;
+                std::cout << "==Found Vertical Placed" << std::endl;
+
             }
             // If Touching Placed Horizontal Block
             if (direction == 1 || direction == 3) {
                 wasHoriz = true;
+                std::cout << "==Found Horizontal Placed" << std::endl;
+
             }
             // If Touching Horzonital and Vertical Placed Block
             if (wasVertical && wasHoriz) {
                 // Add extra point
                 roundScore++;
+                std::cout << "Added Extra Point" << std::endl;
             }
 
             // Reset Current and Next Piece
