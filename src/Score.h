@@ -23,6 +23,8 @@ public:
     */
     Score(Player *player, int placedX, int placedY);
 
+    ~Score();
+
     /*
     * Add scoring to an aggregate
     */

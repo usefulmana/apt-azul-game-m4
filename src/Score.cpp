@@ -22,6 +22,10 @@ Score::Score(Player * player, int placedX, int placedY) {
     player->addScore(roundScore);
 }
 
+Score::~Score(){
+    
+}
+
 void Score::addScoring() {
 
     bool extraGiven = false;
