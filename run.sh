@@ -14,8 +14,9 @@ sudo make
 cd bin
 
 if [ "$1" == "test" ]; then
-  ./azul -t test.txt
+  ./azul -t "$2"
 else
+  # valgrind --leak-check=full ./azul
   ./azul
 fi
 

@@ -3,6 +3,10 @@
 
 class Tile {
 
+private:
+    char name;
+    char tile;
+
 public:
 
     /*
@@ -32,8 +36,8 @@ public:
     */
     void setName(char n);
 
-    private:
-    char name;
+    char getTile();
+
 };
 
 

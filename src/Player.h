@@ -10,10 +10,12 @@
 class Player
 {
 public:
+
     /**
     * Default Constructor
-    * @param name : input string to be added
     */
+    Player();
+
     Player(std::string name);
 
     /*
@@ -32,10 +34,13 @@ public:
     */
     void addScore(int s);
 
+    void setScore(int s);
+
     /**
     * Return current player's score
     * @return int score
     */
+
     int getScore();
 
     /*
@@ -64,6 +69,13 @@ public:
     * @param tile : char to be added to broken row
     */
     void addToBrokenRow(char tile);
+
+
+  
+
+    void createPlayers();
+
+
 
     /**
     * Fetch Player's Unlaid Row

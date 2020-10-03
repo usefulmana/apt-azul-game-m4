@@ -2,10 +2,13 @@
 #include <limits>
 #include <vector>
 #include <string>
+#include <fstream>
+#include <cstring>
 #include "Types.h"
 #include "Game.h"
 #include "Player.h"
 #include "utils.h"
+#include "Score.h"
 
 [[noreturn]] void showMenu();
 
@@ -30,7 +33,7 @@ int main(int argc, char ** argv) {
     else if (argc == 3){
         // 2 additional args => test mode
         const std::string flag = "-t";
-        
+
         // If second argument is test flag
         if (argv[1] == flag){
             // If File Exists
@@ -80,12 +83,14 @@ int main(int argc, char ** argv) {
         if (std::cin.eof()) {
             quitGame();
         }
+
         // Check fail conditions
         else if (std::cin.fail() || choice < 0 || choice > 4) {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cout << "Wrong Input. Please enter an integer number from 1 to 4" << std::endl;
             std::cout << std::endl;
+
         } else {
             if (choice == 1) {
                 playGame();
@@ -150,9 +155,16 @@ void playGame() {
         std::cout << "Player " << game->getPlayers()[i]->getName() << ": " << game->getPlayers()[i]->getScore() << std::endl;
     }
 
-    // delete objects
-    // TODO quit after finishing 1 game?
-    delete game;
+    // Print result
+    if (game->getPlayers()[0]->getScore() > game->getPlayers()[1]->getScore()){
+        std::cout << "Player " << game->getPlayers()[0]->getName() << " wins!" << std::endl;
+    }
+    else if (game->getPlayers()[0]->getScore() < game->getPlayers()[1]->getScore()){
+        std::cout << "Player " << game->getPlayers()[1]->getName() << " wins!" << std::endl;
+    }
+    else {
+        std::cout << "It's a tie!" << std::endl;
+    }
 
 }
 
@@ -160,7 +172,40 @@ void playGame() {
  * This functional will load an Azul game from a file
  */
 void loadGame() {
-    std::cout << "Loading Game" << std::endl;
+
+    bool valid = false;
+    std::string fileName;
+    // Clear input
+    std::cin.clear();
+    std::cin.ignore(10000, '\n');
+
+    std::cout << "Enter the name of save file: " << std::endl;
+    while (!valid){
+
+        std::cout << "> ";
+
+        // Grab file name
+        getline(std::cin, fileName);
+
+        // Check EOF
+        if (!std::cin){
+            quitGame();
+        }
+        // Check if file exists
+        if (checkIfFileExists(fileName.c_str())){
+            // Break loop
+            valid = true;
+        }
+        else {
+            // Display error message
+            std::cout << "No such file exists. Please try again!" << std::endl;
+        }
+    }
+
+    // Initialize New Game
+    auto game = new Game();
+    // Load game from file
+    game->load(fileName);
 }
 
 /**

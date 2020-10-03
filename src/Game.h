@@ -8,10 +8,7 @@
 #include <iostream>
 #include "Types.h"
 #include <algorithm>
-#define FIRST_FACTORY 0
-#define LAST_FACTORY 5
-#define FIRST_STORAGE_ROW 1
-#define LAST_STORAGE_ROW 5
+#include "Score.h"
 
 class Game
 {
@@ -168,6 +165,10 @@ public:
     */
     void testLoadGame(char* fileName);
 
+    void printGameState();
+
+    void deductBrokenTile(Player * player);
+  
 private:
     // Stores all game players
     std::vector<Player*> players;
@@ -183,6 +184,10 @@ private:
 
     // Stores Tiles assigned to Centre Factory
     std::vector<Tile*> center;
+
+    // Coordinates of Rcently Placed Tile
+    int placedTileX;
+    int placedTileY;
 };
 
 #endif // COSC_ASSIGN_TWO_GAME
