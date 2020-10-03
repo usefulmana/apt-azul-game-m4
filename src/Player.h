@@ -10,29 +10,103 @@
 class Player
 {
 public:
-    // Constructor/Desctructor
+
+    /**
+    * Default Constructor
+    */
+    Player();
+
+    /**
+    * Copy Constructor
+    * @param name : Player name to be copied
+    */
     Player(std::string name);
+
+    /*
+    * Deconstructor
+    */
     ~Player();
 
-    //Copy constructor to copy Player for saving
+    /**
+    * Copy Constructor for Player Saving
+    * @param other : Player to be saved
+    */
     Player(Player &other);
 
-    // Save score of round
+    /**
+    * Add current round score to previous score
+    * @param s : value to be added
+    */
     void addScore(int s);
 
+    /**
+    * Set current round score
+    * @param s : value to be set
+    */
+    void setScore(int s);
+
+    /**
+    * Return current player's score
+    * @return int score
+    */
     int getScore();
 
-    // Reset Score at end of game
+    /*
+    * Set score back to initial value
+    */
     void resetScore();
 
-    //Getters/Setters
+    /**
+    * Return current player's name
+    * @return : std::string name
+    */
     std::string getName();
 
+    /*
+    * Return and Print Mosaic to Console
+    */
     void printMosaic();
 
+    /*
+    * Return and Print Broken Row to Console
+    */
     void printBrokenRow();
 
-    void addToBrokenRow(Tile tile);
+    /**
+    * Add tile to player's broken row
+    * @param tile : char to be added to broken row
+    */
+    void addToBrokenRow(char tile);
+
+    /**
+    * Fetch Player's Unlaid Row
+    * @return : Tile
+    */
+    Tile ** getUnlaidRow();
+
+    /**
+    * Fetch Player's Grid
+    * @return : Tile
+    */
+    Tile ** getGrid();
+
+    /**
+    * Fetch Player's Broken Row
+    * @return : Tile
+    */
+    Tile* getBrokenRow();
+
+    /**
+    * Return number of Tile's in Player's Broken Row
+    * @return : int brokenRowCount
+    */
+    int getBrokenRowCount();
+
+    /**
+    * Set players broken row
+    * @param count : length broken row it to be set to
+    */
+    void setBrokenRowCount(int count);
 
 private:
     std::string name;

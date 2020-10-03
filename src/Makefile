@@ -1,5 +1,5 @@
 CXX := g++
-CXX_FLAGS := -Wall -Werror -std=c++14 -O
+CXX_FLAGS := -Wall -g -std=c++14 -O
 TARGET := bin/azul
 OBJ_DIR := obj
 
