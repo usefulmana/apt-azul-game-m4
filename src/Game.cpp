@@ -689,6 +689,9 @@ void Game::reset() {
     for (auto &player: players) {
         // Reset Broken Row
         for (int i = 0; i < BROKEN_ROW_SIZE; ++i) {
+            // Add broken tiles back to the tile bag
+            tileBag->addBack(new Tile(player->getBrokenRow()[i].getName()));
+            // Reset Broken Row
             player->getBrokenRow()[i].setName(WHITESPACE);
         }
 
