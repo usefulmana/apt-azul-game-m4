@@ -56,6 +56,11 @@ void Score::addScoring() {
 
             // Set Next Char
             nextTileChar = grid[nextY][nextX].getName();
+            std::cout << " Character on Tile: " << nextTileChar << std::endl;
+
+        }
+        else {
+            std::cout << " Character on Tile: " << INVALID_COORDINATE << std::endl;
 
         }
 
