@@ -35,9 +35,6 @@ public:
     * @param char n: name passed to Tile
     */
     void setName(char n);
-
-    char getTile();
-
 };
 
 

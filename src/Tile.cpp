@@ -20,7 +20,3 @@ void Tile::setName(char n) {
     this->name = n;
 }
 
-char Tile::getTile(){
-    return tile;
-}
-

@@ -1,7 +1,3 @@
-//
-// Created by usefulmana on 7/9/20.
-//
-
 #ifndef A2_UTILS_H
 #define A2_UTILS_H
 

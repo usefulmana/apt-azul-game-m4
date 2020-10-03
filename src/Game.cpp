@@ -424,9 +424,6 @@ bool Game::tileExistsInAFactory(const char &tile, int factory) {
     return exist;
 }
 
-void Game::score(Player *player) {
-    // TODO implement scoring
-}
 
 void Game::execute(const std::string &command, Player *player) {
     std::vector<std::string> commands = splitString(command, ' ');

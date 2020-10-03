@@ -81,11 +81,6 @@ public:
     void execute(const std::string & command, Player * player);
 
     /*
-    * UNSURE
-    */
-    void score(Player * player);
-
-    /*
     * Fills factories dependent on the Tile Bag Content
     */
     void fillFactories();
@@ -117,7 +112,6 @@ public:
     * @return true if empty, false if not;
     */
     bool isAFactoryEmpty(int factory);
-
 
     /**
      * Reads the input provided by the User into Terminal; Boundary and type validation
@@ -165,8 +159,15 @@ public:
     */
     void testLoadGame(char* fileName);
 
+    /*
+    * Prints out the status of the game at execution
+    */
     void printGameState();
 
+    /**
+    * Removes point from Player's score depending on their number of broken tiles
+    * @param player : Us
+    */
     void deductBrokenTile(Player * player);
   
 private:

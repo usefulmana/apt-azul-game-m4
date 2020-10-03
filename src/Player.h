@@ -16,6 +16,10 @@ public:
     */
     Player();
 
+    /**
+    * Copy Constructor
+    * @param name : Player name to be copied
+    */
     Player(std::string name);
 
     /*
@@ -29,22 +33,26 @@ public:
     */
     Player(Player &other);
 
-    /*
+    /**
     * Add current round score to previous score
+    * @param s : value to be added
     */
     void addScore(int s);
 
+    /**
+    * Set current round score
+    * @param s : value to be set
+    */
     void setScore(int s);
 
     /**
     * Return current player's score
     * @return int score
     */
-
     int getScore();
 
     /*
-    * Set score back to 0
+    * Set score back to initial value
     */
     void resetScore();
 
@@ -69,13 +77,6 @@ public:
     * @param tile : char to be added to broken row
     */
     void addToBrokenRow(char tile);
-
-
-  
-
-    void createPlayers();
-
-
 
     /**
     * Fetch Player's Unlaid Row
