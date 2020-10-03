@@ -195,13 +195,13 @@ void Game::deductBrokenTile(Player *player) {
     for (int i = 0; i < BROKEN_ROW_SIZE; i++) {
         if (player->getBrokenRow()[i].getName() != WHITESPACE) {
             count++;
-            if (count <= 3){
+            if (count <= BROKEN_ROW_SIZE - 4){
                 // First three tiles -1 each
                 deductBy++;
-            } else if (count <= 5){
+            } else if (count <= BROKEN_ROW_SIZE - 2){
                 // Nx two tiles -2 each
                 deductBy += 2;
-            } else if (count <= 7){
+            } else if (count <= BROKEN_ROW_SIZE){
                 // Nx two tiles -3 each
                 deductBy += 3;
             }
