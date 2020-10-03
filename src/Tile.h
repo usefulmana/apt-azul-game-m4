@@ -5,7 +5,6 @@ class Tile {
 
 private:
     char name;
-    char tile;
 
 public:
 
