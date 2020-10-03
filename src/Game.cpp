@@ -190,11 +190,22 @@ void Game::play() {
 
 void Game::deductBrokenTile(Player *player) {
     int deductBy = 0;
-
+    int count = 0;
     //Check contents of Player's Broken Row
     for (int i = 0; i < BROKEN_ROW_SIZE; i++) {
         if (player->getBrokenRow()[i].getName() != WHITESPACE) {
-            deductBy++;
+            count++;
+            if (count <= 3){
+                // First three tiles -1 each
+                deductBy++;
+            } else if (count <= 5){
+                // Nx two tiles -2 each
+                deductBy += 2;
+            } else if (count <= 7){
+                // Nx two tiles -3 each
+                deductBy += 3;
+            }
+
         }
     }
 
@@ -591,6 +602,50 @@ void Game::execute(const std::string &command, Player *player) {
         // Initialise Score
         auto score = Score(player, placedTileX, placedTileY);
         score.getRoundScore();
+    }
+    else {
+        // Add to broken row;
+        // Check if there is a first tile
+        if (chosenTiles[chosenTiles.length() - 1] == FIRST_TILE) {
+
+            if (player->getBrokenRow()[0].getName() == WHITESPACE) {
+                player->addToBrokenRow(FIRST_TILE);
+            } else {
+                std::string savedBrokenTiles;
+                for (int i = 0; i < BROKEN_ROW_SIZE; ++i) {
+                    char temp = player->getBrokenRow()[i].getName();
+                    if (temp != WHITESPACE) {
+                        savedBrokenTiles += temp;
+                    }
+                }
+                // Reset Counter
+                player->setBrokenRowCount(0);
+                player->addToBrokenRow('F');
+
+                // Add previous tiles back to broken row
+                for (size_t i = 0; i < savedBrokenTiles.size(); ++i) {
+                    player->addToBrokenRow(savedBrokenTiles[i]);
+                }
+            }
+
+            // Delete F from the Tail
+            chosenTiles.pop_back();
+
+            // Add the rest of tiles to the broken row
+            for (size_t i = 0; i < chosenTiles.length(); ++i) {
+                player->addToBrokenRow(chosenTiles[i]);
+            }
+
+            // Delete after adding things to broken row
+            chosenTiles.clear();
+        } else {
+            for (size_t i = 0; i < chosenTiles.length(); ++i) {
+                player->addToBrokenRow(chosenTiles[i]);
+
+            }
+            // Delete after adding things to broken row
+            chosenTiles.clear();
+        }
     }
 }
 
