@@ -56,14 +56,13 @@ void Game::play() {
     //Fill Tile Bag
     std::string bag;
 
-    for (int i = 0; i < 101; ++i) {
+    // Ignore F tile
+    for (int i = 1; i < NUM_OF_TILES_IN_TILE_BAG + 1; ++i) {
         bag += tileBag->get(i)->getName();
     }
-    // Save tile bag to input string;
+    // Save tile bag to input vector;
     savedInputs.push_back(bag);
 
-    // Delete the F tile
-    savedInputs.erase(savedInputs.begin());
 
     //Add Players to Game
     for (auto &player: players) {
