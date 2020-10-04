@@ -222,6 +222,7 @@ std::vector<Player *> createPlayersFromUserInput() {
     // End loop when num of players exceeds the ceiling
     while (playerCount <= NUM_OF_PLAYERS) {
         std::string name;
+        std::string savedName;
         std::cout << "Enter a name for player " << playerCount << std::endl;
         std::cout << "> ";
 
@@ -235,9 +236,15 @@ std::vector<Player *> createPlayersFromUserInput() {
         // Validate input
         else if (isNameValid(name)) {
             // Increase count by one
-            playerCount++;
+
             // Initialize and add player object to the vector
-            players.push_back(new Player(name));
+            if (playerCount == 1){
+                players.push_back(new Player(name, playerCount, true));
+            }
+            else {
+                players.push_back(new Player(name, playerCount, false));
+            }
+            playerCount++;
         } else {
             std::cout << "Invalid name. Please try again" << std::endl;
         }

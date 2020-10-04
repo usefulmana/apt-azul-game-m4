@@ -20,7 +20,7 @@ public:
     * Copy Constructor
     * @param name : Player name to be copied
     */
-    Player(std::string name);
+    Player(std::string name, int id, bool f);
 
     /*
     * Deconstructor
@@ -108,10 +108,18 @@ public:
     */
     void setBrokenRowCount(int count);
 
+    bool isFirst();
+
+    void setFirst(bool f);
+
+    int getId();
+
 private:
     std::string name;
     int score;
     int rowCount;
+    bool first;
+    int id;
     Tile ** grid;
     Tile ** unlaidRow;
     Tile brokenRow[BROKEN_ROW_SIZE];

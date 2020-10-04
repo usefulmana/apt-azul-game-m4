@@ -16,12 +16,12 @@ cd bin
 if [ "$1" == "test" ]; then
   ./azul -t "$2"
 else
-  # valgrind --leak-check=fullGameTest ./azul
-  ./azul
+  valgrind --leak-check=full ./azul
+  # ./azul
 fi
 
 # Valgrind
-# valgrind --leak-check=fullGameTest ./azul
+# valgrind --leak-check=full ./azul
 
 # Debug
 # gdb azul

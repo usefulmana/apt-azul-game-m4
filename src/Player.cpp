@@ -4,12 +4,15 @@ Player::Player() {
     name = DEFAULT_NAME;
 }
 
-Player::Player(std::string name)
+Player::Player(std::string name, int id, bool f)
 {
     //Declare Variables
     this->name = name;
     this->score = 0;
+    this->first = false;
     this->brokenRowCount = 0;
+    this->id = id;
+    this->first = f;
 
     // Declare grid
     grid = new Tile*[MOSAIC_DIM];
@@ -151,4 +154,16 @@ int Player::getBrokenRowCount() {
 
 void Player::setBrokenRowCount(int count) {
     brokenRowCount = count;
+}
+
+bool Player::isFirst() {
+    return first;
+}
+
+void Player::setFirst(bool f) {
+    this->first = f;
+}
+
+int Player::getId() {
+    return id;
 }
