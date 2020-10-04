@@ -33,7 +33,7 @@
 #define MAX_DOWN 4
 #define MAX_RIGHT 4
 #define MAX_LEFT 0
-
+#define NUM_OF_TILES_IN_TILE_BAG 100
 #define WHITESPACE ' '
 #define DOUBLE_WHITESPACE "  "
 #define NO_TILE '.'
