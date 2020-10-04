@@ -216,13 +216,16 @@ std::vector<Player *> createPlayersFromUserInput() {
 
     // Player counter
     int playerCount = 1;
-
+    // Clear input
+    std::cin.clear();
+    std::cin.ignore(10000, '\n');
     // End loop when num of players exceeds the ceiling
     while (playerCount <= NUM_OF_PLAYERS) {
         std::string name;
         std::cout << "Enter a name for player " << playerCount << std::endl;
         std::cout << "> ";
-        std::cin >> name;
+
+        getline(std::cin, name);
         std::cout << std::endl;
 
         // Check end of file

@@ -688,7 +688,8 @@ bool Game::endRound() {
 void Game::reset() {
     // Fill factories from tile bag
     fillFactories();
-
+    // Add First tile to center
+    center.push_back(new Tile(FIRST_TILE));
     for (auto &player: players) {
         // Reset Broken Row
         for (int i = 0; i < BROKEN_ROW_SIZE; ++i) {
@@ -704,8 +705,10 @@ void Game::reset() {
         // Reset Unlaid Rows
         int rowCount = 1;
         for (int i = 0; i < MOSAIC_DIM; ++i) {
-            for (int j = 0; j < rowCount; ++j) {
-                player->getUnlaidRow()[i][j].setName(NO_TILE);
+            if (isRowFull(i + 1,player)){
+                for (int j = 0; j < rowCount; ++j) {
+                    player->getUnlaidRow()[i][j].setName(NO_TILE);
+                }
             }
             rowCount++;
         }
