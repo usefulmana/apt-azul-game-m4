@@ -77,7 +77,12 @@ void Player::addScore(int s) {
 }
 
 void Player::setScore(int s) {
-    score = s;
+    if (s < 0){
+        score = 0;
+    }
+    else {
+        score = s;
+    }
 }
 
 int Player::getScore() {
