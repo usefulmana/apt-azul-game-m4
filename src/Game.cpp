@@ -82,97 +82,192 @@ void Game::play() {
     while (round <= MAX_GAME_ROUNDS) {
         std::cout << "=== Round " << round << " Starts ===" << std::endl;
         // End round if all factories including Centre are empty
+
         bool end = endRound();
-        while (!end) {
-            for (size_t i = 0; i < players.size() && !end; ++i) {
-                auto player = players[i];
+        if (players[0]->isFirst()) {
+            while (!end) {
+                for (size_t i = 0; i < NUM_OF_PLAYERS && !end; ++i) {
+                    auto player = players[i];
+                    std::cout << "TURN FOR PLAYER: " << player->getName() << std::endl;
+                    std::cout << "Factories:" << std::endl;
+                    printFactories();
+                    std::cout << std::endl;
+                    std::cout << "Mosaic for " << player->getName() << ":" << std::endl;
+                    player->printMosaic();
+                    player->printBrokenRow();
+                    std::cout << std::endl;
 
-                std::cout << "TURN FOR PLAYER: " << player->getName() << std::endl;
-                std::cout << "Factories:" << std::endl;
-                printFactories();
-                std::cout << std::endl;
-                std::cout << "Mosaic for " << player->getName() << ":" << std::endl;
-                player->printMosaic();
-                player->printBrokenRow();
-                std::cout << std::endl;
+                    bool validInput = false;
 
-                bool validInput = false;
+                    // Instructions/Help
+                    std::cout << "To Play: turn <factory> <color> <row>" << std::endl;
+                    std::cout << "To Save: save <filename>" << std::endl;
+                    std::cout << "To Discard: turn <factory> <color> 0" << std::endl;
 
-                // Instructions/Help
-                std::cout << "To Play: turn <factory> <color> <row>" << std::endl;
-                std::cout << "To Save: save <filename>" << std::endl;
-                std::cout << "To Discard: turn <factory> <color> 0" << std::endl;
+                    // Exit if Valid Input Entered
+                    while (!validInput) {
 
-                // Exit if Valid Input Entered
-                while (!validInput) {
+                        // Get user input
+                        std::string input;
 
-                    // Get user input
-                    std::string input;
+                        std::cout << "Your input:" << std::endl;
+                        std::cout << "> ";
 
-                    std::cout << "Your input:" << std::endl;
-                    std::cout << "> ";
+                        // Stores console input without leading whitespace
+                        std::getline(std::cin >> std::ws, input);
 
-                    // Stores console input without leading whitespace
-                    std::getline(std::cin >> std::ws, input);
+                        // Check EOF Character (^D)
+                        if (std::cin.eof()) {
+                            quitGame();
+                        }
 
-                    // Check EOF Character (^D)
-                    if (std::cin.eof()) {
-                        quitGame();
-                    }
+                        // Check for errors
+                        std::vector<std::string> errors = checkInput(input, player);
 
-                    // Check for errors
-                    std::vector<std::string> errors = checkInput(input, player);
+                        // Check if there is any error
+                        if (errors.capacity() == 0) {
 
-                    // Check if there is any error
-                    if (errors.capacity() == 0) {
+                            // Returns substring of first 4 characters in input
+                            if (input.substr(0, 4) == "turn") {
 
-                        // Returns substring of first 4 characters in input
-                        if (input.substr(0, 4) == "turn") {
+                                // Execute command
+                                execute(input, player);
+                                // Add input to input vector
+                                savedInputs.push_back(input);
+                                std::cout << "Turn successful." << std::endl;
+                                // Display score
+                                std::cout << std::endl;
+                                // End input loop
+                                validInput = true;
 
-                            // Execute command
-                            execute(input, player);
-                            // Add input to input vector
-                            savedInputs.push_back(input);
-                            std::cout << "Turn successful." << std::endl;
-                            // Display score
+                            } else if (input.substr(0, 4) == "save") {
+                                // Find position of first whitespace
+                                int pos = input.find(WHITESPACE);
+
+                                // Return substring of everything following the whitespace
+                                std::string fileName = input.substr(pos + 1);
+
+                                // Save game
+                                save(fileName, savedInputs);
+                                std::cout << "Saved to " << fileName << std::endl;
+                            }
+
+                        } else {
+
+                            // Notify users of errors
+                            std::cout << "Invalid Input!" << std::endl;
+                            std::cout << "Error(s): " << std::endl;
+
+                            for (auto &error : errors) {
+                                std::cout << "- " << error << std::endl;
+                            }
+                            std::cout << "Please try again " << std::endl;
                             std::cout << std::endl;
-                            // End input loop
+                        }
+                        // Check if end round condition is met
+                        if (endRound()) {
+                            // End loops
                             validInput = true;
-
-                        } else if (input.substr(0, 4) == "save") {
-                            // Find position of first whitespace
-                            int pos = input.find(WHITESPACE);
-
-                            // Return substring of everything following the whitespace
-                            std::string fileName = input.substr(pos + 1);
-
-                            // Save game
-                            save(fileName, savedInputs);
-                            std::cout << "Saved to " << fileName << std::endl;
+                            end = true;
                         }
-
-                    } else {
-
-                        // Notify users of errors
-                        std::cout << "Invalid Input!" << std::endl;
-                        std::cout << "Error(s): " << std::endl;
-
-                        for (auto &error : errors) {
-                            std::cout << "- " << error << std::endl;
-                        }
-                        std::cout << "Please try again " << std::endl;
-                        std::cout << std::endl;
                     }
-                    // Check if end round condition is met
-                    if (endRound()) {
-                        // End loops
-                        validInput = true;
-                        end = true;
-                    }
+                    std::cout << std::endl;
                 }
-                std::cout << std::endl;
             }
         }
+        else {
+            while (!end) {
+                for (size_t i = 0; i < NUM_OF_PLAYERS && !end; ++i) {
+                    auto player = players[NUM_OF_PLAYERS - 1 - i];
+
+                    std::cout << "TURN FOR PLAYER: " << player->getName() << std::endl;
+                    std::cout << "Factories:" << std::endl;
+                    printFactories();
+                    std::cout << std::endl;
+                    std::cout << "Mosaic for " << player->getName() << ":" << std::endl;
+                    player->printMosaic();
+                    player->printBrokenRow();
+                    std::cout << std::endl;
+
+                    bool validInput = false;
+
+                    // Instructions/Help
+                    std::cout << "To Play: turn <factory> <color> <row>" << std::endl;
+                    std::cout << "To Save: save <filename>" << std::endl;
+                    std::cout << "To Discard: turn <factory> <color> 0" << std::endl;
+
+                    // Exit if Valid Input Entered
+                    while (!validInput) {
+
+                        // Get user input
+                        std::string input;
+
+                        std::cout << "Your input:" << std::endl;
+                        std::cout << "> ";
+
+                        // Stores console input without leading whitespace
+                        std::getline(std::cin >> std::ws, input);
+
+                        // Check EOF Character (^D)
+                        if (std::cin.eof()) {
+                            quitGame();
+                        }
+
+                        // Check for errors
+                        std::vector<std::string> errors = checkInput(input, player);
+
+                        // Check if there is any error
+                        if (errors.capacity() == 0) {
+
+                            // Returns substring of first 4 characters in input
+                            if (input.substr(0, 4) == "turn") {
+
+                                // Execute command
+                                execute(input, player);
+                                // Add input to input vector
+                                savedInputs.push_back(input);
+                                std::cout << "Turn successful." << std::endl;
+                                // Display score
+                                std::cout << std::endl;
+                                // End input loop
+                                validInput = true;
+
+                            } else if (input.substr(0, 4) == "save") {
+                                // Find position of first whitespace
+                                int pos = input.find(WHITESPACE);
+
+                                // Return substring of everything following the whitespace
+                                std::string fileName = input.substr(pos + 1);
+
+                                // Save game
+                                save(fileName, savedInputs);
+                                std::cout << "Saved to " << fileName << std::endl;
+                            }
+
+                        } else {
+
+                            // Notify users of errors
+                            std::cout << "Invalid Input!" << std::endl;
+                            std::cout << "Error(s): " << std::endl;
+
+                            for (auto &error : errors) {
+                                std::cout << "- " << error << std::endl;
+                            }
+                            std::cout << "Please try again " << std::endl;
+                            std::cout << std::endl;
+                        }
+                        // Check if end round condition is met
+                        if (endRound()) {
+                            // End loops
+                            validInput = true;
+                            end = true;
+                        }
+                    }
+                    std::cout << std::endl;
+                }
+            }
+        }
+
         // Next Round
         std::cout << "=== Round " << round << " Ends ===" << std::endl;
         round++;
@@ -197,13 +292,13 @@ void Game::deductBrokenTile(Player *player) {
     for (int i = 0; i < BROKEN_ROW_SIZE; i++) {
         if (player->getBrokenRow()[i].getName() != WHITESPACE) {
             count++;
-            if (count <= BROKEN_ROW_SIZE - 4){
+            if (count <= BROKEN_ROW_SIZE - 4) {
                 // First three tiles -1 each
                 deductBy++;
-            } else if (count <= BROKEN_ROW_SIZE - 2){
+            } else if (count <= BROKEN_ROW_SIZE - 2) {
                 // Nx two tiles -2 each
                 deductBy += 2;
-            } else if (count <= BROKEN_ROW_SIZE){
+            } else if (count <= BROKEN_ROW_SIZE) {
                 // Nx two tiles -3 each
                 deductBy += 3;
             }
@@ -507,6 +602,14 @@ void Game::execute(const std::string &command, Player *player) {
     // Add F at the of the string if player chooses centre factory
     if (factory + 1 == 0 && center.size() > 0 && center[0]->getName() == FIRST_TILE) {
         chosenTiles += FIRST_TILE;
+        // Set player with first tile to go first nx round
+        player->setFirst(true);
+        for (size_t i = 0; i < players.size(); ++i) {
+            if (player->getId() != players[i]->getId()) {
+                players[i]->setFirst(false);
+                i = players.size();
+            }
+        }
         // Remove F tile from centre
         center.erase(center.begin());
     }
@@ -605,8 +708,7 @@ void Game::execute(const std::string &command, Player *player) {
         // Initialise Score
         auto score = Score(player, placedTileX, placedTileY);
         score.getRoundScore();
-    }
-    else {
+    } else {
         // Add to broken row;
         // Check if there is a first tile
         if (chosenTiles[chosenTiles.length() - 1] == FIRST_TILE) {
@@ -688,7 +790,8 @@ bool Game::endRound() {
 void Game::reset() {
     // Fill factories from tile bag
     fillFactories();
-
+    // Add First tile to center
+    center.push_back(new Tile(FIRST_TILE));
     for (auto &player: players) {
         // Reset Broken Row
         for (int i = 0; i < BROKEN_ROW_SIZE; ++i) {
@@ -704,8 +807,10 @@ void Game::reset() {
         // Reset Unlaid Rows
         int rowCount = 1;
         for (int i = 0; i < MOSAIC_DIM; ++i) {
-            for (int j = 0; j < rowCount; ++j) {
-                player->getUnlaidRow()[i][j].setName(NO_TILE);
+            if (isRowFull(i + 1, player)) {
+                for (int j = 0; j < rowCount; ++j) {
+                    player->getUnlaidRow()[i][j].setName(NO_TILE);
+                }
             }
             rowCount++;
         }
@@ -741,12 +846,11 @@ void Game::testLoadGame(char *fileName) {
                 count++;
             }
         }
-        if (count < NUM_OF_TILES_IN_TILE_BAG || count > NUM_OF_TILES_IN_TILE_BAG){
+        if (count < NUM_OF_TILES_IN_TILE_BAG || count > NUM_OF_TILES_IN_TILE_BAG) {
             std::cout << "Corrupted save file. Initial tile bag must have exactly 100 tiles!" << std::endl;
             std::cout << "Disengaging test mode..." << std::endl;
             quitGame();
-        }
-        else {
+        } else {
             // Setting up game
             setTileBagFromString(line);
             addFirstTileToCenter();
@@ -763,8 +867,12 @@ void Game::testLoadGame(char *fileName) {
             std::cout << "Disengaging test mode..." << std::endl;
             quitGame();
         }
+        if (lineCount == 2) {
+            players.push_back(new Player(line, lineCount - 1, true));
+        } else {
+            players.push_back(new Player(line, lineCount - 1, false));
+        }
 
-        testPlayers.push_back(new Player(line));
         lineCount++;
     }
 
@@ -776,37 +884,73 @@ void Game::testLoadGame(char *fileName) {
     while (round <= MAX_GAME_ROUNDS) {
         std::cout << "=== Round " << round << " ===" << std::endl;
         bool end = endRound();
-        while (!end) {
-            for (size_t i = 0; i < players.size() && !end; ++i) {
-                auto player = players[i];
-                // Check End Of File
-                if (getline(file, line)) {
-                    // Vector to store error messages
-                    std::vector<std::string> errors = checkInput(line, player);
+        if (players[0]->isFirst()) {
+            while (!end) {
+                for (size_t i = 0; i < NUM_OF_PLAYERS && !end; ++i) {
+                    auto player = players[i];
+                    // Check End Of File
+                    if (getline(file, line)) {
+                        // Vector to store error messages
+                        std::vector<std::string> errors = checkInput(line, player);
 
-                    // If no errors
-                    if (errors.capacity() == 0) {
-                        execute(line, player);
+                        // If no errors
+                        if (errors.capacity() == 0) {
+                            execute(line, player);
+                        } else {
+                            std::cout << "Corrupted save file. Error at line " << lineCount << std::endl;
+                            std::cout << "Disengaging test mode..." << std::endl;
+                            quitGame();
+                        }
+                        // Check if end round condition is met
+                        if (endRound()) {
+                            // End loop
+                            end = true;
+                        }
+                        // Increment line counter
+                        lineCount++;
                     } else {
-                        std::cout << "Corrupted save file. Error at line " << lineCount << std::endl;
-                        std::cout << "Disengaging test mode..." << std::endl;
+                        // Check if End Of File is Reached
+                        printGameState();
+                        std::cout << "=== Game Loaded Successfully ===" << std::endl;
                         quitGame();
                     }
-                    // Check if end round condition is met
-                    if (endRound()) {
-                        // End loop
-                        end = true;
-                    }
-                    // Increment line counter
-                    lineCount++;
-                } else {
-                    // Check if End Of File is Reached
-                    printGameState();
-                    std::cout << "=== Game Loaded Successfully ===" << std::endl;
-                    quitGame();
                 }
             }
         }
+        else {
+            while (!end) {
+                for (size_t i = 0; i < NUM_OF_PLAYERS && !end; ++i) {
+                    auto player = players[NUM_OF_PLAYERS - 1 - i];
+                    // Check End Of File
+                    if (getline(file, line)) {
+                        // Vector to store error messages
+                        std::vector<std::string> errors = checkInput(line, player);
+
+                        // If no errors
+                        if (errors.capacity() == 0) {
+                            execute(line, player);
+                        } else {
+                            std::cout << "Corrupted save file. Error at line " << lineCount << std::endl;
+                            std::cout << "Disengaging test mode..." << std::endl;
+                            quitGame();
+                        }
+                        // Check if end round condition is met
+                        if (endRound()) {
+                            // End loop
+                            end = true;
+                        }
+                        // Increment line counter
+                        lineCount++;
+                    } else {
+                        // Check if End Of File is Reached
+                        printGameState();
+                        std::cout << "=== Game Loaded Successfully ===" << std::endl;
+                        quitGame();
+                    }
+                }
+            }
+        }
+
         // Check if the next line is empty
         if (file.peek() == EOF) {
             printGameState();
@@ -866,12 +1010,11 @@ void Game::load(const std::string &fileName) {
                 count++;
             }
         }
-        if (count < NUM_OF_TILES_IN_TILE_BAG || count > NUM_OF_TILES_IN_TILE_BAG){
+        if (count < NUM_OF_TILES_IN_TILE_BAG || count > NUM_OF_TILES_IN_TILE_BAG) {
             std::cout << "Corrupted save file. Initial tile bag must have exactly 100 tiles!" << std::endl;
             std::cout << "Disengaging test mode..." << std::endl;
             quitGame();
-        }
-        else {
+        } else {
             savedInputs.push_back(line);
             // Setting up game
             setTileBagFromString(line);
@@ -892,7 +1035,12 @@ void Game::load(const std::string &fileName) {
             savedInputs.push_back(line);
         }
 
-        testPlayers.push_back(new Player(line));
+        if (lineCount == 2) {
+            players.push_back(new Player(line, lineCount - 1, true));
+        } else {
+            players.push_back(new Player(line, lineCount - 1, false));
+        }
+
         lineCount++;
     }
 
@@ -904,118 +1052,233 @@ void Game::load(const std::string &fileName) {
     while (round <= MAX_GAME_ROUNDS) {
         std::cout << "=== Round " << round << " ===" << std::endl;
         bool end = endRound();
-        while (!end) {
-            for (size_t i = 0; i < players.size() && !end; ++i) {
-                auto player = players[i];
-                // Check if End Of File is reached
-                if (getline(file, line)) {
-                    // Vector to store error messages
-                    std::vector<std::string> errors = checkInput(line, player);
+        if (players[0]->isFirst()) {
+            while (!end) {
+                for (size_t i = 0; i < NUM_OF_PLAYERS && !end; ++i) {
+                    auto player = players[i];
+                    // Check if End Of File is reached
+                    if (getline(file, line)) {
+                        // Vector to store error messages
+                        std::vector<std::string> errors = checkInput(line, player);
 
-                    // If no errors are found
-                    if (errors.capacity() == 0) {
-                        execute(line, player);
-                        savedInputs.push_back(line);
-                    } else {
-                        std::cout << "Corrupted save file. Error at line " << lineCount << std::endl;
-                        std::cout << "Disengaging test mode..." << std::endl;
-                        quitGame();
-                    }
-                    // Check if end round condition is met
-                    if (endRound()) {
-                        end = true;
-                    }
-                    // Increment line counter
-                    lineCount++;
-                } else {
-
-                    // End Of File is reached
-                    std::cout << "Game Loaded!" << std::endl;
-                    std::cout << "TURN FOR PLAYER: " << player->getName() << std::endl;
-                    std::cout << "Factories:" << std::endl;
-                    printFactories();
-                    std::cout << std::endl;
-                    std::cout << "Mosaic for " << player->getName() << ":" << std::endl;
-                    player->printMosaic();
-                    player->printBrokenRow();
-                    std::cout << std::endl;
-
-                    bool validInput = false;
-
-                    // Instructions
-                    std::cout << "To Play: turn <factory> <color> <row>" << std::endl;
-                    std::cout << "To Save: save <filename>" << std::endl;
-                    std::cout << "To Discard: turn <factory> <color> 0" << std::endl;
-
-                    // Exit if Valid Input Entered
-                    while (!validInput) {
-
-                        // Get user input
-                        std::string input;
-
-                        std::cout << "Your input:" << std::endl;
-                        std::cout << "> ";
-
-                        // Stores console input without leading whitespace
-                        std::getline(std::cin >> std::ws, input);
-
-                        // Check for EOF Character (^D)
-                        if (std::cin.eof()) {
-                            quitGame();
-                        }
-
-                        // Check for errors
-                        std::vector<std::string> errors = checkInput(input, player);
-
-                        // Check if there is any error
+                        // If no errors are found
                         if (errors.capacity() == 0) {
-
-                            // Returns substring of first 4 characters in input
-                            if (input.substr(0, 4) == "turn") {
-                                execute(input, player);
-                                // Add input to input vector
-                                savedInputs.push_back(input);
-                                std::cout << "Turn successful." << std::endl;
-
-                                std::cout << std::endl;
-                                // End input loop
-                                validInput = true;
-
-                            } else if (input.substr(0, 4) == "save") {
-                                // Find position of first whitespace
-                                int pos = input.find(WHITESPACE);
-
-                                // Return substring of everything following the whitespace
-                                std::string fileName = input.substr(pos + 1);
-
-                                // Save game
-                                save(fileName, savedInputs);
-
-                                std::cout << "Saved to " << fileName << std::endl;
-                            }
-
+                            execute(line, player);
+                            savedInputs.push_back(line);
                         } else {
-
-                            // Notify users of errors
-                            std::cout << "Invalid Input!" << std::endl;
-                            std::cout << "Error(s): " << std::endl;
-
-                            for (auto &error : errors) {
-                                std::cout << "- " << error << std::endl;
-                            }
-                            std::cout << "Please try again " << std::endl;
-                            std::cout << std::endl;
+                            std::cout << "Corrupted save file. Error at line " << lineCount << std::endl;
+                            std::cout << "Disengaging test mode..." << std::endl;
+                            quitGame();
                         }
                         // Check if end round condition is met
                         if (endRound()) {
-                            validInput = true;
                             end = true;
                         }
+                        // Increment line counter
+                        lineCount++;
+                    } else {
+
+                        // End Of File is reached
+                        std::cout << "TURN FOR PLAYER: " << player->getName() << std::endl;
+                        std::cout << "Factories:" << std::endl;
+                        printFactories();
+                        std::cout << std::endl;
+                        std::cout << "Mosaic for " << player->getName() << ":" << std::endl;
+                        player->printMosaic();
+                        player->printBrokenRow();
+                        std::cout << std::endl;
+
+                        bool validInput = false;
+
+                        // Instructions
+                        std::cout << "To Play: turn <factory> <color> <row>" << std::endl;
+                        std::cout << "To Save: save <filename>" << std::endl;
+                        std::cout << "To Discard: turn <factory> <color> 0" << std::endl;
+
+                        // Exit if Valid Input Entered
+                        while (!validInput) {
+
+                            // Get user input
+                            std::string input;
+
+                            std::cout << "Your input:" << std::endl;
+                            std::cout << "> ";
+
+                            // Stores console input without leading whitespace
+                            std::getline(std::cin >> std::ws, input);
+
+                            // Check for EOF Character (^D)
+                            if (std::cin.eof()) {
+                                quitGame();
+                            }
+
+                            // Check for errors
+                            std::vector<std::string> errors = checkInput(input, player);
+
+                            // Check if there is any error
+                            if (errors.capacity() == 0) {
+
+                                // Returns substring of first 4 characters in input
+                                if (input.substr(0, 4) == "turn") {
+                                    execute(input, player);
+                                    // Add input to input vector
+                                    savedInputs.push_back(input);
+                                    std::cout << "Turn successful." << std::endl;
+
+                                    std::cout << std::endl;
+                                    // End input loop
+                                    validInput = true;
+
+                                } else if (input.substr(0, 4) == "save") {
+                                    // Find position of first whitespace
+                                    int pos = input.find(WHITESPACE);
+
+                                    // Return substring of everything following the whitespace
+                                    std::string fileName = input.substr(pos + 1);
+
+                                    // Save game
+                                    save(fileName, savedInputs);
+
+                                    std::cout << "Saved to " << fileName << std::endl;
+                                }
+
+                            } else {
+
+                                // Notify users of errors
+                                std::cout << "Invalid Input!" << std::endl;
+                                std::cout << "Error(s): " << std::endl;
+
+                                for (auto &error : errors) {
+                                    std::cout << "- " << error << std::endl;
+                                }
+                                std::cout << "Please try again " << std::endl;
+                                std::cout << std::endl;
+                            }
+                            // Check if end round condition is met
+                            if (endRound()) {
+                                validInput = true;
+                                end = true;
+                            }
+                        }
+                        std::cout << std::endl;
                     }
-                    std::cout << std::endl;
                 }
             }
         }
+        else {
+            while (!end) {
+                for (size_t i = 0; i < NUM_OF_PLAYERS && !end; ++i) {
+                    auto player = players[NUM_OF_PLAYERS - 1 - i];
+                    // Check if End Of File is reached
+                    if (getline(file, line)) {
+                        // Vector to store error messages
+                        std::vector<std::string> errors = checkInput(line, player);
+
+                        // If no errors are found
+                        if (errors.capacity() == 0) {
+                            execute(line, player);
+                            savedInputs.push_back(line);
+                        } else {
+                            std::cout << "Corrupted save file. Error at line " << lineCount << std::endl;
+                            std::cout << "Disengaging test mode..." << std::endl;
+                            quitGame();
+                        }
+                        // Check if end round condition is met
+                        if (endRound()) {
+                            end = true;
+                        }
+                        // Increment line counter
+                        lineCount++;
+                    } else {
+
+                        // End Of File is reached
+                        std::cout << "TURN FOR PLAYER: " << player->getName() << std::endl;
+                        std::cout << "Factories:" << std::endl;
+                        printFactories();
+                        std::cout << std::endl;
+                        std::cout << "Mosaic for " << player->getName() << ":" << std::endl;
+                        player->printMosaic();
+                        player->printBrokenRow();
+                        std::cout << std::endl;
+
+                        bool validInput = false;
+
+                        // Instructions
+                        std::cout << "To Play: turn <factory> <color> <row>" << std::endl;
+                        std::cout << "To Save: save <filename>" << std::endl;
+                        std::cout << "To Discard: turn <factory> <color> 0" << std::endl;
+
+                        // Exit if Valid Input Entered
+                        while (!validInput) {
+
+                            // Get user input
+                            std::string input;
+
+                            std::cout << "Your input:" << std::endl;
+                            std::cout << "> ";
+
+                            // Stores console input without leading whitespace
+                            std::getline(std::cin >> std::ws, input);
+
+                            // Check for EOF Character (^D)
+                            if (std::cin.eof()) {
+                                quitGame();
+                            }
+
+                            // Check for errors
+                            std::vector<std::string> errors = checkInput(input, player);
+
+                            // Check if there is any error
+                            if (errors.capacity() == 0) {
+
+                                // Returns substring of first 4 characters in input
+                                if (input.substr(0, 4) == "turn") {
+                                    execute(input, player);
+                                    // Add input to input vector
+                                    savedInputs.push_back(input);
+                                    std::cout << "Turn successful." << std::endl;
+
+                                    std::cout << std::endl;
+                                    // End input loop
+                                    validInput = true;
+
+                                } else if (input.substr(0, 4) == "save") {
+                                    // Find position of first whitespace
+                                    int pos = input.find(WHITESPACE);
+
+                                    // Return substring of everything following the whitespace
+                                    std::string fileName = input.substr(pos + 1);
+
+                                    // Save game
+                                    save(fileName, savedInputs);
+
+                                    std::cout << "Saved to " << fileName << std::endl;
+                                }
+
+                            } else {
+
+                                // Notify users of errors
+                                std::cout << "Invalid Input!" << std::endl;
+                                std::cout << "Error(s): " << std::endl;
+
+                                for (auto &error : errors) {
+                                    std::cout << "- " << error << std::endl;
+                                }
+                                std::cout << "Please try again " << std::endl;
+                                std::cout << std::endl;
+                            }
+                            // Check if end round condition is met
+                            if (endRound()) {
+                                validInput = true;
+                                end = true;
+                            }
+                        }
+                        std::cout << std::endl;
+                    }
+                }
+            }
+        }
+
         // Next Round
         std::cout << "=== Round " << round << " Ends ===" << std::endl;
         round++;
@@ -1023,11 +1286,6 @@ void Game::load(const std::string &fileName) {
         // Error Checking
         if (round <= MAX_GAME_ROUNDS) {
             for (auto &player: players) {
-//                std::cout << "Broken Row (" << std::endl;
-//                for (int i = 0; i < BROKEN_ROW_SIZE; i ++) {
-//                    std::cout << player->getBrokenRow()[i].getName() << ", ";
-//                }
-//                std::cout << ") " << std::endl;
                 deductBrokenTile(player);
             }
             printScores();

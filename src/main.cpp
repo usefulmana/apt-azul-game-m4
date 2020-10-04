@@ -216,13 +216,17 @@ std::vector<Player *> createPlayersFromUserInput() {
 
     // Player counter
     int playerCount = 1;
-
+    // Clear input
+    std::cin.clear();
+    std::cin.ignore(10000, '\n');
     // End loop when num of players exceeds the ceiling
     while (playerCount <= NUM_OF_PLAYERS) {
         std::string name;
+        std::string savedName;
         std::cout << "Enter a name for player " << playerCount << std::endl;
         std::cout << "> ";
-        std::cin >> name;
+
+        getline(std::cin, name);
         std::cout << std::endl;
 
         // Check end of file
@@ -232,9 +236,15 @@ std::vector<Player *> createPlayersFromUserInput() {
         // Validate input
         else if (isNameValid(name)) {
             // Increase count by one
-            playerCount++;
+
             // Initialize and add player object to the vector
-            players.push_back(new Player(name));
+            if (playerCount == 1){
+                players.push_back(new Player(name, playerCount, true));
+            }
+            else {
+                players.push_back(new Player(name, playerCount, false));
+            }
+            playerCount++;
         } else {
             std::cout << "Invalid name. Please try again" << std::endl;
         }

@@ -19,8 +19,10 @@ public:
     /**
     * Copy Constructor
     * @param name : Player name to be copied
+    * @id : an unique id
+    * @f : true if the player will play first
     */
-    Player(std::string name);
+    Player(std::string name, int id, bool f);
 
     /*
     * Deconstructor
@@ -108,10 +110,30 @@ public:
     */
     void setBrokenRowCount(int count);
 
+    /**
+     * Return whether or not the player will play first in a round
+     * @return true if first, false if second
+     */
+    bool isFirst();
+
+    /**
+     * Set first value
+     * @param f
+     */
+    void setFirst(bool f);
+
+    /**
+     * Return unique if of a player
+     * @return
+     */
+    int getId();
+
 private:
     std::string name;
     int score;
     int rowCount;
+    bool first;
+    int id;
     Tile ** grid;
     Tile ** unlaidRow;
     Tile brokenRow[BROKEN_ROW_SIZE];
