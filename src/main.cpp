@@ -2,36 +2,33 @@
 #include <limits>
 #include <vector>
 #include <string>
+#include <fstream>
+#include <cstring>
 #include "Types.h"
 #include "Game.h"
 #include "Player.h"
 #include "utils.h"
+#include "Score.h"
 
 [[noreturn]] void showMenu();
-
 void showCredits();
-
 void playGame();
-
 void loadGame();
-
 std::vector<Player *> createPlayersFromUserInput();
-
 bool isNameValid(const std::string &name);
-
 void engageTestMode(char* fileName);
 
 int main(int argc, char ** argv) {
-    // Check num of argument
+    // Check number of argument
     if (argc == 1){
-        // No additional arg => show menu
+        // No additional arguments shows menu
         showMenu();
     }
     else if (argc == 3){
-        // 2 additional args => test mode
+        // 2 additional arguments directs to test mode
         const std::string flag = "-t";
-        
-        // If second argument is test flag
+
+        // Check for Flag
         if (argv[1] == flag){
             // If File Exists
             if (checkIfFileExists(argv[2])){
@@ -53,15 +50,17 @@ int main(int argc, char ** argv) {
     return EXIT_SUCCESS;
 }
 
+/**
+ * Displays Initial Menu
+ */
 [[noreturn]] void showMenu() {
-    // Display welcome message
+    // Welcome message
     std::cout << "Welcome to Azul!" << std::endl;
     std::cout << "-----------------------" << std::endl;
     std::cout << std::endl;
 
-
     while (true) {
-        // Display menu
+        // Print Menu Contents
         std::cout << "Menu" << std::endl;
         std::cout << "-----" << std::endl;
         std::cout << "1. New Game" << std::endl;
@@ -127,7 +126,7 @@ void showCredits() {
 }
 
 /**
- * This functional will initialize an Azul game
+ * This function will initialize an Azul game
  */
 void playGame() {
     std::cout << std::endl;
@@ -135,7 +134,7 @@ void playGame() {
     std::cout << std::endl;
 
     // Game Initialization
-    Game *game = new Game();
+    auto game = new Game();
     game->addPlayers(createPlayersFromUserInput());
     game->setTileBagAutomatically();
 
@@ -145,12 +144,11 @@ void playGame() {
     // Play the game
     game->play();
 
-    std::cout << "=== GAME OVER ===" << std::endl;
-    std::cout << "=== Final Scores: ===" << std::endl;
-    // TODO RESULT
+    std::cout << "=== Game Over ===" << std::endl;
+    std::cout << "=== Scoreboard ===" << std::endl;
 
-    // delete objects
-    // delete game;
+    // Print Scores
+    game->printFinalResults();
 
 }
 
@@ -158,7 +156,41 @@ void playGame() {
  * This functional will load an Azul game from a file
  */
 void loadGame() {
-    std::cout << "Loading Game" << std::endl;
+
+    bool valid = false;
+    std::string fileName;
+    
+    // Clear input
+    std::cin.clear();
+    std::cin.ignore(10000, '\n');
+
+    std::cout << "Enter the name of save file: " << std::endl;
+    while (!valid){
+
+        std::cout << "> ";
+
+        // Grab file name
+        getline(std::cin, fileName);
+
+        // Check EOF
+        if (!std::cin){
+            quitGame();
+        }
+        // Check if file exists
+        if (checkIfFileExists(fileName.c_str())){
+            // Break loop
+            valid = true;
+        }
+        else {
+            // Display error message
+            std::cout << "No such file exists. Please try again!" << std::endl;
+        }
+    }
+
+    // Initialize New Game
+    auto game = new Game();
+    // Load game from file
+    game->load(fileName);
 }
 
 /**
@@ -207,10 +239,13 @@ std::vector<Player *> createPlayersFromUserInput() {
             std::cout << "Invalid name. Please try again" << std::endl;
         }
     }
-
     return players;
 }
 
 void engageTestMode(char* fileName){
-    std::cout << "Engaged Test Mode" << std::endl;
+    // Initialize New Game
+    auto game = new Game();
+    // Load game from file
+    game->testLoadGame(fileName);
+
 }

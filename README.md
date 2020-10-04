@@ -2,7 +2,7 @@
 
 ##### Course: COSC 1076 - Advanced Programming Techniques
 ##### Assignment: 2
-##### Description: TBC
+##### Description: A C++ implementation of Azul
 ##### Members: 
 - Anh Nguyen (s3616128)
 - Mitchell Gust (s3782095)
@@ -18,8 +18,10 @@
 - **Method 1: Automation**
     ```
     chmod +x run.sh (only need to do this once)
-    ./run.sh
+    ./run.sh (run the game normally)
+    ./run.sh -t <filename> (engage test mode)
     ```
+    
 - **Method 2: Manual**
     ```
     cd src && sudo make && cd bin && ./azul && cd .. && cd ..
