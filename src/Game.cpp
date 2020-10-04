@@ -1054,7 +1054,7 @@ void Game::load(const std::string &fileName) {
         bool end = endRound();
         if (players[0]->isFirst()) {
             while (!end) {
-                for (size_t i = 0; i < NUM_OF_PLAYERSG && !end; ++i) {
+                for (size_t i = 0; i < NUM_OF_PLAYERS && !end; ++i) {
                     auto player = players[i];
                     // Check if End Of File is reached
                     if (getline(file, line)) {
