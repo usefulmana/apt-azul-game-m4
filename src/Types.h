@@ -26,8 +26,8 @@
 #define LAST_STORAGE_ROW 5
 #define INVALID_COORDINATE -2
 #define MAX_TILE_NUM 20
-#define VALID_CHARS "RYBLUF"
-
+#define VALID_CHARS "RYBLU"
+#define TILE_BAG_VALID_CHARS "RYBLUF"
 #define MAX_DIRECTIONS 4
 #define MAX_UP 0
 #define MAX_DOWN 4
