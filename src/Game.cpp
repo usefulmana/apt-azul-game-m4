@@ -1079,7 +1079,6 @@ void Game::load(const std::string &fileName) {
                     } else {
 
                         // End Of File is reached
-                        std::cout << "Game Loaded!" << std::endl;
                         std::cout << "TURN FOR PLAYER: " << player->getName() << std::endl;
                         std::cout << "Factories:" << std::endl;
                         printFactories();
@@ -1193,7 +1192,6 @@ void Game::load(const std::string &fileName) {
                     } else {
 
                         // End Of File is reached
-                        std::cout << "Game Loaded!" << std::endl;
                         std::cout << "TURN FOR PLAYER: " << player->getName() << std::endl;
                         std::cout << "Factories:" << std::endl;
                         printFactories();
