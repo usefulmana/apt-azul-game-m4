@@ -720,7 +720,7 @@ void Game::testLoadGame(char *fileName) {
     file.open(fileName, std::ifstream::in);
     int lineCount = 1;
     std::string line;
-    std::string validChars = VALID_CHARS;
+    std::string validChars = TILE_BAG_VALID_CHARS;
     std::vector<Player *> testPlayers;
 
     while (lineCount <= 1) {
@@ -832,7 +832,7 @@ void Game::load(const std::string &fileName) {
     file.open(fileName, std::ifstream::in);
     int lineCount = 1;
     std::string line;
-    std::string validChars = VALID_CHARS;
+    std::string validChars = TILE_BAG_VALID_CHARS;
     std::vector<Player *> testPlayers;
 
     // A vector to save inputs
