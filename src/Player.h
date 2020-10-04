@@ -19,6 +19,8 @@ public:
     /**
     * Copy Constructor
     * @param name : Player name to be copied
+    * @id : an unique id
+    * @f : true if the player will play first
     */
     Player(std::string name, int id, bool f);
 
@@ -108,10 +110,22 @@ public:
     */
     void setBrokenRowCount(int count);
 
+    /**
+     * Return whether or not the player will play first in a round
+     * @return true if first, false if second
+     */
     bool isFirst();
 
+    /**
+     * Set first value
+     * @param f
+     */
     void setFirst(bool f);
 
+    /**
+     * Return unique if of a player
+     * @return
+     */
     int getId();
 
 private:
