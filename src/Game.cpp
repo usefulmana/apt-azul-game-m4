@@ -62,6 +62,9 @@ void Game::play() {
     // Save tile bag to input string;
     savedInputs.push_back(bag);
 
+    // Delete the F tile
+    savedInputs.erase(savedInputs.begin());
+
     //Add Players to Game
     for (auto &player: players) {
         savedInputs.push_back(player->getName());
@@ -265,7 +268,8 @@ void Game::setTileBagAutomatically() {
 void Game::setTileBagFromString(const std::string &line) {
     //Initialise Tile Bag
     tileBag = new LinkedList<Tile *>();
-
+    // Add first tile
+    tileBag->addBack(new Tile(FIRST_TILE));
     //Fill Tile Bag
     for (size_t i = 0; i < line.length(); ++i) {
         tileBag->addBack(new Tile(line[i]));
@@ -727,19 +731,29 @@ void Game::testLoadGame(char *fileName) {
         getline(file, line);
 
         // Validate tile bag input
+        int count = 0;
         for (size_t i = 0; i < line.size(); ++i) {
             size_t checked = validChars.find(line[i]);
             if (checked == std::string::npos) {
                 std::cout << "Corrupted save file. Tile bag contains invalid characters!" << std::endl;
                 std::cout << "Disengaging test mode..." << std::endl;
                 quitGame();
+            } else {
+                count++;
             }
         }
-        // Setting up game
-        setTileBagFromString(line);
-        addFirstTileToCenter();
-        fillFactories();
-        lineCount++;
+        if (count < NUM_OF_TILES_IN_TILE_BAG || count > NUM_OF_TILES_IN_TILE_BAG){
+            std::cout << "Corrupted save file. Initial tile bag must have exactly 100 tiles!" << std::endl;
+            std::cout << "Disengaging test mode..." << std::endl;
+            quitGame();
+        }
+        else {
+            // Setting up game
+            setTileBagFromString(line);
+            addFirstTileToCenter();
+            fillFactories();
+            lineCount++;
+        }
     }
 
     // Fetch players' names
@@ -842,20 +856,30 @@ void Game::load(const std::string &fileName) {
         getline(file, line);
 
         // Validate tile bag input
+        int count = 0;
         for (size_t i = 0; i < line.size(); ++i) {
             size_t checked = validChars.find(line[i]);
             if (checked == std::string::npos) {
                 std::cout << "Corrupted save file. Tile bag contains invalid characters!" << std::endl;
                 std::cout << "Disengaging test mode..." << std::endl;
                 quitGame();
+            } else {
+                count++;
             }
         }
-        savedInputs.push_back(line);
-        // Setting up game
-        setTileBagFromString(line);
-        addFirstTileToCenter();
-        fillFactories();
-        lineCount++;
+        if (count < NUM_OF_TILES_IN_TILE_BAG || count > NUM_OF_TILES_IN_TILE_BAG){
+            std::cout << "Corrupted save file. Initial tile bag must have exactly 100 tiles!" << std::endl;
+            std::cout << "Disengaging test mode..." << std::endl;
+            quitGame();
+        }
+        else {
+            savedInputs.push_back(line);
+            // Setting up game
+            setTileBagFromString(line);
+            addFirstTileToCenter();
+            fillFactories();
+            lineCount++;
+        }
     }
 
     // Grab players' names
