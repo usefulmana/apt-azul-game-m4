@@ -78,6 +78,7 @@ void Player::addScore(int s) {
 
 void Player::setScore(int s) {
     if (s < 0){
+        // Score cannot go below zero
         score = 0;
     }
     else {
