@@ -15,6 +15,10 @@ cd bin
 
 if [ "$1" == "test" ]; then
   ./azul -t "$2"
+elif [ "$1" == "ran" ]; then
+  ./azul -s "$2"
+  elif [ "$1" == "adv" ]; then
+  ./azul --adv
 else
   #valgrind --leak-check=full ./azul
   ./azul

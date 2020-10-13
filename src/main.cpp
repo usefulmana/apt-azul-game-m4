@@ -2,13 +2,10 @@
 #include <limits>
 #include <vector>
 #include <string>
-#include <fstream>
-#include <cstring>
 #include "Types.h"
 #include "Game.h"
 #include "Player.h"
 #include "utils.h"
-#include "Score.h"
 
 [[noreturn]] void showMenu();
 void showCredits();
@@ -17,6 +14,8 @@ void loadGame();
 std::vector<Player *> createPlayersFromUserInput();
 bool isNameValid(const std::string &name);
 void engageTestMode(char* fileName);
+void engageRandomMode(int seed);
+void engageAdvancedMode();
 
 int main(int argc, char ** argv) {
     // Check number of argument
@@ -24,18 +23,35 @@ int main(int argc, char ** argv) {
         // No additional arguments shows menu
         showMenu();
     }
+    else if (argc == 2){
+        std::string flag = "--adv";
+        if (argv[1] == flag){
+            engageAdvancedMode();
+        }
+    }
     else if (argc == 3){
         // 2 additional arguments directs to test mode
-        const std::string flag = "-t";
-
+        std::vector<std::string> flags;
+        flags.emplace_back("-t");
+        flags.emplace_back("-s");
         // Check for Flag
-        if (argv[1] == flag){
+        if (argv[1] == flags[0]){
             // If File Exists
             if (checkIfFileExists(argv[2])){
                 engageTestMode(argv[2]);
             }
             else {
                 std::cout << "No such file exists!" << std::endl;
+            }
+        }
+        else if (argv[1] == flags[1]){
+            try {
+                int seed = std::stoi(argv[2]);
+                engageRandomMode(seed);
+            }
+            catch (std::exception const &e) {
+                std::cout << "You entered: " << argv[2] << std::endl;
+                std::cout << "Please enter an integer number " << std::endl;
             }
         }
         else {
@@ -45,7 +61,9 @@ int main(int argc, char ** argv) {
     else {
         std::cout << "Invalid number of arguments" << std::endl;
         std::cout << "./azul to run" << std::endl;
-        std::cout << "./azul -t <testfile> to engage test mode" << std::endl;
+        std::cout << "./azul -t <testfile> - to engage test mode" << std::endl;
+        std::cout << "./azul -s <seed> - to engage random mode" << std::endl;
+        std::cout << "./azul --adv - to engage advanced mode" << std::endl;
     }
     return EXIT_SUCCESS;
 }
@@ -258,4 +276,14 @@ void engageTestMode(char* fileName){
     // Load game from file
     game->testLoadGame(fileName);
 
+}
+
+
+void engageRandomMode(int seed){
+    std::cout << "Random Mode Engaged " << std::endl;
+    std::cout << "Seed: " << seed << std::endl;
+}
+
+void engageAdvancedMode(){
+    std::cout << "Advanced Mode Engaged " << std::endl;
 }
