@@ -165,6 +165,14 @@ public:
         }
     }
 
+    /**
+     * Clear linked list
+     */
+    void clear(){
+        while(head != nullptr){
+            popFront();
+        }
+    }
 
     /**
     * Return length of the current list

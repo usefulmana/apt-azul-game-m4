@@ -282,6 +282,12 @@ void engageTestMode(char* fileName){
 void engageRandomMode(int seed){
     std::cout << "Random Mode Engaged " << std::endl;
     std::cout << "Seed: " << seed << std::endl;
+    auto game = new Game();
+    game->addPlayers(createPlayersFromUserInput());
+    game->setTileBagAutomatically();
+    game->setSeed(seed);
+    game->shuffleTileBag(seed);
+    game->playWithBoxLidAndRandomness();
 }
 
 void engageAdvancedMode(){

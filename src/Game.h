@@ -9,6 +9,7 @@
 #include "Types.h"
 #include <algorithm>
 #include "Score.h"
+#include <random>
 
 class Game
 {
@@ -240,14 +241,25 @@ public:
      */
     void readLineAndQuit(std::ifstream & file, std::string & line, Player * player, bool & end, int & lineCount);
 
-    void setUpALoadedGame(const char *fileName, int & lineCount);
+    /**
+     * Play with box lid and random shuffle of the tile bag
+     */
+    void playWithBoxLidAndRandomness();
 
+    void setSeed(const int & s);
+
+    int getSeed();
+
+    void shuffleTileBag(const int & seed);
 private:
     // Stores all game players
     std::vector<Player*> players;
 
     // Structure of Tile Bag
     LinkedList<Tile*> * tileBag;
+
+    // Box lid
+    LinkedList<Tile*> * boxLid;
 
     // Factories
     Tile ** factories;
@@ -258,6 +270,9 @@ private:
     // Coordinates of Rcently Placed Tile
     int placedTileX;
     int placedTileY;
+
+    // Seed
+    int seed;
 };
 
 #endif // COSC_ASSIGN_TWO_GAME

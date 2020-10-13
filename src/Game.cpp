@@ -13,6 +13,12 @@ Game::Game() {
             factories[i][j] = *new Tile(WHITESPACE);
         }
     }
+
+    // Initialize the tile bag
+    tileBag = new LinkedList<Tile *>();
+
+    // Initialize the box lid
+    boxLid = new LinkedList<Tile *>();
 }
 
 Game::~Game() {
@@ -56,8 +62,7 @@ void Game::play() {
     //Fill Tile Bag
     std::string bag;
 
-    // Ignore F tile
-    for (int i = 1; i < NUM_OF_TILES_IN_TILE_BAG + 1; ++i) {
+    for (int i = 0; i < NUM_OF_TILES_IN_TILE_BAG; ++i) {
         bag += tileBag->get(i)->getName();
     }
     // Save tile bag to input vector;
@@ -146,10 +151,7 @@ void Game::deductBrokenTile(Player *player) {
 }
 
 void Game::setTileBagAutomatically() {
-    // Initialize the tile bag
-    tileBag = new LinkedList<Tile *>();
-    // Add first tile to tile bag
-    tileBag->addBack(new Tile(FIRST_TILE));
+
 
     // 10R, 0B, 5Y, 5U, 5L
     for (int i = 0; i < 5; ++i) {
@@ -189,8 +191,7 @@ void Game::setTileBagAutomatically() {
 void Game::setTileBagFromString(const std::string &line) {
     //Initialise Tile Bag
     tileBag = new LinkedList<Tile *>();
-    // Add first tile
-    tileBag->addBack(new Tile(FIRST_TILE));
+
     //Fill Tile Bag
     for (size_t i = 0; i < line.length(); ++i) {
         tileBag->addBack(new Tile(line[i]));
@@ -234,8 +235,7 @@ void Game::printFactories() {
 }
 
 void Game::addFirstTileToCenter() {
-    center.push_back(new Tile(tileBag->get(0)->getName()));
-    tileBag->popFront();
+    center.push_back(new Tile(FIRST_TILE));
 }
 
 bool Game::isCenterEmpty() {
@@ -618,12 +618,13 @@ void Game::reset() {
     // Fill factories from tile bag
     fillFactories();
     // Add First tile to center
-    center.push_back(new Tile(FIRST_TILE));
+    addFirstTileToCenter();
+
     for (auto &player: players) {
         // Reset Broken Row
         for (int i = 0; i < BROKEN_ROW_SIZE; ++i) {
-            // Add broken tiles back to the tile bag
-            tileBag->addBack(new Tile(player->getBrokenRow()[i].getName()));
+            // Add broken tiles back to the box lid
+            boxLid->addBack(new Tile(player->getBrokenRow()[i].getName()));
             // Reset Broken Row
             player->getBrokenRow()[i].setName(WHITESPACE);
         }
@@ -1050,4 +1051,111 @@ void Game::readLineAndQuit(std::ifstream &file, std::string &line, Player *playe
         std::cout << "=== Game Loaded Successfully ===" << std::endl;
         quitGame();
     }
+}
+
+void Game::playWithBoxLidAndRandomness() {
+    // A vector to save inputs
+    std::vector<std::string> savedInputs;
+
+    //Fill Tile Bag
+    std::string bag;
+    for (int i = 0; i < NUM_OF_TILES_IN_TILE_BAG; ++i) {
+        bag += tileBag->get(i)->getName();
+    }
+    // Add the seed to end of the bag
+    // Convert int to char
+    char aSeed = '0' + seed;
+    // Save seed at the end of the string
+    bag += aSeed;
+
+    // Save tile bag to input vector;
+    savedInputs.push_back(bag);
+
+
+    //Add Players to Game
+    for (auto &player: players) {
+        savedInputs.push_back(player->getName());
+    }
+
+    //Add "First" Tile to Centre Factory
+    addFirstTileToCenter();
+
+    //Fill Remaining Factories
+    fillFactories();
+
+    //Round Number Counter
+    int round = 1;
+
+    // While game hasn't reached last round
+    while (round <= MAX_GAME_ROUNDS) {
+        std::cout << "=== Round " << round << " Starts ===" << std::endl;
+        // End round if all factories including Centre are empty
+
+        bool end = endRound();
+        if (players[0]->isFirst()) {
+            while (!end) {
+                for (size_t i = 0; i < NUM_OF_PLAYERS && !end; ++i) {
+                    auto player = players[i];
+                    playTurn(player, end, savedInputs);
+                }
+            }
+        } else {
+            while (!end) {
+                for (size_t i = 0; i < NUM_OF_PLAYERS && !end; ++i) {
+                    auto player = players[NUM_OF_PLAYERS - 1 - i];
+                    playTurn(player, end, savedInputs);
+                }
+            }
+        }
+
+        // Next Round
+        std::cout << "=== Round " << round << " Ends ===" << std::endl;
+        round++;
+
+        // Error Checking
+        if (round <= MAX_GAME_ROUNDS) {
+            // Deduct players' scores from tiles in the broken row
+            for (auto &player: players) {
+                deductBrokenTile(player);
+            }
+            printScores();
+            // Reset game state
+            reset();
+        }
+    }
+}
+
+void Game::shuffleTileBag(const int & s) {
+    // Setting up
+
+    int max = tileBag->getLength();
+    std::default_random_engine engine(s);
+    std::string saved;
+//    std::uniform_int_distribution<int> dist(min, max - 1);
+//    int min = 0;
+//    int value = -1;
+
+    // Exclude first for backward compatibility
+    for (int i = 0; i < max; ++i) {
+        saved += tileBag->get(i)->getName();
+    }
+
+    // Clear tilebag
+    tileBag->clear();
+
+    // Shuffle
+    // TODO Write Own Algorithm
+    std::shuffle(saved.begin(), saved.end(), engine);
+
+    for (int i = 0; i < max; ++i) {
+        tileBag->addBack(new Tile(saved[i]));
+    }
+}
+
+void Game::setSeed(const int &s) {
+    this->seed = s;
+}
+
+int Game::getSeed() {
+    return this->seed;
 }
