@@ -180,6 +180,68 @@ public:
      */
     void printScores();
 
+    /**
+     * Print Instructions
+     */
+    static void printInstructions();
+
+    /**
+     * Print information about the new turn
+     * @param player
+     */
+    void printNewTurnInformation(Player * player);
+
+    /**
+     * Get user's input and save it to a string
+     * @param input
+     */
+    void getUserInput(std::string & input);
+
+    /**
+     * Print error messages
+     * @param errors
+     */
+    void printEndErrorMessage(std::vector<std::string> & errors);
+
+    /**
+     * Interpret a command
+     * @param input
+     */
+    void interpretCommand(std::string & input, Player * player, bool & valid, std::vector<std::string> & savedInputs);
+
+    /**
+     * Play a turn
+     * @param player
+     * @param end
+     * @param savedInputs
+     */
+    void playTurn(Player * player, bool & end, std::vector<std::string> & savedInputs);
+
+    /**
+     * Read a line for a text file and execute that line. On EOF, resume play
+     * @param file
+     * @param line
+     * @param player
+     * @param end
+     * @param savedInputs
+     * @param lineCount
+     */
+    void readLineAndPlayTurn(std::ifstream & file, std::string & line, Player * player, bool & end,
+                             std::vector<std::string> & savedInputs, int & lineCount);
+
+    /**
+     * Read a line for a text file and execute that line. On EOF, quit
+     * @param file
+     * @param line
+     * @param player
+     * @param end
+     * @param savedInputs
+     * @param lineCount
+     */
+    void readLineAndQuit(std::ifstream & file, std::string & line, Player * player, bool & end, int & lineCount);
+
+    void setUpALoadedGame(const char *fileName, int & lineCount);
+
 private:
     // Stores all game players
     std::vector<Player*> players;
