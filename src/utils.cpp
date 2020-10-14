@@ -71,3 +71,17 @@ void quitGame() {
     // Quit
     exit(0);
 }
+
+void shuffleString(std::string & str, std::default_random_engine & engine){
+    std::uniform_int_distribution<int> distribution(0, str.size() - 1);
+    int value = -1;
+    char temp;
+    for (size_t i = 0; i < str.size(); ++i) {
+        value = distribution(engine);
+        // Save current pos
+        temp = str[i];
+        // Swap current pos value with another
+        str[i] = str[value];
+        str[value] = temp;
+    }
+}

@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <random>
 #include "Game.h"
 
 /**
@@ -58,5 +59,12 @@ bool checkIfFileExists(const char* file);
  * Quit the game
  */
 void quitGame();
+
+/**
+ * Shuffle a string
+ * @param str : string to be shuffled
+ * @param engine : a random engine
+ */
+void shuffleString(std::string & str, std::default_random_engine & engine);
 
 #endif //A2_UTILS_H

@@ -10,6 +10,7 @@
 #include <algorithm>
 #include "Score.h"
 #include <random>
+#include <ctype.h>
 
 class Game
 {
@@ -246,11 +247,22 @@ public:
      */
     void playWithBoxLidAndRandomness();
 
+    void loadWithBoxLidAndRandomness(const std::string & fileName);
+
     void setSeed(const int & s);
 
     int getSeed();
 
-    void shuffleTileBag(const int & seed);
+    void setRandomGameMode(bool random);
+
+    void shuffleTileBag();
+
+    bool areTileBagAndBoxLidEmpty();
+
+    void moveTilesFromBoxLidToTileBag();
+
+    bool checkIfEndGame();
+
 private:
     // Stores all game players
     std::vector<Player*> players;
@@ -273,6 +285,12 @@ private:
 
     // Seed
     int seed;
+
+    // Random
+    bool isRandom;
+
+    // Advanced
+    bool isAdvanced;
 };
 
 #endif // COSC_ASSIGN_TWO_GAME

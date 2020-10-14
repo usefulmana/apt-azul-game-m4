@@ -19,6 +19,13 @@ Game::Game() {
 
     // Initialize the box lid
     boxLid = new LinkedList<Tile *>();
+
+    // Default values
+    isRandom = false;
+    isAdvanced = false;
+
+    // Default seed
+    seed = 1;
 }
 
 Game::~Game() {
@@ -151,40 +158,17 @@ void Game::deductBrokenTile(Player *player) {
 }
 
 void Game::setTileBagAutomatically() {
+    std::default_random_engine engine(seed);
+    std::string tiles;
 
-
-    // 10R, 0B, 5Y, 5U, 5L
-    for (int i = 0; i < 5; ++i) {
-        tileBag->addBack(new Tile(RED));
-        tileBag->addBack(new Tile(YELLOW));
-        tileBag->addBack(new Tile(BLACK));
-        tileBag->addBack(new Tile(LIGHT_BLUE));
-        tileBag->addBack(new Tile(RED));
-    }
-    // 0R, 10B, 5Y, 0U, 5L
-    for (int i = 0; i < 5; ++i) {
-        tileBag->addBack(new Tile(DARK_BLUE));
-        tileBag->addBack(new Tile(YELLOW));
-        tileBag->addBack(new Tile(DARK_BLUE));
-        tileBag->addBack(new Tile(LIGHT_BLUE));
+    if (!isAdvanced) {
+        tiles = NORMAL_ALL_TILES;
     }
 
-    // 10R, 10B, 5Y, 10U, 0L
-    for (int i = 0; i < 5; ++i) {
-        tileBag->addBack(new Tile(RED));
-        tileBag->addBack(new Tile(YELLOW));
-        tileBag->addBack(new Tile(BLACK));
-        tileBag->addBack(new Tile(BLACK));
-        tileBag->addBack(new Tile(RED));
-        tileBag->addBack(new Tile(DARK_BLUE));
-        tileBag->addBack(new Tile(DARK_BLUE));
-    }
-    // 0R, 0B, 5Y, 5U, 10L
-    for (int i = 0; i < 5; ++i) {
-        tileBag->addBack(new Tile(LIGHT_BLUE));
-        tileBag->addBack(new Tile(YELLOW));
-        tileBag->addBack(new Tile(BLACK));
-        tileBag->addBack(new Tile(LIGHT_BLUE));
+    shuffleString(tiles, engine);
+
+    for (size_t i = 0; i < tiles.length(); ++i) {
+        tileBag->addBack(new Tile(tiles[i]));
     }
 }
 
@@ -204,8 +188,8 @@ LinkedList<Tile *> *Game::getTileBag() {
 
 void Game::fillFactories() {
     // Fill factories with tiles from the tile bag
-    for (int i = 0; i < NUM_OF_FACTORIES; ++i) {
-        for (int j = 0; j < FACTORY_SIZE; ++j) {
+    for (int i = 0; i < NUM_OF_FACTORIES && tileBag->getLength() > 0; ++i) {
+        for (int j = 0; j < FACTORY_SIZE && tileBag->getLength() > 0; ++j) {
             factories[i][j].setName(tileBag->get(0)->getName());
 
             //Remove tile from tile bag
@@ -483,7 +467,12 @@ void Game::execute(const std::string &command, Player *player) {
 
                 // Add previous tiles back to broken row
                 for (size_t i = 0; i < savedBrokenTiles.size(); ++i) {
-                    player->addToBrokenRow(savedBrokenTiles[i]);
+                    if (player->getBrokenRowCount() == 7) {
+                        // add fallen tiles to box lid if broken tile is full
+                        boxLid->addBack(new Tile(savedBrokenTiles[i]));
+                    } else {
+                        player->addToBrokenRow(savedBrokenTiles[i]);
+                    }
                 }
             }
 
@@ -492,7 +481,12 @@ void Game::execute(const std::string &command, Player *player) {
 
             // Add the rest of tiles to the broken row
             for (size_t i = 0; i < chosenTiles.length(); ++i) {
-                player->addToBrokenRow(chosenTiles[i]);
+                if (player->getBrokenRowCount() == 7) {
+                    // add fallen tiles to box lid if broken tile is full
+                    boxLid->addBack(new Tile(chosenTiles[i]));
+                } else {
+                    player->addToBrokenRow(chosenTiles[i]);
+                }
             }
 
             // Delete after adding things to broken row
@@ -624,7 +618,10 @@ void Game::reset() {
         // Reset Broken Row
         for (int i = 0; i < BROKEN_ROW_SIZE; ++i) {
             // Add broken tiles back to the box lid
-            boxLid->addBack(new Tile(player->getBrokenRow()[i].getName()));
+            if (player->getBrokenRow()[i].getName() != WHITESPACE &&
+                player->getBrokenRow()[i].getName() != FIRST_TILE) {
+                boxLid->addBack(new Tile(player->getBrokenRow()[i].getName()));
+            }
             // Reset Broken Row
             player->getBrokenRow()[i].setName(WHITESPACE);
         }
@@ -642,6 +639,13 @@ void Game::reset() {
             }
             rowCount++;
         }
+    }
+
+    // Add Boxlid tile to tilebag
+    if (isRandom && tileBag->getLength() == 0 && boxLid->getLength() > 0) {
+        moveTilesFromBoxLidToTileBag();
+        // Shuffle the bag
+        shuffleTileBag();
     }
 }
 
@@ -1062,15 +1066,12 @@ void Game::playWithBoxLidAndRandomness() {
     for (int i = 0; i < NUM_OF_TILES_IN_TILE_BAG; ++i) {
         bag += tileBag->get(i)->getName();
     }
-    // Add the seed to end of the bag
-    // Convert int to char
-    char aSeed = '0' + seed;
-    // Save seed at the end of the string
-    bag += aSeed;
 
     // Save tile bag to input vector;
     savedInputs.push_back(bag);
 
+    // Save seed at the end of the string
+    savedInputs.push_back(std::to_string(seed));
 
     //Add Players to Game
     for (auto &player: players) {
@@ -1086,8 +1087,10 @@ void Game::playWithBoxLidAndRandomness() {
     //Round Number Counter
     int round = 1;
 
-    // While game hasn't reached last round
-    while (round <= MAX_GAME_ROUNDS) {
+    // While tilebag
+    //while (!areTileBagAndBoxLidEmpty())
+    bool gameOver = false;
+    while (!gameOver) {
         std::cout << "=== Round " << round << " Starts ===" << std::endl;
         // End round if all factories including Centre are empty
 
@@ -1097,6 +1100,10 @@ void Game::playWithBoxLidAndRandomness() {
                 for (size_t i = 0; i < NUM_OF_PLAYERS && !end; ++i) {
                     auto player = players[i];
                     playTurn(player, end, savedInputs);
+                    if (checkIfEndGame()) {
+                        end = true;
+                        gameOver = true;
+                    }
                 }
             }
         } else {
@@ -1104,6 +1111,10 @@ void Game::playWithBoxLidAndRandomness() {
                 for (size_t i = 0; i < NUM_OF_PLAYERS && !end; ++i) {
                     auto player = players[NUM_OF_PLAYERS - 1 - i];
                     playTurn(player, end, savedInputs);
+                    if (checkIfEndGame()) {
+                        end = true;
+                        gameOver = true;
+                    }
                 }
             }
         }
@@ -1113,42 +1124,188 @@ void Game::playWithBoxLidAndRandomness() {
         round++;
 
         // Error Checking
-        if (round <= MAX_GAME_ROUNDS) {
-            // Deduct players' scores from tiles in the broken row
-            for (auto &player: players) {
-                deductBrokenTile(player);
-            }
+
+        for (auto &player: players) {
+            deductBrokenTile(player);
+        }
+
+        // Reset game state
+        if (!areTileBagAndBoxLidEmpty()) {
             printScores();
-            // Reset game state
             reset();
         }
+
+        // Display box lid at the end of the round
+        std::cout << "Box Lid : ";
+        for (int i = 0; i < boxLid->getLength(); ++i) {
+            std::cout << boxLid->get(i)->getName() << " ";
+        }
+        std::cout << std::endl;
     }
+    std::cout << "=== Game Over ===" << std::endl;
+    std::cout << "=== Scoreboard ===" << std::endl;
+    printFinalResults();
 }
 
-void Game::shuffleTileBag(const int & s) {
+void Game::loadWithBoxLidAndRandomness(const std::string &fileName) {
+// Initialize test mode variables
+    std::ifstream file;
+    file.open(fileName, std::ifstream::in);
+    int lineCount = 1;
+    std::string line;
+    std::string validChars = TILE_BAG_VALID_CHARS;
+    std::vector<Player *> testPlayers;
+
+    // A vector to save inputs
+    std::vector<std::string> savedInputs;
+
+    // TODO Fix Load Half Game
+    while (lineCount <= 1) {
+        getline(file, line);
+
+        // Validate tile bag input
+        int count = 0;
+        for (size_t i = 0; i < line.size(); ++i) {
+            size_t checked = validChars.find(line[i]);
+            if (checked == std::string::npos) {
+                std::cout << "Corrupted save file. Tile bag contains invalid characters!" << std::endl;
+                std::cout << "Disengaging test mode..." << std::endl;
+                quitGame();
+            } else {
+                count++;
+            }
+        }
+        if (count < NUM_OF_TILES_IN_TILE_BAG || count > NUM_OF_TILES_IN_TILE_BAG) {
+            std::cout << "Corrupted save file. Initial tile bag must have exactly 100 tiles!" << std::endl;
+            quitGame();
+        } else {
+
+            savedInputs.push_back(line);
+            // Setting up game
+            setTileBagFromString(line);
+            addFirstTileToCenter();
+            fillFactories();
+            lineCount++;
+        }
+    }
+
+    try {
+        getline(file, line);
+        setSeed(std::stoi(line));
+        lineCount++;
+    }
+    catch (std::exception const &e) {
+        std::cout << "Corrupted save file. Seed must be a number" << std::endl;
+        quitGame();
+    }
+
+    // Grab players' names
+    while (lineCount <= 4) {
+        getline(file, line);
+        if (line.empty()) {
+            std::cout << "Corrupted save file. A player's name cannot be blank!" << std::endl;
+            std::cout << "Disengaging test mode..." << std::endl;
+            quitGame();
+        } else {
+            savedInputs.push_back(line);
+        }
+
+        if (lineCount == 3) {
+            players.push_back(new Player(line, lineCount - 1, true));
+        } else {
+            players.push_back(new Player(line, lineCount - 1, false));
+        }
+
+        lineCount++;
+    }
+
+    // Add players to game;
+    addPlayers(testPlayers);
+
+    // Count round
+    int round = 1;
+    bool gameOver = false;
+    while (!gameOver) {
+        std::cout << "=== Round " << round << " ===" << std::endl;
+        bool end = endRound();
+        if (players[0]->isFirst()) {
+            while (!end) {
+                for (size_t i = 0; i < NUM_OF_PLAYERS && !end; ++i) {
+                    auto player = players[i];
+                    // Check if End Of File is reached
+                    readLineAndPlayTurn(file, line, player, end, savedInputs, lineCount);
+                    if (checkIfEndGame()) {
+                        end = true;
+                        gameOver = true;
+                    }
+                }
+            }
+        } else {
+            while (!end) {
+                for (size_t i = 0; i < NUM_OF_PLAYERS && !end; ++i) {
+                    auto player = players[NUM_OF_PLAYERS - 1 - i];
+                    // Check if End Of File is reached
+                    readLineAndPlayTurn(file, line, player, end, savedInputs, lineCount);
+                    if (checkIfEndGame()) {
+                        end = true;
+                        gameOver = true;
+                    }
+                }
+            }
+        }
+
+        // Next Round
+        std::cout << "=== Round " << round << " Ends ===" << std::endl;
+        round++;
+
+        // Error Checking
+
+        for (auto &player: players) {
+            deductBrokenTile(player);
+        }
+
+        // Reset game state
+        if (!areTileBagAndBoxLidEmpty()) {
+            printScores();
+            reset();
+        }
+
+        // Display box lid at the end of the round
+        std::cout << "Box Lid : ";
+        for (int i = 0; i < boxLid->getLength(); ++i) {
+            std::cout << boxLid->get(i)->getName() << " ";
+        }
+        std::cout << std::endl;
+    }
+    // Cleaning up
+    file.close();
+
+    std::cout << "=== Game Over ===" << std::endl;
+    std::cout << "=== Scoreboard ===" << std::endl;
+    printFinalResults();
+}
+
+void Game::shuffleTileBag() {
     // Setting up
 
     int max = tileBag->getLength();
-    std::default_random_engine engine(s);
-    std::string saved;
-//    std::uniform_int_distribution<int> dist(min, max - 1);
-//    int min = 0;
-//    int value = -1;
+    std::default_random_engine engine(seed);
+    std::string tiles;
 
-    // Exclude first for backward compatibility
+    std::cout << "Length " << tiles.length() << std::endl;
+
     for (int i = 0; i < max; ++i) {
-        saved += tileBag->get(i)->getName();
+        tiles += tileBag->get(i)->getName();
     }
 
     // Clear tilebag
     tileBag->clear();
 
     // Shuffle
-    // TODO Write Own Algorithm
-    std::shuffle(saved.begin(), saved.end(), engine);
+    shuffleString(tiles, engine);
 
     for (int i = 0; i < max; ++i) {
-        tileBag->addBack(new Tile(saved[i]));
+        tileBag->addBack(new Tile(tiles[i]));
     }
 }
 
@@ -1158,4 +1315,42 @@ void Game::setSeed(const int &s) {
 
 int Game::getSeed() {
     return this->seed;
+}
+
+bool Game::areTileBagAndBoxLidEmpty() {
+    return (tileBag->getLength() == 0 && boxLid->getLength() == 0);
+}
+
+void Game::moveTilesFromBoxLidToTileBag() {
+    for (int i = 0; i < boxLid->getLength() - 1; ++i) {
+        tileBag->addBack(new Tile(boxLid->get(i)->getName()));
+    }
+    boxLid->clear();
+}
+
+void Game::setRandomGameMode(bool random) {
+    this->isRandom = random;
+}
+
+bool Game::checkIfEndGame() {
+    bool result = false;
+
+    // Any player with horizontal line = game over
+    for (size_t i = 0; i < players.size(); ++i) {
+        for (int j = 0; j < MOSAIC_DIM; ++j) {
+            int count = 0;
+            for (int k = 0; k < MOSAIC_DIM; ++k) {
+                if (std::isupper(players[i]->getGrid()[j][k].getName())) {
+                    count++;
+                }
+                if (count == MOSAIC_DIM) {
+                    result = true;
+                    i = players.size();
+                    j = MOSAIC_DIM;
+                    k = MOSAIC_DIM;
+                }
+            }
+        }
+    }
+    return result;
 }
