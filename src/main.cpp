@@ -27,51 +27,65 @@ void engageTestMode(char *fileName);
 
 [[noreturn]] void engageRandomMode(int seed);
 
-void engageAdvancedMode();
+void engageAdvancedMode(const std::string & mode);
 
 std::string detectSaveGameType(const std::string & fileName);
+
+void engageGreyBoardMode();
+void engageSixTileMode();
 
 int main(int argc, char **argv) {
     // Check number of argument
     if (argc == 1) {
         // No additional arguments shows menu
         playAzul();
-    } else if (argc == 2) {
-        std::string flag = "--adv";
-        if (argv[1] == flag) {
-            engageAdvancedMode();
+    }
+    else if (argc == 3) {
+
+        std::string advFlag = "--adv";
+        if (argv[1] == advFlag) {
+            std::string mode(argv[2]);
+            if (mode == SIX_TILE_MODE_FLAG || mode == GREY_BOARD_MODE_FLAG){
+                engageAdvancedMode(mode);
+            }
+            else {
+                std::cout << "No such mode exists!" << std::endl;
+                std::cout << "<mode> = six to trigger 6 tile mode" << std::endl;
+                std::cout << "<mode> = grey to trigger grey board mode" << std::endl;
+            }
         }
-    } else if (argc == 3) {
-        // 2 additional arguments directs to test mode
-        std::vector<std::string> flags;
-        flags.emplace_back("-t");
-        flags.emplace_back("-s");
-        // Check for Flag
-        if (argv[1] == flags[0]) {
-            // If File Exists
-            if (checkIfFileExists(argv[2])) {
-                engageTestMode(argv[2]);
+        else {
+            // 2 additional arguments directs to test mode
+            std::vector<std::string> flags;
+            flags.emplace_back("-t");
+            flags.emplace_back("-s");
+            // Check for Flag
+            if (argv[1] == flags[0]) {
+                // If File Exists
+                if (checkIfFileExists(argv[2])) {
+                    engageTestMode(argv[2]);
+                } else {
+                    std::cout << "No such file exists!" << std::endl;
+                }
+            } else if (argv[1] == flags[1]) {
+                try {
+                    int seed = std::stoi(argv[2]);
+                    engageRandomMode(seed);
+                }
+                catch (std::exception const &e) {
+                    std::cout << "You entered: " << argv[2] << std::endl;
+                    std::cout << "Please enter an integer number " << std::endl;
+                }
             } else {
-                std::cout << "No such file exists!" << std::endl;
+                std::cout << "Wrong flag" << std::endl;
             }
-        } else if (argv[1] == flags[1]) {
-            try {
-                int seed = std::stoi(argv[2]);
-                engageRandomMode(seed);
-            }
-            catch (std::exception const &e) {
-                std::cout << "You entered: " << argv[2] << std::endl;
-                std::cout << "Please enter an integer number " << std::endl;
-            }
-        } else {
-            std::cout << "Wrong flag" << std::endl;
         }
     } else {
         std::cout << "Invalid number of arguments" << std::endl;
         std::cout << "./azul to run" << std::endl;
         std::cout << "./azul -t <testfile> - to engage test mode" << std::endl;
         std::cout << "./azul -s <seed> - to engage random mode" << std::endl;
-        std::cout << "./azul --adv - to engage advanced mode" << std::endl;
+        std::cout << "./azul --adv <mode> - to engage advanced mode" << std::endl;
     }
     return EXIT_SUCCESS;
 }
@@ -340,8 +354,16 @@ void engageTestMode(char *fileName) {
     }
 }
 
-void engageAdvancedMode() {
+
+void engageAdvancedMode(const std::string & mode) {
+    std::string choice;
     std::cout << "Advanced Mode Engaged " << std::endl;
+    if (mode == GREY_BOARD_MODE_FLAG){
+        std::cout << "Grey board mode" << std::endl;
+    }
+    else{
+        std::cout << "6 tiles mode" << std::endl;
+    }
 }
 
 std::string detectSaveGameType(const std::string & fileName){
