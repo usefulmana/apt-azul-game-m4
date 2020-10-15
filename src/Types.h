@@ -42,6 +42,8 @@
 
 #define DEFAULT_NAME "default"
 
+#define RANDOM_MODE_HEADER "#random"
+#define ADVANCED_MODE_HEADER "#adv"
 
 
 #endif // COSC_ASSIGN_TWO_TYPES

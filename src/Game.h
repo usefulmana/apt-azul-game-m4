@@ -263,6 +263,8 @@ public:
 
     bool checkIfEndGame();
 
+    void testLoadRandomGame(char* fileName);
+
 private:
     // Stores all game players
     std::vector<Player*> players;

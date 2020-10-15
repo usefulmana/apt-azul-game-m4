@@ -29,6 +29,8 @@ void engageTestMode(char *fileName);
 
 void engageAdvancedMode();
 
+std::string detectSaveGameType(const std::string & fileName);
+
 int main(int argc, char **argv) {
     // Check number of argument
     if (argc == 1) {
@@ -298,8 +300,13 @@ void engageTestMode(char *fileName) {
     // Initialize New Game
     auto game = new Game();
     // Load game from file
-    game->testLoadGame(fileName);
-
+    std::string type = detectSaveGameType(fileName);
+    if (type == "default"){
+        game->testLoadGame(fileName);
+    }
+    else if (type == "random"){
+        game->testLoadRandomGame(fileName);
+    }
 }
 
 
@@ -317,18 +324,38 @@ void engageTestMode(char *fileName) {
             game->setTileBagAutomatically();
             game->playWithBoxLidAndRandomness();
         } else if (choice == 2) {
-            game->loadWithBoxLidAndRandomness(getFile());
+            std::string fileName = getFile();
+            std::string type = detectSaveGameType(fileName);
+            if (type == "default"){
+                game->load(fileName);
+            }
+            else if (type == "random"){
+                game->loadWithBoxLidAndRandomness(fileName);
+            }
         } else if (choice == 3) {
             showCredits();
         } else if (choice == 4) {
             quitGame();
         }
     }
-
-
-
 }
 
 void engageAdvancedMode() {
     std::cout << "Advanced Mode Engaged " << std::endl;
+}
+
+std::string detectSaveGameType(const std::string & fileName){
+    std::ifstream file;
+    file.open(fileName, std::ifstream::in);
+    std::string line;
+    std::string result = "default";
+
+    getline(file, line);
+    if (line == RANDOM_MODE_HEADER){
+        result = "random";
+    } else if (line == ADVANCED_MODE_HEADER){
+        result = "adv";
+    }
+    file.close();
+    return result;
 }
