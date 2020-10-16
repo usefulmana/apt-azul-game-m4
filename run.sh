@@ -18,7 +18,7 @@ if [ "$1" == "test" ]; then
 elif [ "$1" == "ran" ]; then
   ./azul -s "$2"
   elif [ "$1" == "adv" ]; then
-  ./azul --adv "$2"
+  ./azul --adv
 else
   #valgrind --leak-check=full ./azul
   ./azul

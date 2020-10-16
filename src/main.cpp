@@ -70,10 +70,10 @@ int main(int argc, char **argv) {
 
     } else {
         std::cout << "Invalid number of arguments" << std::endl;
-        std::cout << "./azul to run" << std::endl;
-        std::cout << "./azul -t <testfile> - to engage test mode" << std::endl;
-        std::cout << "./azul -s <seed> - to engage random mode" << std::endl;
-        std::cout << "./azul --adv <mode> - to engage advanced mode" << std::endl;
+        std::cout << "Default mode : ./azul" << std::endl;
+        std::cout << "Test mode    : ./azul -t <testfile>" << std::endl;
+        std::cout << "Random mode  : ./azul -s <seed>" << std::endl;
+        std::cout << "Advanced mode: ./azul --adv" << std::endl;
     }
     return EXIT_SUCCESS;
 }
