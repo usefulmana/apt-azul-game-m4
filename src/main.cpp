@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "utils.h"
 #include "AdvPlayer.h"
+#include "AdvGame.h"
 
 int showMenu();
 
@@ -21,6 +22,8 @@ void loadGame();
 std::string getFile();
 
 std::vector<Player *> createPlayersFromUserInput();
+
+int getSeedFromUserInput();
 
 std::vector<AdvPlayer *> getAdvancedPlayers();
 
@@ -301,7 +304,8 @@ std::vector<Player *> createPlayersFromUserInput() {
     return players;
 }
 
-std::vector<AdvPlayer *> getAdvancedPlayers(){
+
+std::vector<AdvPlayer *> getAdvancedPlayers() {
     // A vector to store player objects
     std::vector<AdvPlayer *> players;
 
@@ -345,12 +349,15 @@ std::vector<AdvPlayer *> getAdvancedPlayers(){
 void engageTestMode(char *fileName) {
     // Initialize New Game
     auto game = new Game();
+    auto advGame = new AdvGame();
     // Load game from file
     std::string type = detectSaveGameType(fileName);
     if (type == "default") {
         game->testLoadGame(fileName);
     } else if (type == "random") {
         game->testLoadRandomGame(fileName);
+    } else if (type == "adv"){
+        advGame->testLoadGame(fileName);
     }
 }
 
@@ -388,12 +395,15 @@ void engageTestMode(char *fileName) {
 [[noreturn]] void engageAdvancedMode() {
     std::cout << "Advanced Mode Engaged " << std::endl;
     auto game = new Game();
+    auto advGame = new AdvGame();
 
     while (true) {
         int choice = showMenu();
         if (choice == 1) {
-            std::cout << "Play Advanced Game " << std::endl;
-           getAdvancedPlayers()[0]->printMosaic();
+            advGame->setSeed(getSeedFromUserInput());
+            advGame->addPlayers(getAdvancedPlayers());
+            advGame->setTileBagAutomatically();
+            advGame->play();
         } else if (choice == 2) {
             std::string fileName = getFile();
             std::string type = detectSaveGameType(fileName);
@@ -402,7 +412,7 @@ void engageTestMode(char *fileName) {
             } else if (type == "random") {
                 game->loadWithBoxLidAndRandomness(fileName);
             } else if (type == "adv") {
-                std::cout << "Load Advanced Game" << std::endl;
+                advGame->load(fileName);
             }
         } else if (choice == 3) {
             showCredits();
@@ -410,6 +420,31 @@ void engageTestMode(char *fileName) {
             quitGame();
         }
     }
+}
+
+int getSeedFromUserInput(){
+    int seed = 1;
+    bool validInput = false;
+    while(!validInput){
+        std::cout << "Enter a number to generate a unique game" << std::endl;
+        std::cout << "> ";
+        std::cin >> seed;
+        if (std::cin.eof()) {
+            quitGame();
+        }
+
+        if (std::cin.fail()){
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "The seed must be an integer number!" << std::endl;
+            std::cout << std::endl;
+        }
+        else {
+            validInput = true;
+        }
+    }
+
+    return seed;
 }
 
 std::string detectSaveGameType(const std::string &fileName) {

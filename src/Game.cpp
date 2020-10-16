@@ -41,7 +41,13 @@ Game::~Game() {
     delete[] factories;
 
     // Delete tile bag;
+    tileBag->clear();
     delete tileBag;
+
+    // Delete Box Lid
+    boxLid->clear();
+    delete boxLid;
+
 }
 
 void Game::addPlayers(std::vector<Player *> p) {
@@ -54,11 +60,6 @@ void Game::addPlayers(std::vector<Player *> p) {
 
 std::vector<Player *> Game::getPlayers() {
     return players;
-}
-
-void Game::save(const std::string &fileName, std::vector<std::string> vector) {
-    // Write All Game Inputs to a Save File
-    writeMultipleStrToFile(fileName, vector);
 }
 
 void Game::play() {
@@ -238,122 +239,6 @@ bool Game::areFactoriesEmpty() {
     return count == MAX_TILE_NUM;
 }
 
-bool Game::isAFactoryEmpty(int factory) {
-    // Initialize a counter
-    int count = 0;
-
-    if (factory != 0) {
-        // Loop through the chosen factory
-        for (int i = 0; i < FACTORY_SIZE; ++i) {
-            if (factories[factory - 1][i].getName() == WHITESPACE) {
-                count++;
-            }
-        }
-    }
-    return count == FACTORY_SIZE;
-}
-
-std::vector<std::string> Game::checkInput(std::string input, Player *player) {
-    // a vector that contains all error messages
-    std::vector<std::string> result;
-
-    // Split input string into pieces
-    std::vector<std::string> inputArr = splitString(input, WHITESPACE);
-
-    // Valid color characters
-    std::string colors = VALID_CHARS;
-
-
-    // Check if save argument number was entered
-    if (inputArr.size() == 2) {
-        // Check for save command
-        if (inputArr[0] != "save") {
-            result.push_back("Invalid input. Correct input = save. Your input = " + inputArr[0]);
-        }
-    }
-        // Check if turn argument number was entered
-    else if (inputArr.size() == 4) {
-        // Check for turn command
-        if (inputArr[0] != "turn") {
-            result.push_back("Invalid input. Correct input = turn. Your input = " + inputArr[0]);
-        }
-
-        // Check Factory Number entered
-        try {
-            // Convert input from string to int
-            int factory = std::stoi(inputArr[1]);
-            int row = std::stoi(inputArr[3]);
-            if (factory < FIRST_FACTORY || factory > LAST_FACTORY) {
-                result.push_back("<factory> must be a number between 0 and 5");
-            } else if (isAFactoryEmpty(factory)) {
-                result.push_back("The factory you have entered is empty. Your input = "
-                                 + inputArr[1]);
-            }
-
-            if (row < FIRST_STORAGE_ROW || row > LAST_STORAGE_ROW) {
-                result.push_back("<row> must be a number between 0 and 5");
-            } else {
-                if (isRowFull(row, player)) {
-                    result.push_back("Illegal move. Chosen row is full");
-                }
-                if (row != 0) {
-                    size_t grid = getGridColor(row, player).find(inputArr[2]);
-                    if (grid != std::string::npos) {
-                        result.push_back("Illegal move. The grid has already had this color");
-                    }
-
-                    if (getColorOfaRow(row, player) != '.' && (getColorOfaRow(row, player) != inputArr[2][0])) {
-                        result.push_back("Illegal move. All tiles in the same row must have the same color");
-                    }
-                }
-            }
-
-            // Check Colour entered
-            size_t correctColor = colors.find(inputArr[2]);
-            if (correctColor == std::string::npos) {
-                result.push_back("<color> must be one of these values: R, Y, B, L, U");
-            } else if (!tileExistsInAFactory(inputArr[2][0], factory)) {
-                result.push_back("The tile you have chosen does not exist in the chosen factory.");
-            }
-
-        } //Check other exceptions
-        catch (std::exception const &e) {
-            result.push_back("<factory> must be a number between 0 and 5");
-            result.push_back("<row> must be a number between 0 and 5");
-        }
-
-    } else {
-        result.push_back(
-                "Wrong number of arguments or arguments are not separated by whitespace or excessive whitespaces. "
-                "Your input = " + input);
-    }
-    return result;
-}
-
-bool Game::tileExistsInAFactory(const char &tile, int factory) {
-    bool exist = false;
-
-    //Search Centre Factory first
-    if (factory == 0) {
-        for (size_t i = 0; i < center.size(); ++i) {
-            if (center[i]->getName() == tile) {
-                exist = true;
-                // Break loop
-                i = center.size();
-            }
-        }
-    } else if (factory > FIRST_FACTORY && factory < LAST_FACTORY + 1) {
-        for (int i = 0; i < FACTORY_SIZE; ++i) {
-            if (factories[factory - 1][i].getName() == tile) {
-                exist = true;
-                // Break loop
-                i = FACTORY_SIZE;
-            }
-        }
-    }
-
-    return exist;
-}
 
 void Game::execute(const std::string &command, Player *player) {
 
@@ -573,35 +458,6 @@ void Game::execute(const std::string &command, Player *player) {
             chosenTiles.clear();
         }
     }
-}
-
-char Game::getColorOfaRow(int row, Player *player) {
-    return player->getUnlaidRow()[row - 1][0].getName();
-}
-
-std::string Game::getGridColor(int row, Player *player) {
-    std::string result;
-    for (int i = 0; i < 5; ++i) {
-        result += player->getGrid()[row - 1][i].getName();
-    }
-    return result;
-}
-
-bool Game::isRowFull(int row, Player *player) {
-    int full = true;
-    if (row != 0) {
-        for (int i = 0; i < row; ++i) {
-            if (player->getUnlaidRow()[row - 1][i].getName() == '.') {
-                full = false;
-                // Break loop
-                i = row;
-            }
-        }
-    } else {
-        full = false;
-    }
-
-    return full;
 }
 
 bool Game::endRound() {
@@ -897,12 +753,6 @@ void Game::printScores() {
     }
 }
 
-void Game::printInstructions() {
-    std::cout << "To Play: turn <factory> <color> <row>" << std::endl;
-    std::cout << "To Save: save <filename>" << std::endl;
-    std::cout << "To Discard: turn <factory> <color> 0" << std::endl;
-}
-
 void Game::printNewTurnInformation(Player *player) {
     std::cout << "TURN FOR PLAYER: " << player->getName() << std::endl;
     std::cout << "Factories:" << std::endl;
@@ -925,17 +775,6 @@ void Game::getUserInput(std::string &input) {
     if (std::cin.eof()) {
         quitGame();
     }
-}
-
-void Game::printEndErrorMessage(std::vector<std::string> &errors) {
-    std::cout << "Invalid Input!" << std::endl;
-    std::cout << "Error(s): " << std::endl;
-
-    for (auto &error : errors) {
-        std::cout << "- " << error << std::endl;
-    }
-    std::cout << "Please try again " << std::endl;
-    std::cout << std::endl;
 }
 
 void
@@ -981,7 +820,7 @@ void Game::playTurn(Player *player, bool &end, std::vector<std::string> &savedIn
         getUserInput(input);
 
         // Check for errors
-        std::vector<std::string> errors = checkInput(input, player);
+        std::vector<std::string> errors = checkInput(input, player, VALID_CHARS, factories, center);
 
         // Check if there is any error
         if (errors.capacity() == 0) {
@@ -1005,7 +844,7 @@ void Game::readLineAndPlayTurn(std::ifstream &file, std::string &line, Player *p
                                std::vector<std::string> &savedInputs, int &lineCount) {
     if (getline(file, line)) {
         // Vector to store error messages
-        std::vector<std::string> errors = checkInput(line, player);
+        std::vector<std::string> errors = checkInput(line, player, VALID_CHARS, factories, center);
 
         // If no errors are found
         if (errors.capacity() == 0) {
@@ -1033,7 +872,7 @@ void Game::readLineAndQuit(std::ifstream &file, std::string &line, Player *playe
                            int &lineCount) {
     if (getline(file, line)) {
         // Vector to store error messages
-        std::vector<std::string> errors = checkInput(line, player);
+        std::vector<std::string> errors = checkInput(line, player, VALID_CHARS, factories, center);
 
         // If no errors
         if (errors.capacity() == 0) {

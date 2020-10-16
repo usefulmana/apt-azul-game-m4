@@ -33,12 +33,6 @@ public:
     void play();
 
     /*
-    * Translates up-to-date information from the user into a file which can be recalled from main to
-    * continue playing where left off
-    */
-    void save(const std::string & fileName, std::vector<std::string> vector);
-
-    /*
     * Reads file previously saved, and translates information in to resume an old game from where it
     * was left off
     */
@@ -110,41 +104,6 @@ public:
     bool areFactoriesEmpty();
 
     /**
-    * Checks the status of a particular factory. 
-    * @return true if empty, false if not;
-    */
-    bool isAFactoryEmpty(int factory);
-
-    /**
-     * Reads the input provided by the User into Terminal; Boundary and type validation
-     * @param input : input string to be checked
-     * @return : a vector containing errors of the player's input
-     */
-    std::vector<std::string> checkInput(std::string input, Player * player);
-
-    /**
-    * Checks whether a particular tile exsists in a particular factory
-    * @return true if it exists, false if not
-    */
-    bool tileExistsInAFactory(const char & tile, int factory);
-
-    /*
-    * Returns a char relating to the colour assigned to a particular Mosaic row
-    */
-    char getColorOfaRow(int row, Player * player);
-
-    /*
-    * Returns a string containing the colour of the grid
-    */
-    std::string getGridColor(int row, Player * player);
-
-    /**
-    * Checks whether a row has been filled.
-    * @return true if full, false if not;
-    */
-    bool isRowFull(int row, Player * player);
-
-    /**
     * Checks whether the end of a round is reached.
     * @return true if round is over, false if not;
     */
@@ -183,11 +142,6 @@ public:
     void printScores();
 
     /**
-     * Print Instructions
-     */
-    static void printInstructions();
-
-    /**
      * Print information about the new turn
      * @param player
      */
@@ -198,12 +152,6 @@ public:
      * @param input
      */
     void getUserInput(std::string & input);
-
-    /**
-     * Print error messages
-     * @param errors
-     */
-    void printEndErrorMessage(std::vector<std::string> & errors);
 
     /**
      * Interpret a command
