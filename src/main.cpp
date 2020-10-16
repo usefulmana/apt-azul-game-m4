@@ -27,59 +27,47 @@ void engageTestMode(char *fileName);
 
 [[noreturn]] void engageRandomMode(int seed);
 
-void engageAdvancedMode(const std::string & mode);
+[[noreturn]] void engageAdvancedMode();
 
-std::string detectSaveGameType(const std::string & fileName);
-
-void engageGreyBoardMode();
-void engageSixTileMode();
+std::string detectSaveGameType(const std::string &fileName);
 
 int main(int argc, char **argv) {
     // Check number of argument
     if (argc == 1) {
         // No additional arguments shows menu
         playAzul();
-    }
-    else if (argc == 3) {
-
+    } else if (argc == 2) {
         std::string advFlag = "--adv";
         if (argv[1] == advFlag) {
-            std::string mode(argv[2]);
-            if (mode == SIX_TILE_MODE_FLAG || mode == GREY_BOARD_MODE_FLAG){
-                engageAdvancedMode(mode);
-            }
-            else {
-                std::cout << "No such mode exists!" << std::endl;
-                std::cout << "<mode> = six to trigger 6 tile mode" << std::endl;
-                std::cout << "<mode> = grey to trigger grey board mode" << std::endl;
-            }
+            engageAdvancedMode();
+
         }
-        else {
-            // 2 additional arguments directs to test mode
-            std::vector<std::string> flags;
-            flags.emplace_back("-t");
-            flags.emplace_back("-s");
-            // Check for Flag
-            if (argv[1] == flags[0]) {
-                // If File Exists
-                if (checkIfFileExists(argv[2])) {
-                    engageTestMode(argv[2]);
-                } else {
-                    std::cout << "No such file exists!" << std::endl;
-                }
-            } else if (argv[1] == flags[1]) {
-                try {
-                    int seed = std::stoi(argv[2]);
-                    engageRandomMode(seed);
-                }
-                catch (std::exception const &e) {
-                    std::cout << "You entered: " << argv[2] << std::endl;
-                    std::cout << "Please enter an integer number " << std::endl;
-                }
+    } else if (argc == 3) {
+        // 2 additional arguments directs to test mode
+        std::vector<std::string> flags;
+        flags.emplace_back("-t");
+        flags.emplace_back("-s");
+        // Check for Flag
+        if (argv[1] == flags[0]) {
+            // If File Exists
+            if (checkIfFileExists(argv[2])) {
+                engageTestMode(argv[2]);
             } else {
-                std::cout << "Wrong flag" << std::endl;
+                std::cout << "No such file exists!" << std::endl;
             }
+        } else if (argv[1] == flags[1]) {
+            try {
+                int seed = std::stoi(argv[2]);
+                engageRandomMode(seed);
+            }
+            catch (std::exception const &e) {
+                std::cout << "You entered: " << argv[2] << std::endl;
+                std::cout << "Please enter an integer number " << std::endl;
+            }
+        } else {
+            std::cout << "Wrong flag" << std::endl;
         }
+
     } else {
         std::cout << "Invalid number of arguments" << std::endl;
         std::cout << "./azul to run" << std::endl;
@@ -139,7 +127,7 @@ int showMenu() {
 }
 
 [[noreturn]] void playAzul() {
-    while (true){
+    while (true) {
         int choice = showMenu();
         if (choice == 1) {
             playGame();
@@ -209,7 +197,7 @@ void playGame() {
  * Get file name from user input
  * @return file name
  */
-std::string getFile(){
+std::string getFile() {
     bool valid = false;
     std::string fileName;
 
@@ -315,10 +303,9 @@ void engageTestMode(char *fileName) {
     auto game = new Game();
     // Load game from file
     std::string type = detectSaveGameType(fileName);
-    if (type == "default"){
+    if (type == "default") {
         game->testLoadGame(fileName);
-    }
-    else if (type == "random"){
+    } else if (type == "random") {
         game->testLoadRandomGame(fileName);
     }
 }
@@ -329,7 +316,7 @@ void engageTestMode(char *fileName) {
     std::cout << "Seed: " << seed << std::endl;
     auto game = new Game();
 
-    while (true){
+    while (true) {
         int choice = showMenu();
         game->setRandomGameMode(true);
         game->setSeed(seed);
@@ -340,10 +327,9 @@ void engageTestMode(char *fileName) {
         } else if (choice == 2) {
             std::string fileName = getFile();
             std::string type = detectSaveGameType(fileName);
-            if (type == "default"){
+            if (type == "default") {
                 game->load(fileName);
-            }
-            else if (type == "random"){
+            } else if (type == "random") {
                 game->loadWithBoxLidAndRandomness(fileName);
             }
         } else if (choice == 3) {
@@ -355,27 +341,42 @@ void engageTestMode(char *fileName) {
 }
 
 
-void engageAdvancedMode(const std::string & mode) {
-    std::string choice;
+[[noreturn]] void engageAdvancedMode() {
     std::cout << "Advanced Mode Engaged " << std::endl;
-    if (mode == GREY_BOARD_MODE_FLAG){
-        std::cout << "Grey board mode" << std::endl;
-    }
-    else{
-        std::cout << "6 tiles mode" << std::endl;
+    auto game = new Game();
+
+    while (true) {
+        int choice = showMenu();
+        if (choice == 1) {
+            std::cout << "Play Advanced Game" << std::endl;
+        } else if (choice == 2) {
+            std::string fileName = getFile();
+            std::string type = detectSaveGameType(fileName);
+            if (type == "default") {
+                game->load(fileName);
+            } else if (type == "random") {
+                game->loadWithBoxLidAndRandomness(fileName);
+            } else if (type == "adv") {
+                std::cout << "Load Advanced Game" << std::endl;
+            }
+        } else if (choice == 3) {
+            showCredits();
+        } else if (choice == 4) {
+            quitGame();
+        }
     }
 }
 
-std::string detectSaveGameType(const std::string & fileName){
+std::string detectSaveGameType(const std::string &fileName) {
     std::ifstream file;
     file.open(fileName, std::ifstream::in);
     std::string line;
     std::string result = "default";
 
     getline(file, line);
-    if (line == RANDOM_MODE_HEADER){
+    if (line == RANDOM_MODE_HEADER) {
         result = "random";
-    } else if (line == ADVANCED_MODE_HEADER){
+    } else if (line == ADVANCED_MODE_HEADER) {
         result = "adv";
     }
     file.close();
