@@ -87,18 +87,6 @@ public:
     void reset();
 
     /**
-    * Checks the status of Centre factory
-    * @return true if empty, false if not;
-    */
-    bool isCenterEmpty();
-
-    /**
-    * Checks the status of all factories.
-    * @return true if empty, false if not;
-    */
-    bool areFactoriesEmpty();
-
-    /**
     * Checks whether the end of a round is reached.
     * @return true if round is over, false if not;
     */

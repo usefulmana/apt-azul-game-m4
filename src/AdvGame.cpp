@@ -62,7 +62,45 @@ std::vector<AdvPlayer *> AdvGame::getPlayers() {
 }
 
 void AdvGame::play(){
+    std::vector<std::string> savedInputs;
 
+    savedInputs.push_back(ADVANCED_MODE_HEADER);
+
+    std::string bag;
+
+    for (int i = 0; i < NUM_OF_TILES_IN_TILE_BAG; ++i) {
+        bag += tileBag->get(i)->getName();
+    }
+    // Save tile bag to input vector;
+    savedInputs.push_back(bag);
+
+    savedInputs.push_back(std::to_string(seed));
+
+    // Save players name
+    for (auto &player: players) {
+        savedInputs.push_back(player->getName());
+    }
+
+    //Add "First" Tile to Centre Factory
+    addFirstTileToCenter();
+
+    //Fill Remaining Factories
+    fillFactories();
+
+    //Round Number Counter
+    int round = 1;
+
+    bool gameOver = false;
+    while(!gameOver){
+        std::cout << "=== Round " << round << " Starts ===" << std::endl;
+        bool end = endRound();
+        if (players[0]->isFirst()) {
+
+        }
+        else {
+            
+        }
+    }
 }
 
 void AdvGame::testLoadGame(char *fileName) {
@@ -110,10 +148,11 @@ void AdvGame::fillFactories() {
     }
 }
 
-//std::vector<std::string> AdvGame::checkInput(std::string input, AdvPlayer *player) {
-//}
-
 
 void AdvGame::setSeed(const int &s) {
     this->seed = s;
+}
+
+bool AdvGame::endRound() {
+    return isCenterEmpty(center) && areFactoriesEmpty(factories);
 }

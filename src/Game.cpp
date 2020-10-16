@@ -203,22 +203,6 @@ void Game::addFirstTileToCenter() {
     center.push_back(new Tile(FIRST_TILE));
 }
 
-bool Game::isCenterEmpty() {
-    return center.empty();
-}
-
-bool Game::areFactoriesEmpty() {
-    int count = 0;
-    for (int i = 0; i < NUM_OF_FACTORIES; ++i) {
-        for (int j = 0; j < FACTORY_SIZE; ++j) {
-            if (factories[i][j].getName() == WHITESPACE) {
-                count++;
-            }
-        }
-    }
-    return count == MAX_TILE_NUM;
-}
-
 
 void Game::execute(const std::string &command, Player *player) {
 
@@ -441,7 +425,7 @@ void Game::execute(const std::string &command, Player *player) {
 }
 
 bool Game::endRound() {
-    return isCenterEmpty() && areFactoriesEmpty();
+    return isCenterEmpty(center) && areFactoriesEmpty(factories);
 }
 
 void Game::reset() {
@@ -894,7 +878,7 @@ void Game::playWithBoxLidAndRandomness() {
     // Save seed at the end of the string
     savedInputs.push_back(std::to_string(seed));
 
-    //Add Players to Game
+    // Save players name
     for (auto &player: players) {
         savedInputs.push_back(player->getName());
     }
@@ -908,8 +892,7 @@ void Game::playWithBoxLidAndRandomness() {
     //Round Number Counter
     int round = 1;
 
-    // While tilebag
-    //while (!areTileBagAndBoxLidEmpty())
+
     bool gameOver = false;
     while (!gameOver) {
         std::cout << "=== Round " << round << " Starts ===" << std::endl;

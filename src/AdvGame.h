@@ -41,8 +41,6 @@ public:
     void execute(const std::string & command, AdvPlayer * player);
     void fillFactories();
     void reset();
-    bool areFactoriesEmpty();
-    std::vector<std::string> checkInput(std::string input, AdvPlayer * player);
     bool endRound();
     void printGameState();
     void printFinalResults();

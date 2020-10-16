@@ -269,6 +269,26 @@ void printFactories(Tile ** factories, std::vector<Tile*> center) {
     }
 }
 
+bool isCenterEmpty(std::vector<Tile *> center) {
+    return center.empty();
+}
+
+bool areTileBagAndBoxLidEmpty(LinkedList<Tile *> * tileBag, LinkedList<Tile*> * boxLid){
+    return (tileBag->getLength() == 0 && boxLid->getLength() == 0);
+}
+
+bool areFactoriesEmpty(Tile ** factories){
+    int count = 0;
+    for (int i = 0; i < NUM_OF_FACTORIES; ++i) {
+        for (int j = 0; j < FACTORY_SIZE; ++j) {
+            if (factories[i][j].getName() == WHITESPACE) {
+                count++;
+            }
+        }
+    }
+    return count == MAX_TILE_NUM;
+}
+
 void printInstructions() {
     std::cout << "To Play   : turn <factory> <color> <row>" << std::endl;
     std::cout << "To Save   : save <filename>" << std::endl;
