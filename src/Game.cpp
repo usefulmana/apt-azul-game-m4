@@ -662,7 +662,7 @@ void Game::testLoadGame(char *fileName) {
     file.open(fileName, std::ifstream::in);
 
     std::string line;
-    std::string validChars = TILE_BAG_VALID_CHARS;
+    std::string validChars = VALID_CHARS;
     std::vector<Player *> testPlayers;
 
     while (lineCount <= 1) {
@@ -774,7 +774,7 @@ void Game::load(const std::string &fileName) {
     file.open(fileName, std::ifstream::in);
     int lineCount = 1;
     std::string line;
-    std::string validChars = TILE_BAG_VALID_CHARS;
+    std::string validChars = VALID_CHARS;
     std::vector<Player *> testPlayers;
 
     // A vector to save inputs
@@ -1155,7 +1155,7 @@ void Game::loadWithBoxLidAndRandomness(const std::string &fileName) {
     file.open(fileName, std::ifstream::in);
     int lineCount = 1;
     std::string line;
-    std::string validChars = TILE_BAG_VALID_CHARS;
+    std::string validChars = VALID_CHARS;
     std::vector<Player *> testPlayers;
 
     // A vector to save inputs
@@ -1384,7 +1384,7 @@ void Game::testLoadRandomGame(char *fileName) {
     file.open(fileName, std::ifstream::in);
     int lineCount = 1;
     std::string line;
-    std::string validChars = TILE_BAG_VALID_CHARS;
+    std::string validChars = VALID_CHARS;
     std::vector<Player *> testPlayers;
 
     // A variable to store tile bag. This will be used later to validate the tile bag and the seed

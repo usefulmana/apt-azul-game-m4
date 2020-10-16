@@ -6,6 +6,7 @@
 #include "Game.h"
 #include "Player.h"
 #include "utils.h"
+#include "AdvPlayer.h"
 
 int showMenu();
 
@@ -20,6 +21,8 @@ void loadGame();
 std::string getFile();
 
 std::vector<Player *> createPlayersFromUserInput();
+
+std::vector<AdvPlayer *> getAdvancedPlayers();
 
 bool isNameValid(const std::string &name);
 
@@ -298,6 +301,47 @@ std::vector<Player *> createPlayersFromUserInput() {
     return players;
 }
 
+std::vector<AdvPlayer *> getAdvancedPlayers(){
+    // A vector to store player objects
+    std::vector<AdvPlayer *> players;
+
+    // Player counter
+    int playerCount = 1;
+    // Clear input
+    std::cin.clear();
+    std::cin.ignore(10000, '\n');
+    // End loop when num of players exceeds the ceiling
+    while (playerCount <= NUM_OF_PLAYERS) {
+        std::string name;
+        std::string savedName;
+        std::cout << "Enter a name for player " << playerCount << std::endl;
+        std::cout << "> ";
+
+        getline(std::cin, name);
+        std::cout << std::endl;
+
+        // Check end of file
+        if (std::cin.eof()) {
+            quitGame();
+        }
+            // Validate input
+        else if (isNameValid(name)) {
+            // Increase count by one
+
+            // Initialize and add player object to the vector
+            if (playerCount == 1) {
+                players.push_back(new AdvPlayer(name, playerCount, true));
+            } else {
+                players.push_back(new AdvPlayer(name, playerCount, false));
+            }
+            playerCount++;
+        } else {
+            std::cout << "Invalid name. Please try again" << std::endl;
+        }
+    }
+    return players;
+}
+
 void engageTestMode(char *fileName) {
     // Initialize New Game
     auto game = new Game();
@@ -348,7 +392,8 @@ void engageTestMode(char *fileName) {
     while (true) {
         int choice = showMenu();
         if (choice == 1) {
-            std::cout << "Play Advanced Game" << std::endl;
+            std::cout << "Play Advanced Game " << std::endl;
+           getAdvancedPlayers()[0]->printMosaic();
         } else if (choice == 2) {
             std::string fileName = getFile();
             std::string type = detectSaveGameType(fileName);

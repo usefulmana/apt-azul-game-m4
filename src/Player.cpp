@@ -9,7 +9,6 @@ Player::Player(std::string name, int id, bool f)
     //Declare Variables
     this->name = name;
     this->score = 0;
-    this->first = false;
     this->brokenRowCount = 0;
     this->id = id;
     this->first = f;
