@@ -6,6 +6,7 @@
 #include <fstream>
 #include <random>
 #include "Game.h"
+#include "AdvPlayer.h"
 
 /**
  * Split a string into elements of a vector
@@ -85,23 +86,6 @@ void printInstructions();
 void printEndErrorMessage(std::vector<std::string> &errors);
 
 /**
-    * Checks whether a row has been filled.
-    * @return true if full, false if not;
-    */
-bool isRowFull(int row, Player *player);
-
-/*
-* Returns a string containing the colour of the grid
-*/
-std::string getGridColor(int row, Player *player);
-
-
-/*
-* Returns a char relating to the colour assigned to a particular Mosaic row
-*/
-char getColorOfaRow(int row, Player *player);
-
-/**
     * Checks whether a particular tile exsists in a particular factory
     * @return true if it exists, false if not
     */
@@ -112,7 +96,7 @@ bool tileExistsInAFactory(const char &tile, int factory, Tile **factories, std::
  * @param input : input string to be checked
  * @return : a vector containing errors of the player's input
  */
-std::vector<std::string> checkInput(std::string input, Player *player, const std::string &validChars, Tile **factories,
+std::vector<std::string> checkAdvInput(std::string input, AdvPlayer *player, const std::string &validChars, Tile **factories,
                                     std::vector<Tile *> center);
 
 /**
@@ -136,8 +120,41 @@ bool isCenterEmpty(std::vector<Tile *> center);
 * Checks the status of all factories.
 * @return true if empty, false if not;
 */
-bool areFactoriesEmpty(Tile ** factory);
+bool areFactoriesEmpty(Tile **factory);
 
-bool areTileBagAndBoxLidEmpty(LinkedList<Tile *> * tileBag, LinkedList<Tile*> * boxLid);
+/**
+   * Get user's input and save it to a string
+   * @param input
+   */
+void getUserInput(std::string &input);
+
+void drawFromFactories(Tile **factories, int factory, std::string &chosenTiles, std::vector<Tile *> &center,
+                       const char &color);
+
+void moveExcessTilesToCenter(Tile **factories, int factory, std::vector<Tile *> &center);
+
+void setWhoGoesFirstNextRound(std::vector<Tile *> &center, int factory, std::string &chosenTiles, AdvPlayer *player,
+                              std::vector<AdvPlayer *> &players);
+
+void handleFirstTile(std::string &chosenTiles, AdvPlayer *player, LinkedList<Tile *> *boxLid);
+
+void placeOnRow(int targetRow, AdvPlayer *player, std::string &chosenTiles);
+
+/**
+* Checks whether a row has been filled.
+* @return true if full, false if not;
+*/
+bool isAdvRowFull(int row, AdvPlayer *player);
+
+/*
+* Returns a string containing the colour of the grid
+*/
+std::string getAdvGridColor(int row, AdvPlayer *player);
+
+
+/*
+* Returns a char relating to the colour assigned to a particular Mosaic row
+*/
+char getAdvColorOfaRow(int row, AdvPlayer *player);
 
 #endif //A2_UTILS_H

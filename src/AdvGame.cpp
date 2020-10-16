@@ -61,7 +61,7 @@ std::vector<AdvPlayer *> AdvGame::getPlayers() {
     return players;
 }
 
-void AdvGame::play(){
+void AdvGame::play() {
     std::vector<std::string> savedInputs;
 
     savedInputs.push_back(ADVANCED_MODE_HEADER);
@@ -91,16 +91,63 @@ void AdvGame::play(){
     int round = 1;
 
     bool gameOver = false;
-    while(!gameOver){
+    while (!gameOver) {
         std::cout << "=== Round " << round << " Starts ===" << std::endl;
         bool end = endRound();
         if (players[0]->isFirst()) {
+            while (!end) {
+                for (size_t i = 0; i < NUM_OF_PLAYERS && !end; ++i) {
+                    auto player = players[i];
+                    playTurn(player, end, savedInputs);
+                    if (checkIfEndGame()) {
+                        end = true;
+                        gameOver = true;
+                    }
+                }
+            }
+        } else {
+            while (!end) {
+                for (size_t i = 0; i < NUM_OF_PLAYERS && !end; ++i) {
+                    auto player = players[NUM_OF_PLAYERS - 1 - i];
+                    playTurn(player, end, savedInputs);
+                    if (checkIfEndGame()) {
+                        end = true;
+                        gameOver = true;
+                    }
+                }
+            }
+        }
 
+        // TODO Tile Placing Phase
+
+        // TODO Scoring
+        // Next Round
+        std::cout << "=== Round " << round << " Ends ===" << std::endl;
+        round++;
+
+        // Error Checking
+
+        for (auto &player: players) {
+            deductBrokenTile(player);
         }
-        else {
-            
+
+        // Reset game state
+        if (!areTileBagAndBoxLidEmpty()) {
+            printScores();
+            reset();
         }
+
+        // Display box lid at the end of the round
+        std::cout << "Box Lid : ";
+        for (int i = 0; i < boxLid->getLength(); ++i) {
+            std::cout << boxLid->get(i)->getName() << " ";
+        }
+        std::cout << std::endl;
     }
+
+    std::cout << "=== Game Over ===" << std::endl;
+    std::cout << "=== Scoreboard ===" << std::endl;
+    printFinalResults();
 }
 
 void AdvGame::testLoadGame(char *fileName) {
@@ -112,7 +159,83 @@ void AdvGame::load(const std::string &fileName) {
 }
 
 void AdvGame::execute(const std::string &command, AdvPlayer *player) {
+    // Split command
+    std::vector<std::string> commands = splitString(command, WHITESPACE);
+    // Store variables from the command
+    int factory = std::stoi(commands[1]) - 1;
+    char color = commands[2][0];
+    int targetRow = std::stoi(commands[3]);
 
+    // Storage of Chosen Tile
+    std::string chosenTiles;
+
+    // Draw from factory or center
+    if (factory + 1 != 0) {
+        // Draw from factory
+        for (int i = 0; i < FACTORY_SIZE; ++i) {
+            if (factories[factory][i].getName() == color) {
+                // Add Tile to tiles list
+                chosenTiles += color;
+                // Assign empty value to factory tiles
+                factories[factory][i] = WHITESPACE;
+            }
+        }
+
+    } else {
+        // Draw from center
+        for (size_t i = 0; i < center.size(); ++i) {
+            if (center[i]->getName() == color) {
+                chosenTiles += color;
+            }
+        }
+        // Delete chosen tiles
+        std::vector<Tile *>::iterator it = center.begin();
+        while (it != center.end()) {
+            if ((*it)->getName() == color) {
+                it = center.erase(it);
+            } else {
+                it++;
+            }
+        }
+    }
+
+//    moveExcessTilesToCenter(factories, factory, center);
+    if (factory + 1 != 0) {
+        for (int i = 0; i < FACTORY_SIZE; ++i) {
+            if (factories[factory][i].getName() != WHITESPACE) {
+                // Add tile to centre factory
+                center.push_back(new Tile(factories[factory][i].getName()));
+                // Set non-chosen tiles to empty space
+                factories[factory][i].setName(WHITESPACE);
+            }
+        }
+    }
+//    setWhoGoesFirstNextRound(center, factory, chosenTiles, player, players);
+// Add F at the of the string if player chooses centre factory
+    if (factory + 1 == 0 && center.size() > 0 && center[0]->getName() == FIRST_TILE) {
+        chosenTiles += FIRST_TILE;
+        // Set player with first tile to go first nx round
+        player->setFirst(true);
+        for (size_t i = 0; i < players.size(); ++i) {
+            if (player->getId() != players[i]->getId()) {
+                players[i]->setFirst(false);
+                i = players.size();
+            }
+        }
+        // Remove F tile from centre
+        center.erase(center.begin());
+    }
+
+    // If the player choose not to discard the tiles
+    if (targetRow != 0) {
+        placeOnRow(targetRow, player, chosenTiles);
+
+        // Move excess tiles to deduct row
+        handleFirstTile(chosenTiles, player, boxLid);
+
+    } else {
+        handleFirstTile(chosenTiles, player, boxLid);
+    }
 }
 
 void AdvGame::setTileBagAutomatically() {
@@ -155,4 +278,292 @@ void AdvGame::setSeed(const int &s) {
 
 bool AdvGame::endRound() {
     return isCenterEmpty(center) && areFactoriesEmpty(factories);
+}
+
+void AdvGame::printFinalResults() {
+
+    printScores();
+    // Print result
+    if (players[0]->getScore() > players[1]->getScore()) {
+        std::cout << "Player " << players[0]->getName() << " wins!" << std::endl;
+    } else if (players[0]->getScore() < players[1]->getScore()) {
+        std::cout << "Player " << players[1]->getName() << " wins!" << std::endl;
+    } else {
+        std::cout << "It's a tie!" << std::endl;
+    }
+    std::cout << std::endl;
+}
+
+void AdvGame::printScores() {
+    for (auto &player : players) {
+        std::cout << "Score for " << player->getName() << ": " << player->getScore()
+                  << std::endl;
+    }
+}
+
+int AdvGame::getSeed() {
+    return seed;
+}
+
+void AdvGame::addFirstTileToCenter() {
+    center.push_back(new Tile(FIRST_TILE));
+}
+
+void AdvGame::playTurn(AdvPlayer *player, bool &end, std::vector<std::string> &savedInputs) {
+    printNewTurnInformation(player);
+
+    bool validInput = false;
+
+    // Instructions/Help
+    printInstructions();
+
+    // Exit if Valid Input Entered
+    while (!validInput) {
+
+        // Get user input
+        std::string input;
+
+        getUserInput(input);
+
+        // Check for errors
+        std::vector<std::string> errors = checkAdvInput(input, player, ADV_VALID_CHARS, factories, center);
+
+        // Check if there is any error
+        if (errors.capacity() == 0) {
+            interpretCommand(input, player, validInput, savedInputs);
+        } else {
+
+            // Notify users of errors
+            printEndErrorMessage(errors);
+        }
+        // Check if end round condition is met
+        if (endRound()) {
+            // End loops
+            validInput = true;
+            end = true;
+        }
+    }
+    std::cout << std::endl;
+}
+
+void
+AdvGame::interpretCommand(std::string &input, AdvPlayer *player, bool &validInput,
+                          std::vector<std::string> &savedInputs) {
+    if (input.substr(0, 4) == "turn") {
+        execute(input, player);
+        // Add input to input vector
+        savedInputs.push_back(input);
+        std::cout << "Turn successful." << std::endl;
+
+        std::cout << std::endl;
+        // End input loop
+        validInput = true;
+
+    } else if (input.substr(0, 4) == "save") {
+        // Find position of first whitespace
+        int pos = input.find(WHITESPACE);
+
+        // Return substring of everything following the whitespace
+        std::string fileName = input.substr(pos + 1);
+
+        // Save game
+        save(fileName, savedInputs);
+
+        std::cout << "Saved to " << fileName << std::endl;
+    }
+}
+
+void AdvGame::printNewTurnInformation(AdvPlayer *player) {
+    std::cout << "TURN FOR PLAYER: " << player->getName() << std::endl;
+    std::cout << "Factories:" << std::endl;
+    printFactories(factories, center);
+    std::cout << std::endl;
+    std::cout << "Mosaic for " << player->getName() << ":" << std::endl;
+    player->printMosaic();
+    player->printBrokenRow();
+    std::cout << std::endl;
+}
+
+bool AdvGame::checkIfEndGame() {
+    bool result = false;
+
+    // Any player with horizontal line = game over
+    for (size_t i = 0; i < players.size(); ++i) {
+        for (int j = 0; j < ADV_MOSAIC_DIM; ++j) {
+            int count = 0;
+            for (int k = 0; k < ADV_MOSAIC_DIM; ++k) {
+                if (players[i]->getMosaic()[j][k].getName() != NO_TILE) {
+                    count++;
+                }
+                if (count == ADV_MOSAIC_DIM) {
+                    result = true;
+                    i = players.size();
+                    j = ADV_MOSAIC_DIM;
+                    k = ADV_MOSAIC_DIM;
+                }
+            }
+        }
+    }
+    return result;
+}
+
+void AdvGame::deductBrokenTile(AdvPlayer *player) {
+    int deductBy = 0;
+    int count = 0;
+    //Check contents of Player's Broken Row
+    for (int i = 0; i < ADV_BROKEN_ROW_SIZE; i++) {
+        if (player->getBrokenRow()[i].getName() != WHITESPACE) {
+            count++;
+            if (count <= ADV_BROKEN_ROW_SIZE - 5) {
+                // First three tiles -1 each
+                deductBy++;
+            } else if (count <= BROKEN_ROW_SIZE - 3) {
+                // Nx two tiles -2 each
+                deductBy += 2;
+            } else if (count <= BROKEN_ROW_SIZE - 2) {
+                // Nx two tiles -3 each
+                deductBy += 3;
+            } else{
+                deductBy += 4;
+            }
+
+        }
+    }
+
+    //Perform deduction
+    int score = player->getScore() - deductBy;
+
+    //Allocate Player Score
+    player->setScore(score);
+}
+
+void AdvGame::reset() {
+    // Fill factories from tile bag
+    fillFactories();
+    // Add First tile to center
+    addFirstTileToCenter();
+
+    for (auto &player: players) {
+        // Reset Broken Row
+        for (int i = 0; i < ADV_BROKEN_ROW_SIZE; ++i) {
+            // Add broken tiles back to the box lid
+            if (player->getBrokenRow()[i].getName() != WHITESPACE &&
+                player->getBrokenRow()[i].getName() != FIRST_TILE) {
+                boxLid->addBack(new Tile(player->getBrokenRow()[i].getName()));
+            }
+            // Reset Broken Row
+            player->getBrokenRow()[i].setName(WHITESPACE);
+        }
+
+        // Reset Broken Row Count
+        player->setBrokenRowCount(0);
+
+        // Reset Unlaid Rows
+        int rowCount = 1;
+        for (int i = 0; i < ADV_MOSAIC_DIM; ++i) {
+            if (isAdvRowFull(i + 1, player)) {
+                for (int j = 0; j < rowCount; ++j) {
+                    player->getUnlaidRow()[i][j].setName(NO_TILE);
+                }
+            }
+            rowCount++;
+        }
+    }
+
+    // Add Boxlid tile to tilebag
+    if (tileBag->getLength() == 0 && boxLid->getLength() > 0) {
+        moveTilesFromBoxLidToTileBag();
+        // Shuffle the bag
+        shuffleTileBag();
+    }
+}
+
+bool AdvGame::areTileBagAndBoxLidEmpty() {
+    return (tileBag->getLength() == 0 && boxLid->getLength() == 0);
+}
+
+void AdvGame::shuffleTileBag() {
+    // Setting up
+
+    int max = tileBag->getLength();
+    std::default_random_engine engine(seed);
+    std::string tiles;
+
+    std::cout << "Length " << tiles.length() << std::endl;
+
+    for (int i = 0; i < max; ++i) {
+        tiles += tileBag->get(i)->getName();
+    }
+
+    // Clear tilebag
+    tileBag->clear();
+
+    // Shuffle
+    shuffleString(tiles, engine);
+
+    for (int i = 0; i < max; ++i) {
+        tileBag->addBack(new Tile(tiles[i]));
+    }
+}
+
+void AdvGame::moveTilesFromBoxLidToTileBag() {
+    for (int i = 0; i < boxLid->getLength() - 1; ++i) {
+        tileBag->addBack(new Tile(boxLid->get(i)->getName()));
+    }
+    boxLid->clear();
+}
+
+std::string AdvGame::getPlaceCommand() {
+    std::string result;
+    std::cout << "> ";
+    getline(std::cin, result);
+    std::cout << std::endl;
+    if (std::cin.eof()) {
+        quitGame();
+    }
+    return result;
+}
+
+void AdvGame::engageTilePlacingPhase() {
+    std::cout << "==== Tile Placing Phase ====" << std::endl;
+
+    for (size_t i = 0; i < players.size(); ++i) {
+        // Loop until no more tiles need to be place
+        // Get All Tiles Need To Be Place
+        std::string toBePlaced;
+
+        while(true){
+            std::cout << "To place a tile on the mosaic: place <row> <color> <column>" <<std::endl;
+            std::string command = getPlaceCommand();
+            // Validate
+            // Place
+        }
+
+    }
+}
+
+void AdvGame::printGameState() {
+    std::cout << "Factories: " << std::endl;
+    printFactories(factories, center);
+    std::cout << std::endl;
+
+    for (auto &testPlayer: players) {
+        std::cout << "Score for player " << testPlayer->getName() << ": " << testPlayer->getScore() << std::endl;
+        std::cout << "Mosaic for " << testPlayer->getName() << ":" << std::endl;
+        testPlayer->printMosaic();
+        testPlayer->printBrokenRow();
+        std::cout << std::endl;
+    }
+}
+
+void AdvGame::place() {
+
+}
+
+void AdvGame::score() {
+
+}
+
+std::vector<std::string> AdvGame::validatePlaceCommand(const std::string &command) {
+    return std::vector<std::string>();
 }

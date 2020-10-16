@@ -12,10 +12,9 @@
 #include <random>
 #include <ctype.h>
 
-class Game
-{
+class Game {
 public:
-    
+
     /*
     * Default Constructor
     */
@@ -36,18 +35,18 @@ public:
     * Reads file previously saved, and translates information in to resume an old game from where it
     * was left off
     */
-    void load(const std::string & fileName);
+    void load(const std::string &fileName);
 
     /*
     * Adds inserted player names into the initialised Vector to hold them as players of the current game
     */
-    void addPlayers(std::vector<Player*> p);
+    void addPlayers(std::vector<Player *> p);
 
     /**
     * Returns all players in the current game
     * @return : vector of players
     */
-    std::vector<Player*> getPlayers();
+    std::vector<Player *> getPlayers();
 
     /*
     * Fills Tile Bag with predefined list of tiles
@@ -58,7 +57,7 @@ public:
     * Returns contents of Tile Bag
     * @return : tile bag
     */
-    LinkedList<Tile *> * getTileBag();
+    LinkedList<Tile *> *getTileBag();
 
     /*
     * Places 'F' Tile to the centre factory
@@ -69,12 +68,12 @@ public:
     * Fills Tile Bag with a list of tiles determined by a String input
     * @param line : string to be parsed
     */
-    void setTileBagFromString(const std::string & line);
+    void setTileBagFromString(const std::string &line);
 
     /*
     * Administers the turn dependent on what the User has entered in the command line
     */
-    void execute(const std::string & command, Player * player);
+    void execute(const std::string &command, Player *player);
 
     /*
     * Fills factories dependent on the Tile Bag Content
@@ -96,12 +95,12 @@ public:
     * Checks whether a tile is marked to be removed.
     * @return true if marked, false if not;
     */
-    bool markedToBeDeleted(Tile* tile, char color);
+    bool markedToBeDeleted(Tile *tile, char color);
 
     /*
     * Testing method to review the status of the load game functionality
     */
-    void testLoadGame(char* fileName);
+    void testLoadGame(char *fileName);
 
     /*
     * Prints out the status of the game at execution
@@ -112,7 +111,7 @@ public:
     * Removes point from Player's score depending on their number of broken tiles
     * @param player : Us
     */
-    void deductBrokenTile(Player * player);
+    void deductBrokenTile(Player *player);
 
     /**
      * Print final result of the game
@@ -125,22 +124,27 @@ public:
     void printScores();
 
     /**
-     * Print information about the new turn
-     * @param player
-     */
-    void printNewTurnInformation(Player * player);
-
-    /**
-     * Get user's input and save it to a string
-     * @param input
-     */
-    void getUserInput(std::string & input);
-
-    /**
      * Interpret a command
      * @param input
      */
-    void interpretCommand(std::string & input, Player * player, bool & valid, std::vector<std::string> & savedInputs);
+    void interpretCommand(std::string &input, Player *player, bool &valid, std::vector<std::string> &savedInputs);
+
+    /**
+    * Checks whether a row has been filled.
+    * @return true if full, false if not;
+    */
+    bool isRowFull(int row, Player *player);
+
+    /*
+    * Returns a string containing the colour of the grid
+    */
+    std::string getGridColor(int row, Player *player);
+
+
+/*
+* Returns a char relating to the colour assigned to a particular Mosaic row
+*/
+    char getColorOfaRow(int row, Player *player);
 
     /**
      * Play a turn
@@ -148,7 +152,7 @@ public:
      * @param end
      * @param savedInputs
      */
-    void playTurn(Player * player, bool & end, std::vector<std::string> & savedInputs);
+    void playTurn(Player *player, bool &end, std::vector<std::string> &savedInputs);
 
     /**
      * Read a line for a text file and execute that line. On EOF, resume play
@@ -159,8 +163,8 @@ public:
      * @param savedInputs
      * @param lineCount
      */
-    void readLineAndPlayTurn(std::ifstream & file, std::string & line, Player * player, bool & end,
-                             std::vector<std::string> & savedInputs, int & lineCount);
+    void readLineAndPlayTurn(std::ifstream &file, std::string &line, Player *player, bool &end,
+                             std::vector<std::string> &savedInputs, int &lineCount);
 
     /**
      * Read a line for a text file and execute that line. On EOF, quit
@@ -171,16 +175,25 @@ public:
      * @param savedInputs
      * @param lineCount
      */
-    void readLineAndQuit(std::ifstream & file, std::string & line, Player * player, bool & end, int & lineCount);
+    void readLineAndQuit(std::ifstream &file, std::string &line, Player *player, bool &end, int &lineCount);
 
     /**
      * Play with box lid and random shuffle of the tile bag
      */
     void playWithBoxLidAndRandomness();
 
-    void loadWithBoxLidAndRandomness(const std::string & fileName);
+    void printNewTurnInformation(Player *player);
 
-    void setSeed(const int & s);
+    /**
+ * Reads the input provided by the User into Terminal; Boundary and type validation
+ * @param input : input string to be checked
+ * @return : a vector containing errors of the player's input
+ */
+    std::vector<std::string> checkInput(std::string input, Player *player);
+
+    void loadWithBoxLidAndRandomness(const std::string &fileName);
+
+    void setSeed(const int &s);
 
     int getSeed();
 
@@ -194,23 +207,23 @@ public:
 
     bool checkIfEndGame();
 
-    void testLoadRandomGame(char* fileName);
+    void testLoadRandomGame(char *fileName);
 
 private:
     // Stores all game players
-    std::vector<Player*> players;
+    std::vector<Player *> players;
 
     // Structure of Tile Bag
-    LinkedList<Tile*> * tileBag;
+    LinkedList<Tile *> *tileBag;
 
     // Box lid
-    LinkedList<Tile*> * boxLid;
+    LinkedList<Tile *> *boxLid;
 
     // Factories
-    Tile ** factories;
+    Tile **factories;
 
     // Stores Tiles assigned to Centre Factory
-    std::vector<Tile*> center;
+    std::vector<Tile *> center;
 
     // Coordinates of Rcently Placed Tile
     int placedTileX;
@@ -225,5 +238,6 @@ private:
     // Advanced
     bool isAdvanced;
 };
+
 
 #endif // COSC_ASSIGN_TWO_GAME

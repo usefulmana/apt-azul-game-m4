@@ -39,9 +39,17 @@ public:
     void setTileBagFromString(const std::string & line);
     void addFirstTileToCenter();
     void execute(const std::string & command, AdvPlayer * player);
+    void printNewTurnInformation(AdvPlayer * player);
     void fillFactories();
+    void playTurn(AdvPlayer *player, bool &end, std::vector<std::string> &savedInputs);
+    void interpretCommand(std::string & input, AdvPlayer * player, bool & valid, std::vector<std::string> & savedInputs);
     void reset();
     bool endRound();
+    void score();
+    void engageTilePlacingPhase();
+    std::string getPlaceCommand();
+    std::vector<std::string> validatePlaceCommand(const std::string & command);
+    void place();
     void printGameState();
     void printFinalResults();
     void deductBrokenTile(AdvPlayer * player);
