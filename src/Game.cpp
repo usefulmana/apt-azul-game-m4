@@ -199,26 +199,6 @@ void Game::fillFactories() {
     }
 }
 
-void Game::printFactories() {
-    // Print center
-    std::cout << "0: ";
-    for (size_t i = 0; i < center.size(); ++i) {
-        std::cout << center[i]->getName() << ' ';
-    }
-    std::cout << std::endl;
-
-    // Print factories
-    for (int i = 0; i < NUM_OF_FACTORIES; ++i) {
-        std::cout << i + 1 << ": ";
-        for (int j = 0; j < FACTORY_SIZE; ++j) {
-            if (factories[i][j].getName() != ' ') {
-                std::cout << factories[i][j].getName() << ' ';
-            }
-        }
-        std::cout << std::endl;
-    }
-}
-
 void Game::addFirstTileToCenter() {
     center.push_back(new Tile(FIRST_TILE));
 }
@@ -612,7 +592,7 @@ void Game::testLoadGame(char *fileName) {
 
 void Game::printGameState() {
     std::cout << "Factories: " << std::endl;
-    printFactories();
+    printFactories(factories, center);
     std::cout << std::endl;
 
     for (auto &testPlayer: players) {
@@ -756,7 +736,7 @@ void Game::printScores() {
 void Game::printNewTurnInformation(Player *player) {
     std::cout << "TURN FOR PLAYER: " << player->getName() << std::endl;
     std::cout << "Factories:" << std::endl;
-    printFactories();
+    printFactories(factories, center);
     std::cout << std::endl;
     std::cout << "Mosaic for " << player->getName() << ":" << std::endl;
     player->printMosaic();

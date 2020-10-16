@@ -120,4 +120,10 @@ std::vector<std::string> checkInput(std::string input, Player * player, const st
 */
 bool isAFactoryEmpty(int factory, Tile ** factories);
 
+/*
+    * Returns and Prints list of all factories to the Terminal
+    */
+void printFactories(Tile ** factories, std::vector<Tile*> center);
+
+
 #endif //A2_UTILS_H

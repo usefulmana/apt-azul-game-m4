@@ -249,6 +249,26 @@ bool isAFactoryEmpty(int factory, Tile ** factories) {
     return count == FACTORY_SIZE;
 }
 
+void printFactories(Tile ** factories, std::vector<Tile*> center) {
+    // Print center
+    std::cout << "0: ";
+    for (size_t i = 0; i < center.size(); ++i) {
+        std::cout << center[i]->getName() << ' ';
+    }
+    std::cout << std::endl;
+
+    // Print factories
+    for (int i = 0; i < NUM_OF_FACTORIES; ++i) {
+        std::cout << i + 1 << ": ";
+        for (int j = 0; j < FACTORY_SIZE; ++j) {
+            if (factories[i][j].getName() != ' ') {
+                std::cout << factories[i][j].getName() << ' ';
+            }
+        }
+        std::cout << std::endl;
+    }
+}
+
 void printInstructions() {
     std::cout << "To Play   : turn <factory> <color> <row>" << std::endl;
     std::cout << "To Save   : save <filename>" << std::endl;

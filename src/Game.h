@@ -86,11 +86,6 @@ public:
     */
     void reset();
 
-    /*
-    * Returns and Prints list of all factories to the Terminal
-    */
-    void printFactories();
-
     /**
     * Checks the status of Centre factory
     * @return true if empty, false if not;

@@ -41,14 +41,8 @@ public:
     void execute(const std::string & command, AdvPlayer * player);
     void fillFactories();
     void reset();
-    void printFactories();
-    bool isCenterEmpty();
     bool areFactoriesEmpty();
     std::vector<std::string> checkInput(std::string input, AdvPlayer * player);
-    bool tileExistsInAFactory(const char & tile, int factory);
-    char getColorOfaRow(int row, AdvPlayer * player);
-    std::string getGridColor(int row, AdvPlayer * player);
-    bool isRowFull(int row, AdvPlayer * player);
     bool endRound();
     void printGameState();
     void printFinalResults();
