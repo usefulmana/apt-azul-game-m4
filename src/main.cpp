@@ -353,10 +353,13 @@ void engageTestMode(char *fileName) {
     // Load game from file
     std::string type = detectSaveGameType(fileName);
     if (type == "default") {
+        std::cout << "Loading A Default Game" << std::endl;
         game->testLoadGame(fileName);
     } else if (type == "random") {
+        std::cout << "Loading A 'Random/Boxlid' Game" << std::endl;
         game->testLoadRandomGame(fileName);
     } else if (type == "adv"){
+        std::cout << "Loading An Advanced Game" << std::endl;
         advGame->testLoadGame(fileName);
     }
 }

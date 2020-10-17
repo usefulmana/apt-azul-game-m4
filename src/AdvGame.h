@@ -40,16 +40,26 @@ public:
     void addFirstTileToCenter();
     void execute(const std::string & command, AdvPlayer * player);
     void printNewTurnInformation(AdvPlayer * player);
+    bool canColorBePlacedInARow(AdvPlayer * player, int row);
+    bool canColorBePlacedInAColumn(const char & color, int column, AdvPlayer * player);
     void fillFactories();
     void playTurn(AdvPlayer *player, bool &end, std::vector<std::string> &savedInputs);
     void interpretCommand(std::string & input, AdvPlayer * player, bool & valid, std::vector<std::string> & savedInputs);
     void reset();
     bool endRound();
     void score();
-    void engageTilePlacingPhase();
+    void engageTilePlacingPhase(std::vector<std::string> & savedInputs);
+    void loadTilePlacingPhase(std::ifstream &file, std::string &line, int &lineCount, std::vector<std::string> & savedInputs);
+    void readLineAndQuit(std::ifstream &file, std::string &line, AdvPlayer *player, bool &end,
+                         int &lineCount);
+    void testLoadTilePlacingPhase(std::ifstream &file, std::string &line, int &lineCount, std::vector<std::string> & savedInputs);
     std::string getPlaceCommand();
-    std::vector<std::string> validatePlaceCommand(const std::string & command);
-    void place();
+    std::vector<std::string> validatePlaceCommand(const std::string & command, AdvPlayer * player);
+    void place(AdvPlayer * player, const std::string & command, std::vector<std::string> & savedInputs);
+    void readLineAndPlayTurn(std::ifstream &file, std::string &line, AdvPlayer *player, bool &end,
+                                   std::vector<std::string> &savedInputs, int &lineCount);
+    std::string getRowsToBePlaced(AdvPlayer * player);
+    bool isRowQualifiedToBePlaced(AdvPlayer * player, int row);
     void printGameState();
     void printFinalResults();
     void deductBrokenTile(AdvPlayer * player);

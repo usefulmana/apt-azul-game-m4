@@ -157,3 +157,7 @@ void AdvPlayer::setFirst(bool f) {
 int AdvPlayer::getId() {
     return id;
 }
+
+void AdvPlayer::setScore(int s) {
+    this->score = s;
+}

@@ -192,8 +192,8 @@ std::vector<std::string> checkAdvInput(std::string input, AdvPlayer *player, con
                                  + inputArr[1]);
             }
 
-            if (row < FIRST_STORAGE_ROW || row > LAST_STORAGE_ROW) {
-                result.push_back("<row> must be a number between 0 and 5");
+            if (row < FIRST_STORAGE_ROW || row > ADV_MAX_ROW) {
+                result.push_back("<row> must be a number between 0 and 6");
             } else {
                 if (isAdvRowFull(row, player)) {
                     result.push_back("Illegal move. Chosen row is full");
@@ -221,7 +221,7 @@ std::vector<std::string> checkAdvInput(std::string input, AdvPlayer *player, con
         } //Check other exceptions
         catch (std::exception const &e) {
             result.push_back("<factory> must be a number between 0 and 5");
-            result.push_back("<row> must be a number between 0 and 5");
+            result.push_back("<row> must be a number between 0 and 6");
         }
 
     } else {
