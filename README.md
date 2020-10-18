@@ -19,10 +19,15 @@
     ```
     chmod +x run.sh (only need to do this once)
     ./run.sh (run the game normally)
-    ./run.sh -t <filename> (engage test mode)
+    ./run.sh test <filename> (engage test mode)
+    ./run.sh ran <seed>
+    ./run.sh adv
     ```
     
 - **Method 2: Manual**
     ```
-    cd src && sudo make && cd bin && ./azul && cd .. && cd ..
+    cd src && sudo make && cd bin && ./azul && cd .. && cd .. (default mode)
+    cd src && sudo make && cd bin && ./azul -t <filename> && cd .. && cd .. (test mode)
+    cd src && sudo make && cd bin && ./azul -s <seed> && cd .. && cd .. (random/boxlid)
+    cd src && sudo make && cd bin && ./azul --adv && cd .. && cd .. (advanced mode)
     ``` 
