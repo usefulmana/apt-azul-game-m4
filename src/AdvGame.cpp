@@ -98,10 +98,11 @@ void AdvGame::play() {
             while (!end) {
                 for (size_t i = 0; i < NUM_OF_PLAYERS && !end; ++i) {
                     auto player = players[i];
-                    playTurn(player, end, savedInputs);
                     if (checkIfEndGame()) {
                         end = true;
                         gameOver = true;
+                    } else {
+                        playTurn(player, end, savedInputs);
                     }
                 }
             }
@@ -109,18 +110,19 @@ void AdvGame::play() {
             while (!end) {
                 for (size_t i = 0; i < NUM_OF_PLAYERS && !end; ++i) {
                     auto player = players[NUM_OF_PLAYERS - 1 - i];
-                    playTurn(player, end, savedInputs);
                     if (checkIfEndGame()) {
                         end = true;
                         gameOver = true;
+                    } else {
+                        playTurn(player, end, savedInputs);
                     }
+
                 }
             }
         }
 
         engageTilePlacingPhase(savedInputs);
 
-        // TODO Scoring
         // Next Round
         std::cout << "=== Round " << round << " Ends ===" << std::endl;
         round++;
@@ -247,11 +249,11 @@ void AdvGame::testLoadGame(char *fileName) {
                 for (size_t i = 0; i < NUM_OF_PLAYERS && !end; ++i) {
                     auto player = players[i];
                     // Check End Of File
-                    readLineAndQuit(file, line, player, end, lineCount);
                     if (checkIfEndGame()) {
                         end = true;
                         gameOver = true;
                     }
+                    readLineAndQuit(file, line, player, end, lineCount);
                 }
             }
         } else {
@@ -259,19 +261,21 @@ void AdvGame::testLoadGame(char *fileName) {
                 for (size_t i = 0; i < NUM_OF_PLAYERS && !end; ++i) {
                     auto player = players[NUM_OF_PLAYERS - 1 - i];
                     // Check End Of File
-                    readLineAndQuit(file, line, player, end, lineCount);
                     if (checkIfEndGame()) {
                         end = true;
                         gameOver = true;
                     }
+                    readLineAndQuit(file, line, player, end, lineCount);
                 }
             }
         }
         testLoadTilePlacingPhase(file, line, lineCount, savedInputs);
-        // TODO SCORING
 
         // Check if the next line is empty
         if (file.peek() == EOF) {
+            for (auto &player: players) {
+                deductBrokenTile(player);
+            }
             printGameState();
             std::cout << "=== Game Loaded Successfully ===" << std::endl;
             quitGame();
@@ -395,11 +399,13 @@ void AdvGame::load(const std::string &fileName) {
                 for (size_t i = 0; i < NUM_OF_PLAYERS && !end; ++i) {
                     auto player = players[i];
                     // Check if End Of File is reached
-                    readLineAndPlayTurn(file, line, player, end, savedInputs, lineCount);
                     if (checkIfEndGame()) {
                         end = true;
                         gameOver = true;
+                    } else {
+                        readLineAndPlayTurn(file, line, player, end, savedInputs, lineCount);
                     }
+
                 }
             }
         } else {
@@ -407,15 +413,19 @@ void AdvGame::load(const std::string &fileName) {
                 for (size_t i = 0; i < NUM_OF_PLAYERS && !end; ++i) {
                     auto player = players[NUM_OF_PLAYERS - 1 - i];
                     // Check if End Of File is reached
-                    readLineAndPlayTurn(file, line, player, end, savedInputs, lineCount);
                     if (checkIfEndGame()) {
                         end = true;
                         gameOver = true;
+                    } else {
+                        readLineAndPlayTurn(file, line, player, end, savedInputs, lineCount);
                     }
                 }
             }
         }
-        loadTilePlacingPhase(file, line, lineCount, savedInputs);
+        if (!checkIfEndGame()) {
+            loadTilePlacingPhase(file, line, lineCount, savedInputs);
+        }
+
 
         // Next Round
         std::cout << "=== Round " << round << " Ends ===" << std::endl;
@@ -659,7 +669,7 @@ AdvGame::interpretCommand(std::string &input, AdvPlayer *player, bool &validInpu
         // Save game
         save(fileName, savedInputs);
 
-        std::cout << "Saved to " << fileName << std::endl;
+        std::cout << "Saved to  " << fileName << std::endl;
     }
 }
 
@@ -700,17 +710,18 @@ bool AdvGame::checkIfEndGame() {
 void AdvGame::deductBrokenTile(AdvPlayer *player) {
     int deductBy = 0;
     int count = 0;
+    std::cout << "Deducting points " << std::endl;
     //Check contents of Player's Broken Row
     for (int i = 0; i < ADV_BROKEN_ROW_SIZE; i++) {
         if (player->getBrokenRow()[i].getName() != WHITESPACE) {
             count++;
-            if (count <= ADV_BROKEN_ROW_SIZE - 5) {
+            if (count < ADV_BROKEN_ROW_SIZE - 4) {
                 // First three tiles -1 each
                 deductBy++;
-            } else if (count <= BROKEN_ROW_SIZE - 3) {
+            } else if (count <= ADV_BROKEN_ROW_SIZE - 3) {
                 // Nx two tiles -2 each
                 deductBy += 2;
-            } else if (count <= BROKEN_ROW_SIZE - 2) {
+            } else if (count <= ADV_BROKEN_ROW_SIZE - 1) {
                 // Nx two tiles -3 each
                 deductBy += 3;
             } else {
@@ -719,7 +730,7 @@ void AdvGame::deductBrokenTile(AdvPlayer *player) {
 
         }
     }
-
+    std::cout << "Deduct by " << deductBy << std::endl;
     //Perform deduction
     int score = player->getScore() - deductBy;
 
@@ -831,22 +842,25 @@ void AdvGame::engageTilePlacingPhase(std::vector<std::string> &savedInputs) {
         std::cout << "TURN FOR PLAYER " << players[i]->getName() << std::endl;
         std::cout << "To place a tile on the mosaic: place <row> <color> <column>" << std::endl;
         size_t count = 1;
-        std::cout << "To Be Placed: ";
-
-        for (size_t j = 0; j < toBePlaced.length(); ++j) {
-            std::cout << toBePlaced[j] << " ";
-        }
-
-        std::cout << std::endl;
-
         while (count <= toBePlaced.length()) {
             players[i]->printMosaic();
             std::string command = getPlaceCommand();
             std::vector<std::string> errors = validatePlaceCommand(command, players[i]);
             if (errors.capacity() == 0) {
-                savedInputs.push_back(command);
-                place(players[i], command, savedInputs);
-                count++;
+                if (command.substr(0, 5) == "place") {
+                    place(players[i], command, savedInputs);
+                    savedInputs.push_back(command);
+                    count++;
+                } else {
+                    // Find position of first whitespace
+                    int pos = command.find(WHITESPACE);
+
+                    // Return substring of everything following the whitespace
+                    std::string fileName = command.substr(pos + 1);
+                    save(fileName, savedInputs);
+                    std::cout << "Saved to" << fileName << std::endl;
+                }
+
             } else {
                 std::cout << "Errors: " << std::endl;
                 for (auto &e: errors) {
@@ -875,23 +889,172 @@ void AdvGame::printGameState() {
 
 void AdvGame::place(AdvPlayer *player, const std::string &command, std::vector<std::string> &savedInputs) {
     std::vector<std::string> inputVector = splitString(command, WHITESPACE);
-    if (inputVector[0] == "save") {
-        // Find position of first whitespace
-        int pos = command.find(WHITESPACE);
-
-        // Return substring of everything following the whitespace
-        std::string fileName = command.substr(pos + 1);
-        save(fileName, savedInputs);
-    } else {
-        int row = std::stoi(inputVector[1]);
-        char color = inputVector[2][0];
-        int column = std::stoi(inputVector[3]);
-        player->getMosaic()[row - 1][column - 1].setName(color);
-    }
+    int row = std::stoi(inputVector[1]);
+    char color = inputVector[2][0];
+    int column = std::stoi(inputVector[3]);
+    player->getMosaic()[row - 1][column - 1].setName(color);
+    score(player, row, column, color);
 }
 
-void AdvGame::score() {
+bool AdvGame::isTileAlone(int row, int col, Tile **mosaic) {
+    bool alone = true;
+    // check left
+    if (col - 1 >= 0) {
+        if (mosaic[row][col - 1].getName() != '.') {
+            alone = false;
+        }
+    }
 
+    // check right
+    if (col + 1 < ADV_MOSAIC_DIM) {
+        if (mosaic[row][col + 1].getName() != '.') {
+            alone = false;
+        }
+    }
+
+    // check up
+    if (row - 1 >= 0) {
+        if (mosaic[row - 1][col].getName() != '.') {
+            alone = false;
+        }
+    }
+
+    // check down
+    if (row + 1 < ADV_MOSAIC_DIM) {
+        if (mosaic[row + 1][col].getName() != '.') {
+            alone = false;
+        }
+    }
+
+    return alone;
+}
+
+bool AdvGame::isTileAdjacentHozVer(int row, int col, Tile **mosaic) {
+    bool adjacent = false;
+    // Up left
+    if (row - 1 >= 0 && col - 1 >= 0){
+        if (mosaic[row - 1][col].getName() != NO_TILE && mosaic[row][col - 1].getName() != NO_TILE) {
+            adjacent = true;
+        }
+    }
+
+    // up right
+    if (row - 1 >= 0 && col + 1 < ADV_MOSAIC_DIM){
+        if (mosaic[row - 1][col].getName() != NO_TILE && mosaic[row][col + 1].getName() != NO_TILE) {
+            adjacent = true;
+        }
+    }
+
+
+    // down left
+    if (row + 1 < ADV_MOSAIC_DIM && col - 1 >= 0){
+        if (mosaic[row + 1][col].getName() != NO_TILE && mosaic[row][col - 1].getName() != NO_TILE) {
+            adjacent = true;
+        }
+    }
+    // down right
+    if (row + 1< ADV_MOSAIC_DIM && col + 1 < ADV_MOSAIC_DIM){
+        if (mosaic[row + 1][col].getName() != NO_TILE && mosaic[row][col + 1].getName() != NO_TILE) {
+            adjacent = true;
+        }
+    }
+
+
+    return adjacent;
+}
+
+
+void AdvGame::score(AdvPlayer *player, int row, int col, char color) {
+    int score = player->getScore();
+    // Initialize variables
+    int horizontalPoints = 0;
+    int verticalPoints = 0;
+    int finalScore;
+    int x = row - 1;
+    int y = col - 1;
+    Tile **mosaic = player->getMosaic();
+
+    // Check if tile is alone
+    if (isTileAlone(x, y, mosaic)) {
+        finalScore = score + 1;
+    } else {
+        // Horizontal scoring
+        // Check Left
+        bool left = true;
+        int leftIndex = 0;
+        while (left) {
+            if (y - leftIndex >= 0) {
+                if (mosaic[x][y - leftIndex].getName() != NO_TILE) {
+                    horizontalPoints++;
+                    leftIndex++;
+                } else {
+                    left = false;
+                }
+            } else {
+                left = false;
+            }
+        }
+
+        // Check right
+        bool right = true;
+        int rightIndex = 1;
+        while (right) {
+            if (y + leftIndex < ADV_MOSAIC_DIM) {
+                if (mosaic[x][y + rightIndex].getName() != NO_TILE) {
+                    horizontalPoints++;
+                    rightIndex++;
+                } else {
+                    right = false;
+                }
+            } else {
+                right = false;
+            }
+        }
+
+        // Vertical scoring
+        // Check up
+        bool up = true;
+        int upIndex = 1;
+        while (up) {
+            if (x - upIndex >= 0) {
+                if (mosaic[x - upIndex][y].getName() != NO_TILE) {
+                    verticalPoints++;
+                    upIndex++;
+                } else {
+                    up = false;
+                }
+            } else {
+                up = false;
+            }
+        }
+
+
+        // Check down
+        bool down = true;
+        int downIndex = 1;
+        while (down) {
+            if (x + downIndex < ADV_MOSAIC_DIM) {
+                if (mosaic[x + downIndex][y].getName() != NO_TILE) {
+                    verticalPoints++;
+                    downIndex++;
+                } else {
+                    down = false;
+                }
+            } else {
+                down = false;
+            }
+        }
+
+        // Compensate for missing points
+        if (isTileAdjacentHozVer(x, y, mosaic)){
+            verticalPoints++;
+        }
+
+
+        // Subtract 1 or nah?
+        finalScore = score + verticalPoints + horizontalPoints;
+    }
+    player->setScore(finalScore);
 }
 
 std::vector<std::string> AdvGame::validatePlaceCommand(const std::string &command, AdvPlayer *player) {
@@ -943,6 +1106,11 @@ std::vector<std::string> AdvGame::validatePlaceCommand(const std::string &comman
                                     errors.push_back(
                                             "Illegal Move! The chosen column has already contained this color!");
                                 }
+                                else {
+                                    if (checkIfSpotIsOccupied(row, column, player)){
+                                        errors.push_back("That spot is occupied!");
+                                    }
+                                }
                             }
                         }
                     }
@@ -962,6 +1130,11 @@ std::vector<std::string> AdvGame::validatePlaceCommand(const std::string &comman
 
     return errors;
 }
+
+bool AdvGame::checkIfSpotIsOccupied(int row, int col, AdvPlayer *player) {
+    return player->getMosaic()[row - 1][col - 1].getName() != NO_TILE;
+}
+
 
 bool AdvGame::canColorBePlacedInARow(AdvPlayer *player, int row) {
     bool possible = true;
@@ -1060,8 +1233,11 @@ void AdvGame::loadTilePlacingPhase(std::ifstream &file, std::string &line, int &
     for (size_t i = 0; i < players.size(); ++i) {
         // Loop until no more tiles need to be place
         // Get All Tiles Need To Be Place
+        std::cout << std::endl;
+        std::cout << "======================================" << std::endl;
+        std::cout << "TURN FOR PLAYER " << players[i]->getName() << std::endl;
+        std::cout << "To place a tile: place <row> <color> <column>" << std::endl;
         std::string toBePlaced = getRowsToBePlaced(players[i]);
-
         size_t count = 1;
 
         while (count <= toBePlaced.length()) {
@@ -1072,14 +1248,25 @@ void AdvGame::loadTilePlacingPhase(std::ifstream &file, std::string &line, int &
                 command = line;
                 lineCount++;
             } else {
-                std::cout << "Resumed Gameplay" << std::endl;
+                std::cout << "Player " << players[i]->getName() << " continues" << std::endl;
                 command = getPlaceCommand();
             }
             std::vector<std::string> errors = validatePlaceCommand(command, players[i]);
             if (errors.capacity() == 0) {
-                savedInputs.push_back(command);
-                place(players[i], command, savedInputs);
-                count++;
+
+                if (command.substr(0, 5) == "place") {
+                    place(players[i], command, savedInputs);
+                    savedInputs.push_back(command);
+                    count++;
+                } else {
+                    // Find position of first whitespace
+                    int pos = command.find(WHITESPACE);
+
+                    // Return substring of everything following the whitespace
+                    std::string fileName = command.substr(pos + 1);
+                    save(fileName, savedInputs);
+                    std::cout << "Saved to " << fileName << std::endl;
+                }
             } else {
                 std::cout << "Errors: " << std::endl;
                 for (auto &e: errors) {
@@ -1088,7 +1275,7 @@ void AdvGame::loadTilePlacingPhase(std::ifstream &file, std::string &line, int &
             }
         }
         std::cout << "No more tile left to be placed. Ending turn! " << std::endl;
-
+        std::cout << std::endl;
     }
 
 }
@@ -1133,8 +1320,6 @@ void AdvGame::testLoadTilePlacingPhase(std::ifstream &file, std::string &line, i
         size_t count = 1;
 
         while (count <= toBePlaced.length()) {
-            players[i]->printMosaic();
-            std::cout << std::endl;
             std::string command;
             if (getline(file, line)) {
                 command = line;
@@ -1161,3 +1346,4 @@ void AdvGame::testLoadTilePlacingPhase(std::ifstream &file, std::string &line, i
 
     }
 }
+

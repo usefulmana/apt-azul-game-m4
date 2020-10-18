@@ -47,7 +47,9 @@ public:
     void interpretCommand(std::string & input, AdvPlayer * player, bool & valid, std::vector<std::string> & savedInputs);
     void reset();
     bool endRound();
-    void score();
+    bool isTileAlone(int row, int col, Tile ** mosaic);
+    bool isTileAdjacentHozVer(int row, int col, Tile ** mosaic);
+    void score(AdvPlayer * player, int row, int col, char color);
     void engageTilePlacingPhase(std::vector<std::string> & savedInputs);
     void loadTilePlacingPhase(std::ifstream &file, std::string &line, int &lineCount, std::vector<std::string> & savedInputs);
     void readLineAndQuit(std::ifstream &file, std::string &line, AdvPlayer *player, bool &end,
@@ -59,6 +61,7 @@ public:
     void readLineAndPlayTurn(std::ifstream &file, std::string &line, AdvPlayer *player, bool &end,
                                    std::vector<std::string> &savedInputs, int &lineCount);
     std::string getRowsToBePlaced(AdvPlayer * player);
+    bool checkIfSpotIsOccupied(int row, int col, AdvPlayer * player);
     bool isRowQualifiedToBePlaced(AdvPlayer * player, int row);
     void printGameState();
     void printFinalResults();
