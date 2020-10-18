@@ -128,16 +128,50 @@ bool areFactoriesEmpty(Tile **factory);
    */
 void getUserInput(std::string &input);
 
+/**
+ * Draw from factories
+ * @param factories
+ * @param factory
+ * @param chosenTiles
+ * @param center
+ * @param color
+ */
 void drawFromFactories(Tile **factories, int factory, std::string &chosenTiles, std::vector<Tile *> &center,
                        const char &color);
 
+/**
+ * Move excess tiles to center factory
+ * @param factories
+ * @param factory
+ * @param center
+ */
 void moveExcessTilesToCenter(Tile **factories, int factory, std::vector<Tile *> &center);
 
+/**
+ * Set a player's first turn next round
+ * @param center
+ * @param factory
+ * @param chosenTiles
+ * @param player
+ * @param players
+ */
 void setWhoGoesFirstNextRound(std::vector<Tile *> &center, int factory, std::string &chosenTiles, AdvPlayer *player,
                               std::vector<AdvPlayer *> &players);
 
+/**
+ * Handle adding F tile to the broken row
+ * @param chosenTiles
+ * @param player
+ * @param boxLid
+ */
 void handleFirstTile(std::string &chosenTiles, AdvPlayer *player, LinkedList<Tile *> *boxLid);
 
+/**
+ * Placing tiles on unlaid row
+ * @param targetRow
+ * @param player
+ * @param chosenTiles
+ */
 void placeOnRow(int targetRow, AdvPlayer *player, std::string &chosenTiles);
 
 /**

@@ -932,14 +932,14 @@ bool AdvGame::isTileAlone(int row, int col, Tile **mosaic) {
 bool AdvGame::isTileAdjacentHozVer(int row, int col, Tile **mosaic) {
     bool adjacent = false;
     // Up left
-    if (row - 1 >= 0 && col - 1 >= 0){
+    if (row - 1 >= 0 && col - 1 >= 0) {
         if (mosaic[row - 1][col].getName() != NO_TILE && mosaic[row][col - 1].getName() != NO_TILE) {
             adjacent = true;
         }
     }
 
     // up right
-    if (row - 1 >= 0 && col + 1 < ADV_MOSAIC_DIM){
+    if (row - 1 >= 0 && col + 1 < ADV_MOSAIC_DIM) {
         if (mosaic[row - 1][col].getName() != NO_TILE && mosaic[row][col + 1].getName() != NO_TILE) {
             adjacent = true;
         }
@@ -947,13 +947,13 @@ bool AdvGame::isTileAdjacentHozVer(int row, int col, Tile **mosaic) {
 
 
     // down left
-    if (row + 1 < ADV_MOSAIC_DIM && col - 1 >= 0){
+    if (row + 1 < ADV_MOSAIC_DIM && col - 1 >= 0) {
         if (mosaic[row + 1][col].getName() != NO_TILE && mosaic[row][col - 1].getName() != NO_TILE) {
             adjacent = true;
         }
     }
     // down right
-    if (row + 1< ADV_MOSAIC_DIM && col + 1 < ADV_MOSAIC_DIM){
+    if (row + 1 < ADV_MOSAIC_DIM && col + 1 < ADV_MOSAIC_DIM) {
         if (mosaic[row + 1][col].getName() != NO_TILE && mosaic[row][col + 1].getName() != NO_TILE) {
             adjacent = true;
         }
@@ -1046,7 +1046,7 @@ void AdvGame::score(AdvPlayer *player, int row, int col, char color) {
         }
 
         // Compensate for missing points
-        if (isTileAdjacentHozVer(x, y, mosaic)){
+        if (isTileAdjacentHozVer(x, y, mosaic)) {
             verticalPoints++;
         }
 
@@ -1105,9 +1105,8 @@ std::vector<std::string> AdvGame::validatePlaceCommand(const std::string &comman
                                 if (!canColorBePlacedInAColumn(color, column, player)) {
                                     errors.push_back(
                                             "Illegal Move! The chosen column has already contained this color!");
-                                }
-                                else {
-                                    if (checkIfSpotIsOccupied(row, column, player)){
+                                } else {
+                                    if (checkIfSpotIsOccupied(row, column, player)) {
                                         errors.push_back("That spot is occupied!");
                                     }
                                 }
@@ -1325,9 +1324,8 @@ void AdvGame::testLoadTilePlacingPhase(std::ifstream &file, std::string &line, i
                 command = line;
                 lineCount++;
             } else {
-                std::cout << "Game Loaded Successfully" << std::endl;
+                std::cout << "===Game Loaded Successfully===" << std::endl;
                 printGameState();
-                printFinalResults();
                 quitGame();
             }
             std::vector<std::string> errors = validatePlaceCommand(command, players[i]);

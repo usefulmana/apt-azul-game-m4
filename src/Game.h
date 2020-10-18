@@ -190,23 +190,56 @@ public:
  * @return : a vector containing errors of the player's input
  */
     std::vector<std::string> checkInput(std::string input, Player *player);
-
+    /**
+     * Special load method for the random/boxlid game
+     * @param fileName
+     */
     void loadWithBoxLidAndRandomness(const std::string &fileName);
 
+    /**
+     * Set seed
+     * @param s
+     */
     void setSeed(const int &s);
 
+    /**
+     * Get seed
+     * @return
+     */
     int getSeed();
 
+    /**
+     * Set the game mode to 'random'
+     * @param random
+     */
     void setRandomGameMode(bool random);
 
+    /**
+     * Shuffle tile bag
+     */
     void shuffleTileBag();
 
+    /**
+     * Check if the tile bag and box lid are empty
+     * @return
+     */
     bool areTileBagAndBoxLidEmpty();
 
+    /**
+     * Move tiles from the box lid to the tile bag
+     */
     void moveTilesFromBoxLidToTileBag();
 
+    /**
+     * Check if end game condition is met
+     * @return
+     */
     bool checkIfEndGame();
 
+    /**
+     * Special method to test loading a 'random/boxlid' game
+     * @param fileName
+     */
     void testLoadRandomGame(char *fileName);
 
 private:
